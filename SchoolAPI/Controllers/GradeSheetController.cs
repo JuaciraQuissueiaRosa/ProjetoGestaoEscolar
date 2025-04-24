@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
-    public class PautasController : ApiController
+    public class GradeSheetController : ApiController
     {
         // GET: api/Pautas
         public IEnumerable<string> Get()

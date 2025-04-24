@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
-    public class NotasController : ApiController
+    public class MarksController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
         // GET: api/notas
@@ -19,7 +19,7 @@ namespace SchoolAPI.Controllers
         // POST: api/notas
         [HttpPost]
         [Route("")]
-        public IHttpActionResult PostNota([FromBody] Nota nota)
+        public IHttpActionResult Post([FromBody] Nota nota)
         {
             if (nota.AlunoId == null || nota.DisciplinaId == null)
                 return BadRequest("AlunoId e DisciplinaId são obrigatórios.");
@@ -36,7 +36,7 @@ namespace SchoolAPI.Controllers
             db.Notas.InsertOnSubmit(nota);
             db.SubmitChanges();
 
-            AtualizarMedia(nota.AlunoId.Value, nota.DisciplinaId.Value);
+            UpdateMedia(nota.AlunoId.Value, nota.DisciplinaId.Value);
             return Ok("Nota lançada.");
         }
 
@@ -45,7 +45,7 @@ namespace SchoolAPI.Controllers
         // PUT: api/notas/5
         [HttpPut]
         [Route("{id}")]
-        public IHttpActionResult PutNota(int id, [FromBody] Nota dados)
+        public IHttpActionResult Put(int id, [FromBody] Nota dados)
         {
             var nota = db.Notas.FirstOrDefault(n => n.Id == id);
             if (nota == null)
@@ -64,7 +64,7 @@ namespace SchoolAPI.Controllers
 
             db.SubmitChanges();
 
-            AtualizarMedia(nota.AlunoId.Value, nota.DisciplinaId.Value);
+            UpdateMedia(nota.AlunoId.Value, nota.DisciplinaId.Value);
             return Ok("Nota atualizada.");
         }
         // DELETE: api/notas/5
@@ -79,7 +79,7 @@ namespace SchoolAPI.Controllers
             return Ok("Nota removida.");
         }
 
-        private void AtualizarMedia(int alunoId, int disciplinaId)
+        private void UpdateMedia(int alunoId, int disciplinaId)
         {
             var notas = db.Notas
                 .Where(n => n.AlunoId == alunoId && n.DisciplinaId == disciplinaId)

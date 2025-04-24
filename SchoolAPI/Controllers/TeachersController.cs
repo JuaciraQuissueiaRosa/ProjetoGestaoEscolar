@@ -7,16 +7,16 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
-    public class ProfessoresController : ApiController
+    public class TeachersController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
-        // GET: api/professores
+        // GET: api/teachers
         public IEnumerable<Professore> Get()
         {
             return db.Professores.ToList();
         }
 
-        // GET: api/professores/5
+        // GET: api/teachers/5
         public IHttpActionResult Get(int id)
         {
             var professor = db.Professores.FirstOrDefault(p => p.Id == id);
@@ -26,7 +26,7 @@ namespace SchoolAPI.Controllers
             return Ok(professor);
         }
 
-        // POST: api/professores
+        // POST: api/teachers
         public IHttpActionResult Post([FromBody] Professore professor)
         {
             db.Professores.InsertOnSubmit(professor);
@@ -34,7 +34,7 @@ namespace SchoolAPI.Controllers
             return Ok(professor);
         }
 
-        // PUT: api/professores/5
+        // PUT: api/teachers/5
         public IHttpActionResult Put(int id, [FromBody] Professore dados)
         {
             var professor = db.Professores.FirstOrDefault(p => p.Id == id);
@@ -50,26 +50,9 @@ namespace SchoolAPI.Controllers
             return Ok(professor);
         }
 
-        [HttpPost]
-        [Route("api/professores/{professorId}/associar-disciplina/{disciplinaId}")]
-        public IHttpActionResult AssociarDisciplina(int professorId, int disciplinaId)
-        {
-            if (!db.Professores.Any(p => p.Id == professorId) || !db.Disciplinas.Any(d => d.Id == disciplinaId))
-                return NotFound();
+ 
 
-            var relacao = new ProfessorDisciplina
-            {
-                ProfessorId = professorId,
-                DisciplinaId = disciplinaId
-            };
-
-            db.ProfessorDisciplinas.InsertOnSubmit(relacao);
-            db.SubmitChanges();
-
-            return Ok("Associação realizada com sucesso.");
-        }
-
-        // DELETE: api/professores/5
+        // DELETE: api/teachers/5
         public IHttpActionResult Delete(int id)
         {
             var professor = db.Professores.FirstOrDefault(p => p.Id == id);

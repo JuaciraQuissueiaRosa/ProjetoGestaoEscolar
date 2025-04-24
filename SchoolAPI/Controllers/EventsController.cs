@@ -7,31 +7,31 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
-    public class HorariosController : ApiController
+    public class EventsController : ApiController
     {
-        // GET: api/Horarios
+        // GET: api/Eventos
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET: api/Horarios/5
+        // GET: api/Eventos/5
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST: api/Horarios
+        // POST: api/Eventos
         public void Post([FromBody]string value)
         {
         }
 
-        // PUT: api/Horarios/5
+        // PUT: api/Eventos/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE: api/Horarios/5
+        // DELETE: api/Eventos/5
         public void Delete(int id)
         {
         }

@@ -4,18 +4,22 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 
 namespace SchoolAPI.Controllers
 {
-    public class TurmasController : ApiController
+    public class ClassesController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
         // GET: api/turmas
+        [HttpGet]
         public IEnumerable<Turma> Get()
         {
             return db.Turmas.ToList();
         }
 
+        [HttpGet]
+        [Route("api/classes/{GetTurmas}")]
         // GET: api/turmas/5
         public IHttpActionResult Get(int id)
         {
@@ -26,6 +30,7 @@ namespace SchoolAPI.Controllers
             return Ok(turma);
         }
 
+        [HttpPost]
         // POST: api/turmas
         public IHttpActionResult Post([FromBody] Turma novaTurma)
         {
@@ -35,8 +40,8 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpPost]
-        [Route("api/turmas/{turmaId}/associar-disciplina/{disciplinaId}")]
-        public IHttpActionResult AssociarDisciplina(int turmaId, int disciplinaId)
+        [Route("api/classes/{classesId}/associate-subject/{subjectId}")]
+        public IHttpActionResult AssociateSubject(int turmaId, int disciplinaId)
         {
             if (!db.Turmas.Any(t => t.Id == turmaId) || !db.Disciplinas.Any(d => d.Id == disciplinaId))
                 return NotFound();
@@ -54,8 +59,8 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpPost]
-        [Route("api/turmas/{turmaId}/associar-professor/{professorId}")]
-        public IHttpActionResult AssociarProfessor(int turmaId, int professorId)
+        [Route("api/classes/{classesId}/associate-professor/{professorId}")]
+        public IHttpActionResult AssociateProfessor(int turmaId, int professorId)
         {
             if (!db.Turmas.Any(t => t.Id == turmaId) || !db.Professores.Any(p => p.Id == professorId))
                 return NotFound();
@@ -73,8 +78,8 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpPost]
-        [Route("api/turmas/{turmaId}/associar-aluno/{alunoId}")]
-        public IHttpActionResult AssociarAluno(int turmaId, int alunoId)
+        [Route("api/classes/{classesId}/associate-student/{studentId}")]
+        public IHttpActionResult AssociateStudent(int turmaId, int alunoId)
         {
             var turma = db.Turmas.FirstOrDefault(t => t.Id == turmaId);
             var aluno = db.Alunos.FirstOrDefault(a => a.Id == alunoId);
@@ -88,6 +93,7 @@ namespace SchoolAPI.Controllers
             return Ok("Aluno associado à turma com sucesso.");
         }
 
+        [HttpPut]
         // PUT: api/turmas/5
         public IHttpActionResult Put(int id, [FromBody] Turma dados)
         {
@@ -104,6 +110,7 @@ namespace SchoolAPI.Controllers
             return Ok(turma);
         }
 
+        [HttpDelete]
         // DELETE: api/turmas/5
         public IHttpActionResult Delete(int id)
         {

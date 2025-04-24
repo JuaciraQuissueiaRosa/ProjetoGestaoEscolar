@@ -7,27 +7,34 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
-    public class AlunosController : ApiController
+    public class StudentsController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
 
-
+        /// <summary>
+        /// Return all the students in the database
+        /// </summary>
+        /// <returns></returns>
         // GET api/alunos
+        [HttpGet]
+        [Route("api/students/")]
         public IEnumerable<Aluno> Get()
         {
             return db.Alunos.ToList();
         }
 
-        // GET api/alunos/5
+        [HttpGet]
+        [Route("api/students/{id}")]
+        // GET api/students/5
         public Aluno Get(int id)
         {
             return db.Alunos.FirstOrDefault(a => a.Id == id);
         }
 
         [HttpGet]
-        [Route("api/alunos/pesquisar")]
+        [Route("api/students/search")]
 
-        public IHttpActionResult PesquisarAlunos(string termo)
+        public IHttpActionResult SearchStudents(string termo)
         {
             if (string.IsNullOrWhiteSpace(termo))
                 return BadRequest("O termo de pesquisa não pode ser vazio.");
@@ -50,7 +57,8 @@ namespace SchoolAPI.Controllers
         }
 
 
-        // POST api/alunos
+        // POST api/students
+        [HttpPost]
         public IHttpActionResult Post([FromBody] Aluno aluno)
         {
             db.Alunos.InsertOnSubmit(aluno);
@@ -58,9 +66,9 @@ namespace SchoolAPI.Controllers
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, aluno));
         }
 
-        // PUT api/alunos/5
+        // PUT api/students/5
         [HttpPut]
-        [Route("api/alunos/{id}")]
+        [Route("api/students/{id}")]
         public IHttpActionResult Put(int id, [FromBody] Aluno alunoAtualizado)
         {
             var aluno = db.Alunos.FirstOrDefault(a => a.Id == id);
@@ -78,9 +86,9 @@ namespace SchoolAPI.Controllers
             return Ok("Aluno atualizado com sucesso.");
         }
 
-        // DELETE api/alunos/5
+        // DELETE api/students/5
         [HttpDelete]
-        [Route("api/alunos/{id}")]
+        [Route("api/students/{id}")]
         public IHttpActionResult Delete(int id)
         {
             var aluno = db.Alunos.FirstOrDefault(a => a.Id == id);
