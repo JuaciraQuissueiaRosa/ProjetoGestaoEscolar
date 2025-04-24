@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolAPI", "SchoolAPI\SchoolAPI.csproj", "{08D8CE5B-2DDB-4C90-BB3D-08E38442D705}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escola.WPF", "Escola.WPF\Escola.WPF.csproj", "{C10EA5F0-26F6-450B-AF53-05F1213CF00E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{08D8CE5B-2DDB-4C90-BB3D-08E38442D705}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08D8CE5B-2DDB-4C90-BB3D-08E38442D705}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08D8CE5B-2DDB-4C90-BB3D-08E38442D705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10EA5F0-26F6-450B-AF53-05F1213CF00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10EA5F0-26F6-450B-AF53-05F1213CF00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10EA5F0-26F6-450B-AF53-05F1213CF00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10EA5F0-26F6-450B-AF53-05F1213CF00E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
