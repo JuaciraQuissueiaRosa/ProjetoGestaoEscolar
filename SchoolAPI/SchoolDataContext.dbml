@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="GestaoEscolarDB" Class="SchoolDataContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.Alunos" Member="Alunos">
+    <Type Name="Aluno">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nome" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="DataNascimento" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Contacto" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Morada" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="TurmaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Aluno_MediasFinai" Member="MediasFinais" ThisKey="Id" OtherKey="AlunoId" Type="MediasFinai" />
+      <Association Name="Aluno_Nota" Member="Notas" ThisKey="Id" OtherKey="AlunoId" Type="Nota" />
+      <Association Name="Aluno_ParticipacoesEvento" Member="ParticipacoesEventos" ThisKey="Id" OtherKey="AlunoId" Type="ParticipacoesEvento" />
+      <Association Name="Aluno_Pauta" Member="Pautas" ThisKey="Id" OtherKey="AlunoId" Type="Pauta" />
+      <Association Name="Turma_Aluno" Member="Turma" ThisKey="TurmaId" OtherKey="Id" Type="Turma" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Disciplinas" Member="Disciplinas">
+    <Type Name="Disciplina">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nome" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="CargaHorariaSemanal" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Disciplina_DisciplinaTurma" Member="DisciplinaTurmas" ThisKey="Id" OtherKey="DisciplinaId" Type="DisciplinaTurma" />
+      <Association Name="Disciplina_Horario" Member="Horarios" ThisKey="Id" OtherKey="DisciplinaId" Type="Horario" />
+      <Association Name="Disciplina_MediasFinai" Member="MediasFinais" ThisKey="Id" OtherKey="DisciplinaId" Type="MediasFinai" />
+      <Association Name="Disciplina_Nota" Member="Notas" ThisKey="Id" OtherKey="DisciplinaId" Type="Nota" />
+      <Association Name="Disciplina_ProfessorDisciplina" Member="ProfessorDisciplinas" ThisKey="Id" OtherKey="DisciplinaId" Type="ProfessorDisciplina" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DisciplinaTurma" Member="DisciplinaTurmas">
+    <Type Name="DisciplinaTurma">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DisciplinaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TurmaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Disciplina_DisciplinaTurma" Member="Disciplina" ThisKey="DisciplinaId" OtherKey="Id" Type="Disciplina" IsForeignKey="true" />
+      <Association Name="Turma_DisciplinaTurma" Member="Turma" ThisKey="TurmaId" OtherKey="Id" Type="Turma" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Eventos" Member="Eventos">
+    <Type Name="Evento">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nome" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Data" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Local" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Descricao" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Association Name="Evento_ParticipacoesEvento" Member="ParticipacoesEventos" ThisKey="Id" OtherKey="EventoId" Type="ParticipacoesEvento" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Horarios" Member="Horarios">
+    <Type Name="Horario">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TurmaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisciplinaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProfessorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DiaSemana" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="HoraInicio" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Column Name="HoraFim" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Association Name="Disciplina_Horario" Member="Disciplina" ThisKey="DisciplinaId" OtherKey="Id" Type="Disciplina" IsForeignKey="true" />
+      <Association Name="Professore_Horario" Member="Professore" ThisKey="ProfessorId" OtherKey="Id" Type="Professore" IsForeignKey="true" />
+      <Association Name="Turma_Horario" Member="Turma" ThisKey="TurmaId" OtherKey="Id" Type="Turma" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MediasFinais" Member="MediasFinais">
+    <Type Name="MediasFinai">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlunoId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisciplinaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Media" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="Aluno_MediasFinai" Member="Aluno" ThisKey="AlunoId" OtherKey="Id" Type="Aluno" IsForeignKey="true" />
+      <Association Name="Disciplina_MediasFinai" Member="Disciplina" ThisKey="DisciplinaId" OtherKey="Id" Type="Disciplina" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Notas" Member="Notas">
+    <Type Name="Nota">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlunoId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisciplinaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Avaliacao" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Nota" Member="Nota1" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="DataAvaliacao" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="ProfessorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Aluno_Nota" Member="Aluno" ThisKey="AlunoId" OtherKey="Id" Type="Aluno" IsForeignKey="true" />
+      <Association Name="Disciplina_Nota" Member="Disciplina" ThisKey="DisciplinaId" OtherKey="Id" Type="Disciplina" IsForeignKey="true" />
+      <Association Name="Professore_Nota" Member="Professore" ThisKey="ProfessorId" OtherKey="Id" Type="Professore" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ParticipacoesEvento" Member="ParticipacoesEventos">
+    <Type Name="ParticipacoesEvento">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EventoId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AlunoId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProfessorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Aluno_ParticipacoesEvento" Member="Aluno" ThisKey="AlunoId" OtherKey="Id" Type="Aluno" IsForeignKey="true" />
+      <Association Name="Evento_ParticipacoesEvento" Member="Evento" ThisKey="EventoId" OtherKey="Id" Type="Evento" IsForeignKey="true" />
+      <Association Name="Professore_ParticipacoesEvento" Member="Professore" ThisKey="ProfessorId" OtherKey="Id" Type="Professore" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Pautas" Member="Pautas">
+    <Type Name="Pauta">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlunoId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TurmaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DataCriacao" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Observacoes" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Association Name="Aluno_Pauta" Member="Aluno" ThisKey="AlunoId" OtherKey="Id" Type="Aluno" IsForeignKey="true" />
+      <Association Name="Turma_Pauta" Member="Turma" ThisKey="TurmaId" OtherKey="Id" Type="Turma" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProfessorDisciplina" Member="ProfessorDisciplinas">
+    <Type Name="ProfessorDisciplina">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProfessorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DisciplinaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Disciplina_ProfessorDisciplina" Member="Disciplina" ThisKey="DisciplinaId" OtherKey="Id" Type="Disciplina" IsForeignKey="true" />
+      <Association Name="Professore_ProfessorDisciplina" Member="Professore" ThisKey="ProfessorId" OtherKey="Id" Type="Professore" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Professores" Member="Professores">
+    <Type Name="Professore">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nome" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Contacto" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="AreaEnsino" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Association Name="Professore_Horario" Member="Horarios" ThisKey="Id" OtherKey="ProfessorId" Type="Horario" />
+      <Association Name="Professore_Nota" Member="Notas" ThisKey="Id" OtherKey="ProfessorId" Type="Nota" />
+      <Association Name="Professore_ParticipacoesEvento" Member="ParticipacoesEventos" ThisKey="Id" OtherKey="ProfessorId" Type="ParticipacoesEvento" />
+      <Association Name="Professore_ProfessorDisciplina" Member="ProfessorDisciplinas" ThisKey="Id" OtherKey="ProfessorId" Type="ProfessorDisciplina" />
+      <Association Name="Professore_ProfessorTurma" Member="ProfessorTurmas" ThisKey="Id" OtherKey="ProfessorId" Type="ProfessorTurma" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProfessorTurma" Member="ProfessorTurmas">
+    <Type Name="ProfessorTurma">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProfessorId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TurmaId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Professore_ProfessorTurma" Member="Professore" ThisKey="ProfessorId" OtherKey="Id" Type="Professore" IsForeignKey="true" />
+      <Association Name="Turma_ProfessorTurma" Member="Turma" ThisKey="TurmaId" OtherKey="Id" Type="Turma" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Turmas" Member="Turmas">
+    <Type Name="Turma">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nome" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="AnoLetivo" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Curso" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Turno" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Association Name="Turma_Aluno" Member="Alunos" ThisKey="Id" OtherKey="TurmaId" Type="Aluno" />
+      <Association Name="Turma_DisciplinaTurma" Member="DisciplinaTurmas" ThisKey="Id" OtherKey="TurmaId" Type="DisciplinaTurma" />
+      <Association Name="Turma_Horario" Member="Horarios" ThisKey="Id" OtherKey="TurmaId" Type="Horario" />
+      <Association Name="Turma_Pauta" Member="Pautas" ThisKey="Id" OtherKey="TurmaId" Type="Pauta" />
+      <Association Name="Turma_ProfessorTurma" Member="ProfessorTurmas" ThisKey="Id" OtherKey="TurmaId" Type="ProfessorTurma" />
+    </Type>
+  </Table>
+</Database>
