@@ -7,42 +7,51 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
+    [RoutePrefix("api/marks")]
     public class MarksController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
-        // GET: api/notas
+
+
+        // GET: api/marks
+        [HttpGet]
+        [Route("")]
         public IEnumerable<Nota> Get()
         {
             return db.Notas.ToList();
         }
 
-        // POST: api/notas
+        // POST: api/marks
         [HttpPost]
         [Route("")]
-        public IHttpActionResult Post([FromBody] Nota nota)
+        public IHttpActionResult Post([FromBody] Nota dados)
         {
-            if (nota.AlunoId == null || nota.DisciplinaId == null)
-                return BadRequest("AlunoId e DisciplinaId são obrigatórios.");
+            // Definir o ano letivo atual (2024/2025)
+            int anoLetivoInicio = DateTime.Now.Year; // 2024
+            int anoLetivoFim = anoLetivoInicio + 1; // 2025
 
-            if (!db.Alunos.Any(a => a.Id == nota.AlunoId) || !db.Disciplinas.Any(d => d.Id == nota.DisciplinaId))
-                return BadRequest("Aluno ou disciplina inválida.");
+            // O ano letivo começa em setembro (mês 9) do ano "anoLetivoInicio" e termina em junho (mês 6) do ano "anoLetivoFim"
+            DateTime inicioAnoLetivo = new DateTime(anoLetivoInicio, 9, 1);
+            DateTime fimAnoLetivo = new DateTime(anoLetivoFim, 6, 30);
 
-            // Verifica se o professor está associado à disciplina
-            var autorizado = db.ProfessorDisciplinas.Any(pd =>
-                pd.ProfessorId == nota.ProfessorId && pd.DisciplinaId == nota.DisciplinaId);
-            if (!autorizado)
-                return BadRequest("Este professor não está associado à disciplina.");
+            // Verificar se a data da avaliação está fora do período letivo (não permite adicionar ou alterar notas fora de 2024/2025)
+            if (dados.DataAvaliacao < inicioAnoLetivo)
+                return BadRequest($"O ano letivo {anoLetivoInicio}/{anoLetivoFim} ainda não começou. Não é permitido adicionar notas.");
 
-            db.Notas.InsertOnSubmit(nota);
+            if (dados.DataAvaliacao > fimAnoLetivo)
+                return BadRequest($"O ano letivo {anoLetivoInicio}/{anoLetivoFim} já terminou. Não é permitido adicionar notas.");
+
+            // Adicionar a nova nota
+            db.Notas.InsertOnSubmit(dados);
             db.SubmitChanges();
 
-            UpdateMedia(nota.AlunoId.Value, nota.DisciplinaId.Value);
-            return Ok("Nota lançada.");
+            // Atualizar a média
+            UpdateMedia(dados.AlunoId.Value, dados.DisciplinaId.Value);
+            return Ok("Nota adicionada.");
         }
 
 
-
-        // PUT: api/notas/5
+        // PUT: api/marks/5
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Nota dados)
@@ -54,20 +63,37 @@ namespace SchoolAPI.Controllers
             if (nota.AlunoId == null || nota.DisciplinaId == null)
                 return BadRequest("AlunoId e DisciplinaId inválidos.");
 
-            // Bloquear se o período letivo já passou (ex: depois de 31-12-2024)
-            if (nota.DataAvaliacao < new DateTime(2024, 12, 31))
-                return BadRequest("Período letivo encerrado. Nota não pode ser alterada.");
+            // Definir o ano letivo atual (2024/2025)
+            int anoLetivoInicio = DateTime.Now.Year; // 2024
+            int anoLetivoFim = anoLetivoInicio + 1; // 2025
 
+            // O ano letivo começa em setembro (mês 9) do ano "anoLetivoInicio" e termina em junho (mês 6) do ano "anoLetivoFim"
+            DateTime inicioAnoLetivo = new DateTime(anoLetivoInicio, 9, 1);
+            DateTime fimAnoLetivo = new DateTime(anoLetivoFim, 6, 30);
+
+            // Verificar se a data da avaliação está fora do período letivo (não permite adicionar ou alterar notas fora de 2024/2025)
+            if (dados.DataAvaliacao < inicioAnoLetivo)
+                return BadRequest($"O ano letivo {anoLetivoInicio}/{anoLetivoFim} ainda não começou. Não é permitido adicionar ou alterar notas.");
+
+            if (dados.DataAvaliacao > fimAnoLetivo)
+                return BadRequest($"O ano letivo {anoLetivoInicio}/{anoLetivoFim} já terminou. Não é permitido adicionar ou alterar notas.");
+
+            // Atualizar a nota
             nota.Avaliacao = dados.Avaliacao;
             nota.Nota1 = dados.Nota1;
             nota.DataAvaliacao = dados.DataAvaliacao;
 
             db.SubmitChanges();
 
+            // Atualizar a média
             UpdateMedia(nota.AlunoId.Value, nota.DisciplinaId.Value);
             return Ok("Nota atualizada.");
         }
-        // DELETE: api/notas/5
+
+
+        // DELETE: api/marks/5
+        [HttpDelete]
+        [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
             var nota = db.Notas.FirstOrDefault(n => n.Id == id);

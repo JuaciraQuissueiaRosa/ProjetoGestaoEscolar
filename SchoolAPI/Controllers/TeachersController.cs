@@ -7,16 +7,22 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
+    [RoutePrefix("api/teachers")]
     public class TeachersController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
+
         // GET: api/teachers
+        [HttpGet]
+        [Route("")]
         public IEnumerable<Professore> Get()
         {
             return db.Professores.ToList();
         }
 
         // GET: api/teachers/5
+        [HttpGet]
+        [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
             var professor = db.Professores.FirstOrDefault(p => p.Id == id);
@@ -27,6 +33,8 @@ namespace SchoolAPI.Controllers
         }
 
         // POST: api/teachers
+        [HttpPost]
+        [Route(" ")]
         public IHttpActionResult Post([FromBody] Professore professor)
         {
             db.Professores.InsertOnSubmit(professor);
@@ -35,6 +43,8 @@ namespace SchoolAPI.Controllers
         }
 
         // PUT: api/teachers/5
+        [HttpPut]
+        [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Professore dados)
         {
             var professor = db.Professores.FirstOrDefault(p => p.Id == id);
@@ -50,9 +60,10 @@ namespace SchoolAPI.Controllers
             return Ok(professor);
         }
 
- 
 
         // DELETE: api/teachers/5
+        [HttpDelete]
+        [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
             var professor = db.Professores.FirstOrDefault(p => p.Id == id);

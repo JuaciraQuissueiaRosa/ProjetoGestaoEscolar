@@ -7,16 +7,22 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
+    [RoutePrefix("api/subjects")]
     public class SubjectsController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
-        // GET:  api/subjects
+
+        // GET: api/subjects
+        [HttpGet]
+        [Route("")]
         public IEnumerable<Disciplina> Get()
         {
             return db.Disciplinas.ToList();
         }
 
-        // GET:  api/subjects/
+        // GET:  api/subjects/5
+        [HttpGet]
+        [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
             var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == id);
@@ -27,6 +33,8 @@ namespace SchoolAPI.Controllers
         }
 
         // POST:  api/subjects
+        [HttpPost]
+        [Route(" ")]
         public IHttpActionResult Post([FromBody] Disciplina disciplina)
         {
             db.Disciplinas.InsertOnSubmit(disciplina);
@@ -34,7 +42,7 @@ namespace SchoolAPI.Controllers
             return Ok(disciplina);
         }
         [HttpPost]
-        [Route("api/subjects/{subjectId}/associate-teacher/{TeacherId}")]
+        [Route("{disciplinaId}/associate-teacher/{professorId}")]
         public IHttpActionResult AssociateTeacher(int disciplinaId, int professorId)
         {
             var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == disciplinaId);
@@ -62,6 +70,8 @@ namespace SchoolAPI.Controllers
         }
 
         // PUT:  api/subjects/5
+        [HttpPut]
+        [Route(" ")]
         public IHttpActionResult Put(int id, [FromBody] Disciplina dados)
         {
             var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == id);
@@ -76,6 +86,9 @@ namespace SchoolAPI.Controllers
         }
 
         // DELETE: api/subjects/5
+        [HttpDelete]
+        [Route("{id}")]
+
         public IHttpActionResult Delete(int id)
         {
             var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == id);

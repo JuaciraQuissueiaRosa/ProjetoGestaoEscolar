@@ -7,31 +7,42 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
+    [RoutePrefix("api/timetable")]
     public class TimeTableController : ApiController
     {
-        // GET: api/Horarios
+        // GET:  api/timetable
+        [HttpGet]
+        [Route("")]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET: api/Horarios/5
+        // GET:  api/timetable/5
+        [HttpGet]
+        [Route("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST: api/Horarios
+        // POST:  api/timetable
+        [HttpPost]
+        [Route(" ")]
         public void Post([FromBody]string value)
         {
         }
 
-        // PUT: api/Horarios/5
+        // PUT: api/timetable/5
+        [HttpPut]
+        [Route("{id}")]
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE: api/Horarios/5
+        // DELETE:  api/timetable/5
+        [HttpDelete]
+        [Route("{id}")]
         public void Delete(int id)
         {
         }

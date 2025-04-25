@@ -7,6 +7,7 @@ using System.Web.Http;
 
 namespace SchoolAPI.Controllers
 {
+    [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
@@ -15,16 +16,16 @@ namespace SchoolAPI.Controllers
         /// Return all the students in the database
         /// </summary>
         /// <returns></returns>
-        // GET api/alunos
+        // GET api/students
         [HttpGet]
-        [Route("api/students/")]
+        [Route(" ")]
         public IEnumerable<Aluno> Get()
         {
             return db.Alunos.ToList();
         }
 
         [HttpGet]
-        [Route("api/students/{id}")]
+        [Route("{id}")]
         // GET api/students/5
         public Aluno Get(int id)
         {
@@ -32,8 +33,7 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpGet]
-        [Route("api/students/search")]
-
+        [Route("search")]
         public IHttpActionResult SearchStudents(string termo)
         {
             if (string.IsNullOrWhiteSpace(termo))
@@ -59,6 +59,7 @@ namespace SchoolAPI.Controllers
 
         // POST api/students
         [HttpPost]
+        [Route(" ")]
         public IHttpActionResult Post([FromBody] Aluno aluno)
         {
             db.Alunos.InsertOnSubmit(aluno);
@@ -68,7 +69,7 @@ namespace SchoolAPI.Controllers
 
         // PUT api/students/5
         [HttpPut]
-        [Route("api/students/{id}")]
+        [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Aluno alunoAtualizado)
         {
             var aluno = db.Alunos.FirstOrDefault(a => a.Id == id);
@@ -88,7 +89,7 @@ namespace SchoolAPI.Controllers
 
         // DELETE api/students/5
         [HttpDelete]
-        [Route("api/students/{id}")]
+        [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
             var aluno = db.Alunos.FirstOrDefault(a => a.Id == id);
