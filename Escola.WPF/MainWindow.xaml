@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <StackPanel Orientation="Vertical" Margin="10">
+            <Button Content="Load Students"  Click="BtnLoadStudents_Click" Margin="5"/>
+            <Button Content="Load Subjects" Click="BtnLoadSubjects_Click" Margin="5"/>
+            <Button Content="Load Teachers" Click="BtnLoadTeachers_Click" Margin="5"/>
+            <DataGrid x:Name="myDataGrid" AutoGenerateColumns="True" Height="400" Margin="5"/>
+        </StackPanel>
     </Grid>
 </Window>
