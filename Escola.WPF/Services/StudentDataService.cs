@@ -1,13 +1,8 @@
 ﻿using Escola.WPF.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Escola.WPF.Services
 {
-    public  class StudentDataService
+    public class StudentDataService
     {
         private readonly ApiService _apiService;
 
@@ -28,5 +23,5 @@ namespace Escola.WPF.Services
         public Task DeleteAsync(int id) =>
             _apiService.DeleteAsync($"api/students/{id}");
     }
-  
+
 }

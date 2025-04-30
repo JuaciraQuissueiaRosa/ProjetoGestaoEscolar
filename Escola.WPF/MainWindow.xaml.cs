@@ -1,15 +1,5 @@
-﻿using Escola.WPF.Models;
-using Escola.WPF.Services;
-using System.Text;
+﻿using Escola.WPF.Services;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
@@ -27,172 +17,44 @@ namespace Escola.WPF
             apiService = new ApiService();
         }
 
-        // Carregar Students
-        private async Task LoadStudents()
+
+        private void BtnLoadSubjects_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<Student>(urlBase, "api/students");
-            if (response.IsSucess)
-            {
-                var students = response.Result as List<Student>;
-                // Atribuir ao DataGrid (exemplo)
-                myDataGrid.ItemsSource = students;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
+            MainFrame.Navigate(new SubjectsPage()); // Corrigir o namespace e o nome da página
         }
 
-        // Carregar Subjects
-        private async Task LoadSubjects()
+        private void BtnLoadTeachers_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<Subject>(urlBase, "api/subjects");
-            if (response.IsSucess)
-            {
-                var subjects = response.Result as List<Subject>;
-                myDataGrid.ItemsSource = subjects;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
+            MainFrame.Navigate(new TeachersPage()); // Corrigir o namespace e o nome da página
         }
 
-        // Carregar GradeSheets
-        private async Task LoadGradeSheets()
+        private void BtnLoadStudents_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<GradeSheet>(urlBase, "api/gradesheets");
-            if (response.IsSucess)
-            {
-                var gradeSheets = response.Result as List<GradeSheet>;
-                myDataGrid.ItemsSource = gradeSheets;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
+            MainFrame.Navigate(new StudentsPage()); // Carrega a página de alunos
         }
 
-        // Carregar Marks
-        private async Task LoadMarks()
+        private void BtnLoadClasses_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<Mark>(urlBase, "api/marks");
-            if (response.IsSucess)
-            {
-                var marks = response.Result as List<Mark>;
-                myDataGrid.ItemsSource = marks;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
+            MainFrame.Navigate(new ClassesPage()); // Corrigir o namespace e o nome da página
         }
 
-        // Carregar Teachers
-        private async Task LoadTeachers()
+        private void BtnLoadMarks_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<Teacher>(urlBase, "api/teachers");
-            if (response.IsSucess)
-            {
-                var teachers = response.Result as List<Teacher>;
-                myDataGrid.ItemsSource = teachers;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
+            MainFrame.Navigate(new MarksPage()); // Corrigir o namespace e o nome da página
         }
 
-        // Carregar Classes
-        private async Task LoadClasses()
+        private void BtnLoadTimeTables_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<Class>(urlBase, "api/classes");
-            if (response.IsSucess)
-            {
-                var classes = response.Result as List<Class>;
-                myDataGrid.ItemsSource = classes;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
+            MainFrame.Navigate(new TimeTablesPage()); // Corrigir o namespace e o nome da página
+        }
+        private void BtnLoadGradeSheets_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new GradeSheetsPage()); // Corrigir o namespace e o nome da página
         }
 
-        // Carregar TimeTables
-        private async Task LoadTimeTables()
+        private void BtnLoadEvents_Click(object sender, RoutedEventArgs e)
         {
-            var response = await apiService.GetAsync<TimeTable>(urlBase, "api/timetables");
-            if (response.IsSucess)
-            {
-                var timeTables = response.Result as List<TimeTable>;
-                myDataGrid.ItemsSource = timeTables;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
-        }
-
-        // Carregar Events
-        private async Task LoadEvents()
-        {
-            var response = await apiService.GetAsync<Event>(urlBase, "api/events");
-            if (response.IsSucess)
-            {
-                var events = response.Result as List<Event>;
-                myDataGrid.ItemsSource = events;
-            }
-            else
-            {
-                var dialogService = new DialogService();
-                dialogService.ShowMessage("Erro", response.Message);
-            }
-        }
-        private async void BtnLoadSubjects_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadSubjects();
-        }
-
-        private async void BtnLoadTeachers_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadTeachers();
-        }
-
-        private async void BtnLoadStudents_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadStudents();
-        }
-
-        private async void BtnLoadClasses_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadClasses();
-        }
-
-        private async void BtnLoadMarks_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadMarks();
-        }
-
-        private async void BtnLoadTimeTables_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadTimeTables();
-        }
-
-        private async void BtnLoadGradeSheets_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadGradeSheets();
-        }
-
-        private async void BtnLoadEvents_Click(object sender, RoutedEventArgs e)
-        {
-            await LoadEvents();
+            MainFrame.Navigate(new EventsPage()); // Corrigir o namespace e o nome da página
         }
 
 
