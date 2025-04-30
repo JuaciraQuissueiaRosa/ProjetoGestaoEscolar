@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for Eventos.xaml
+    /// Interaction logic for EventsPage.xaml
     /// </summary>
-    public partial class Eventos : Page
+    public partial class EventsPage : Page
     {
-        public Eventos()
+        public EventsPage()
         {
             InitializeComponent();
         }

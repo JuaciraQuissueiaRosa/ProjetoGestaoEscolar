@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -12,43 +13,46 @@ namespace Escola.WPF.Services
 {
     public class ApiService
     {
-        public async Task<Response> GetAsync<T>(string urlBase, string controller)
+        private readonly HttpClient _client;
+
+        public ApiService(string baseUrl = "https://schoolapi.azurewebsites.net/")
         {
-            try
+            _client = new HttpClient
             {
-                var client = new HttpClient
-                {
-                    BaseAddress = new Uri(urlBase)
-                };
+                BaseAddress = new Uri(baseUrl)
+            };
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
 
-                var response = await client.GetAsync(controller);
-                var result = await response.Content.ReadAsStringAsync();
+        public async Task<List<T>> GetAsync<T>(string endpoint)
+        {
+            var response = await _client.GetAsync(endpoint);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<T>>(json);
+        }
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    return new Response
-                    {
-                        IsSucess = false,
-                        Message = result,
-                    };
-                }
+        public async Task PostAsync<T>(string endpoint, T item)
+        {
+            var json = JsonConvert.SerializeObject(item);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+        }
 
-                var data = JsonConvert.DeserializeObject<List<T>>(result);
+        public async Task PutAsync<T>(string endpoint, T item)
+        {
+            var json = JsonConvert.SerializeObject(item);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync(endpoint, content);
+            response.EnsureSuccessStatusCode();
+        }
 
-                return new Response
-                {
-                    IsSucess = true,
-                    Result = data,
-                };
-            }
-            catch (Exception ex)
-            {
-                return new Response
-                {
-                    IsSucess = false,
-                    Message = ex.Message,
-                };
-            }
+        public async Task DeleteAsync(string endpoint)
+        {
+            var response = await _client.DeleteAsync(endpoint);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

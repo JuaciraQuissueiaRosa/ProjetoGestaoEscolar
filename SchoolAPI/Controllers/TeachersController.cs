@@ -14,35 +14,34 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
 
-        // GET: api/teachers
         [HttpGet]
         public IHttpActionResult Get()
         {
             var teachers = db.Teachers.ToList();
-
-            if (teachers == null || !teachers.Any())
+            if (!teachers.Any())
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No teachers found."));
-
             return Ok(teachers);
         }
 
-        // GET: api/teachers/{id}
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
             var teacher = db.Teachers.FirstOrDefault(t => t.Id == id);
-
             if (teacher == null)
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No teacher found with ID = {id}."));
-
             return Ok(teacher);
         }
-
 
         [HttpPost]
         public IHttpActionResult Post([FromBody] Teacher teacher)
         {
+            if (teacher == null)
+                return BadRequest("Invalid teacher data.");
+
+            // Garantir que o ID não seja definido manualmente
+            teacher.Id = 0;
+
             db.Teachers.InsertOnSubmit(teacher);
             db.SubmitChanges();
             return Ok("Teacher added successfully.");
@@ -82,4 +81,5 @@ namespace SchoolAPI.Controllers
             return Ok("Teacher deleted successfully.");
         }
     }
+
 }

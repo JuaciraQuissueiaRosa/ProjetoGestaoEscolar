@@ -11,6 +11,11 @@
             <Button Content="Load Students"  Click="BtnLoadStudents_Click" Margin="5"/>
             <Button Content="Load Subjects" Click="BtnLoadSubjects_Click" Margin="5"/>
             <Button Content="Load Teachers" Click="BtnLoadTeachers_Click" Margin="5"/>
+            <Button Content="Load Classes"  Click="BtnLoadClasses_Click" Margin="5"/>
+            <Button Content="Load Marks" Click="BtnLoadMarks_Click" Margin="5"/>
+            <Button Content="Load TimeTables" Click="BtnLoadTimeTables_Click" Margin="5"/>
+            <Button Content="Load GradeSheets" Click="BtnLoadGradeSheets_Click" Margin="5"/>
+            <Button Content="Load Events" Click="BtnLoadEvents_Click" Margin="5"/>
             <DataGrid x:Name="myDataGrid" AutoGenerateColumns="True" Height="400" Margin="5"/>
         </StackPanel>
     </Grid>

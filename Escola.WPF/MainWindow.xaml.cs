@@ -180,7 +180,7 @@ namespace Escola.WPF
             await LoadMarks();
         }
 
-        private async void BtnLoadLoadTimeTables_Click(object sender, RoutedEventArgs e)
+        private async void BtnLoadTimeTables_Click(object sender, RoutedEventArgs e)
         {
             await LoadTimeTables();
         }

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for TimeTable.xaml
+    /// Interaction logic for TimeTablePage.xaml
     /// </summary>
-    public partial class TimeTable : Page
+    public partial class TimeTablePage : Page
     {
-        public TimeTable()
+        public TimeTablePage()
         {
             InitializeComponent();
         }

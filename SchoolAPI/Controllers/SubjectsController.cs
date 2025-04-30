@@ -18,16 +18,9 @@ namespace SchoolAPI.Controllers
         public IHttpActionResult Get()
         {
             var subjects = db.Subjects.ToList();
-
             if (!subjects.Any())
-            {
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No subject found."));
-            }
-            else
-            {
-                return Ok(subjects);
-            }
-                
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No subject found."));
+            return Ok(subjects);
         }
 
         [HttpGet]
@@ -35,14 +28,9 @@ namespace SchoolAPI.Controllers
         public IHttpActionResult Get(int id)
         {
             var subject = db.Subjects.FirstOrDefault(s => s.Id == id);
-            if (subject==null)
-            {
+            if (subject == null)
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No subject found with ID = {id}."));
-            }
-            else
-            {
-                return Ok(subject);
-            }
+            return Ok(subject);
         }
 
         [HttpPost]
@@ -60,18 +48,11 @@ namespace SchoolAPI.Controllers
             if (!db.Subjects.Any(s => s.Id == subjectId) || !db.Teachers.Any(t => t.Id == teacherId))
                 return NotFound();
 
-            bool alreadyAssociated = db.TeacherSubjects.Any(ts =>
-                ts.SubjectId == subjectId && ts.TeacherId == teacherId);
-
+            bool alreadyAssociated = db.TeacherSubjects.Any(ts => ts.SubjectId == subjectId && ts.TeacherId == teacherId);
             if (alreadyAssociated)
                 return BadRequest("This teacher is already associated with the subject.");
 
-            var association = new TeacherSubject
-            {
-                SubjectId = subjectId,
-                TeacherId = teacherId
-            };
-
+            var association = new TeacherSubject { SubjectId = subjectId, TeacherId = teacherId };
             db.TeacherSubjects.InsertOnSubmit(association);
             db.SubmitChanges();
             return Ok("Teacher associated with subject successfully.");
@@ -109,4 +90,5 @@ namespace SchoolAPI.Controllers
             return Ok("Subject deleted successfully.");
         }
     }
+
 }
