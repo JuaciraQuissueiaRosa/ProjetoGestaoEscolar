@@ -43,7 +43,7 @@ Key Features
 
 How to Run the Project
 	1.	Clone the repository:
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/JuaciraQuissueiaRosa/ProjetoGestaoEscolar.git
 
 	2.	API:
 	•	Requirements: Visual Studio 2022, .NET Framework 4.8
