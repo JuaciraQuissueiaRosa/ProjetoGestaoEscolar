@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,12 +11,16 @@ namespace SchoolAPI.Controllers
     [RoutePrefix("api/timetable")]
     public class TimeTableController : ApiController
     {
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
         // GET:  api/timetable
         [HttpGet]
-        [Route("")]
-        public IEnumerable<string> Get()
+        public IHttpActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+
+            var timetables = db.Timetables.ToList();
+            if (!timetables.Any())
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No timetables found."));
+            return Ok(timetables);
         }
 
         // GET:  api/timetable/5
@@ -28,7 +33,6 @@ namespace SchoolAPI.Controllers
 
         // POST:  api/timetable
         [HttpPost]
-        [Route(" ")]
         public void Post([FromBody]string value)
         {
         }

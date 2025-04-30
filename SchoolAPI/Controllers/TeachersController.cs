@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Web.Http;
 
 namespace SchoolAPI.Controllers
@@ -10,74 +12,74 @@ namespace SchoolAPI.Controllers
     [RoutePrefix("api/teachers")]
     public class TeachersController : ApiController
     {
-        SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
 
         // GET: api/teachers
         [HttpGet]
-        [Route("")]
-        public IEnumerable<Professore> Get()
+        public IHttpActionResult Get()
         {
-            return db.Professores.ToList();
+            var teachers = db.Teachers.ToList();
+
+            if (teachers == null || !teachers.Any())
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No teachers found."));
+
+            return Ok(teachers);
         }
 
-        // GET: api/teachers/5
+        // GET: api/teachers/{id}
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
-            var professor = db.Professores.FirstOrDefault(p => p.Id == id);
-            if (professor == null)
-                return NotFound();
+            var teacher = db.Teachers.FirstOrDefault(t => t.Id == id);
 
-            return Ok(professor);
+            if (teacher == null)
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No teacher found with ID = {id}."));
+
+            return Ok(teacher);
         }
 
-        // POST: api/teachers
+
         [HttpPost]
-        [Route(" ")]
-        public IHttpActionResult Post([FromBody] Professore professor)
+        public IHttpActionResult Post([FromBody] Teacher teacher)
         {
-            db.Professores.InsertOnSubmit(professor);
+            db.Teachers.InsertOnSubmit(teacher);
             db.SubmitChanges();
-            return Ok(professor);
+            return Ok("Teacher added successfully.");
         }
 
-        // PUT: api/teachers/5
         [HttpPut]
         [Route("{id}")]
-        public IHttpActionResult Put(int id, [FromBody] Professore dados)
+        public IHttpActionResult Put(int id, [FromBody] Teacher data)
         {
-            var professor = db.Professores.FirstOrDefault(p => p.Id == id);
-            if (professor == null)
+            var teacher = db.Teachers.FirstOrDefault(t => t.Id == id);
+            if (teacher == null)
                 return NotFound();
 
-            professor.Nome = dados.Nome;
-            professor.Email = dados.Email;
-            professor.Contacto = dados.Contacto;
-            professor.AreaEnsino = dados.AreaEnsino;
+            teacher.FullName = data.FullName;
+            teacher.Email = data.Email;
+            teacher.Phone = data.Phone;
+            teacher.TeachingArea = data.TeachingArea;
 
             db.SubmitChanges();
-            return Ok(professor);
+            return Ok("Teacher updated successfully.");
         }
 
-
-        // DELETE: api/teachers/5
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
-            var professor = db.Professores.FirstOrDefault(p => p.Id == id);
-            if (professor == null)
+            var teacher = db.Teachers.FirstOrDefault(t => t.Id == id);
+            if (teacher == null)
                 return NotFound();
 
-            // Impedir eliminação se estiver associado a disciplinas
-            bool temDisciplinas = db.ProfessorDisciplinas.Any(pd => pd.ProfessorId == id);
-            if (temDisciplinas)
-                return BadRequest("Não é possível apagar: professor associado a disciplinas.");
+            bool hasSubjects = db.TeacherSubjects.Any(ts => ts.TeacherId == id);
+            if (hasSubjects)
+                return BadRequest("Cannot delete teacher with assigned subjects.");
 
-            db.Professores.DeleteOnSubmit(professor);
+            db.Teachers.DeleteOnSubmit(teacher);
             db.SubmitChanges();
-            return Ok("Professor apagado com sucesso.");
+            return Ok("Teacher deleted successfully.");
         }
     }
 }

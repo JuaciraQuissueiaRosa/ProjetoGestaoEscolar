@@ -1,108 +1,112 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace SchoolAPI.Controllers
 {
     [RoutePrefix("api/subjects")]
     public class SubjectsController : ApiController
     {
-        SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
 
-        // GET: api/subjects
         [HttpGet]
-        [Route("")]
-        public IEnumerable<Disciplina> Get()
+        public IHttpActionResult Get()
         {
-            return db.Disciplinas.ToList();
+            var subjects = db.Subjects.ToList();
+
+            if (!subjects.Any())
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No subject found."));
+            }
+            else
+            {
+                return Ok(subjects);
+            }
+                
         }
 
-        // GET:  api/subjects/5
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
-            var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == id);
-            if (disciplina == null)
-                return NotFound();
-
-            return Ok(disciplina);
-        }
-
-        // POST:  api/subjects
-        [HttpPost]
-        [Route(" ")]
-        public IHttpActionResult Post([FromBody] Disciplina disciplina)
-        {
-            db.Disciplinas.InsertOnSubmit(disciplina);
-            db.SubmitChanges();
-            return Ok(disciplina);
-        }
-        [HttpPost]
-        [Route("{disciplinaId}/associate-teacher/{professorId}")]
-        public IHttpActionResult AssociateTeacher(int disciplinaId, int professorId)
-        {
-            var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == disciplinaId);
-            var professor = db.Professores.FirstOrDefault(p => p.Id == professorId);
-
-            if (disciplina == null || professor == null)
-                return NotFound();
-
-            // Verifica se já está associado
-            bool jaAssociado = db.ProfessorDisciplinas.Any(pd =>
-                pd.DisciplinaId == disciplinaId && pd.ProfessorId == professorId);
-            if (jaAssociado)
-                return BadRequest("Este professor já está associado à disciplina.");
-
-            var associacao = new ProfessorDisciplina
+            var subject = db.Subjects.FirstOrDefault(s => s.Id == id);
+            if (subject==null)
             {
-                DisciplinaId = disciplinaId,
-                ProfessorId = professorId
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No subject found with ID = {id}."));
+            }
+            else
+            {
+                return Ok(subject);
+            }
+        }
+
+        [HttpPost]
+        public IHttpActionResult Post([FromBody] Subject subject)
+        {
+            db.Subjects.InsertOnSubmit(subject);
+            db.SubmitChanges();
+            return Ok("Subject created successfully.");
+        }
+
+        [HttpPost]
+        [Route("{subjectId}/associate-teacher/{teacherId}")]
+        public IHttpActionResult AssociateTeacher(int subjectId, int teacherId)
+        {
+            if (!db.Subjects.Any(s => s.Id == subjectId) || !db.Teachers.Any(t => t.Id == teacherId))
+                return NotFound();
+
+            bool alreadyAssociated = db.TeacherSubjects.Any(ts =>
+                ts.SubjectId == subjectId && ts.TeacherId == teacherId);
+
+            if (alreadyAssociated)
+                return BadRequest("This teacher is already associated with the subject.");
+
+            var association = new TeacherSubject
+            {
+                SubjectId = subjectId,
+                TeacherId = teacherId
             };
 
-            db.ProfessorDisciplinas.InsertOnSubmit(associacao);
+            db.TeacherSubjects.InsertOnSubmit(association);
             db.SubmitChanges();
-
-            return Ok("Professor associado à disciplina com sucesso.");
+            return Ok("Teacher associated with subject successfully.");
         }
 
-        // PUT:  api/subjects/5
         [HttpPut]
-        [Route(" ")]
-        public IHttpActionResult Put(int id, [FromBody] Disciplina dados)
+        [Route("{id}")]
+        public IHttpActionResult Put(int id, [FromBody] Subject data)
         {
-            var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == id);
-            if (disciplina == null)
+            var subject = db.Subjects.FirstOrDefault(s => s.Id == id);
+            if (subject == null)
                 return NotFound();
 
-            disciplina.Nome = dados.Nome;
-            disciplina.CargaHorariaSemanal = dados.CargaHorariaSemanal;
+            subject.Name = data.Name;
+            subject.WeeklyHours = data.WeeklyHours;
 
             db.SubmitChanges();
-            return Ok(disciplina);
+            return Ok("Subject updated successfully.");
         }
 
-        // DELETE: api/subjects/5
         [HttpDelete]
         [Route("{id}")]
-
         public IHttpActionResult Delete(int id)
         {
-            var disciplina = db.Disciplinas.FirstOrDefault(d => d.Id == id);
-            if (disciplina == null)
+            var subject = db.Subjects.FirstOrDefault(s => s.Id == id);
+            if (subject == null)
                 return NotFound();
 
-            // Impedir eliminação se estiver associada a professores
-            bool temProfessores = db.ProfessorDisciplinas.Any(pd => pd.DisciplinaId == id);
-            if (temProfessores)
-                return BadRequest("Não é possível apagar: disciplina associada a professores.");
+            bool hasTeachers = db.TeacherSubjects.Any(ts => ts.SubjectId == id);
+            if (hasTeachers)
+                return BadRequest("Cannot delete subject associated with teachers.");
 
-            db.Disciplinas.DeleteOnSubmit(disciplina);
+            db.Subjects.DeleteOnSubmit(subject);
             db.SubmitChanges();
-            return Ok("Disciplina apagada com sucesso.");
+            return Ok("Subject deleted successfully.");
         }
     }
 }

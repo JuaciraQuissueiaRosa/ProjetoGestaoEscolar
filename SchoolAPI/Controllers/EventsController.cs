@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,9 +11,9 @@ namespace SchoolAPI.Controllers
     [RoutePrefix("api/events")]
     public class EventsController : ApiController
     {
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
         // GET: api/Eventos
         [HttpGet]
-        [Route("")]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };

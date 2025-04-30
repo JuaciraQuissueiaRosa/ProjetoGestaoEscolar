@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,126 +12,104 @@ namespace SchoolAPI.Controllers
     [RoutePrefix("api/classes")]
     public class ClassesController : ApiController
     {
-        SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
 
-
-        // GET: api/turmas
         [HttpGet]
-        [Route("")]
-        public IEnumerable<Turma> Get()
+        public IHttpActionResult Get()
         {
-            return db.Turmas.ToList();
+            var classes = db.Classes.ToList();
+            if (!classes.Any())
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No classes found."));
+            return Ok(classes);
         }
 
-
-        // GET: api/turmas/5
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
-            var turma = db.Turmas.FirstOrDefault(t => t.Id == id);
-            if (turma == null)
-                return NotFound();
-
-            return Ok(turma);
-        }
-
-        // POST: api/turmas
-        [HttpPost]
-        [Route(" ")]
-    
-        public IHttpActionResult Post([FromBody] Turma novaTurma)
-        {
-            db.Turmas.InsertOnSubmit(novaTurma);
-            db.SubmitChanges();
-            return Ok(novaTurma);
+            var cls = db.Classes.FirstOrDefault(c => c.Id == id);
+            if (cls == null)
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No class found with ID = {id}."));
+            return Ok(cls);
         }
 
         [HttpPost]
-        [Route("{turmaId}/associate-subject/{disciplinaId}")]
-        public IHttpActionResult AssociateSubject(int turmaId, int disciplinaId)
+        public IHttpActionResult Post([FromBody] Class newClass)
         {
-            if (!db.Turmas.Any(t => t.Id == turmaId) || !db.Disciplinas.Any(d => d.Id == disciplinaId))
-                return NotFound();
-
-            var relacao = new DisciplinaTurma
-            {
-                TurmaId = turmaId,
-                DisciplinaId = disciplinaId
-            };
-
-            db.DisciplinaTurmas.InsertOnSubmit(relacao);
+            db.Classes.InsertOnSubmit(newClass);
             db.SubmitChanges();
-
-            return Ok("Disciplina associada à turma com sucesso.");
+            return Ok("Class created successfully.");
         }
 
         [HttpPost]
-        [Route("{turmaId}/associate-professor/{professorId}")]
-        public IHttpActionResult AssociateTeacher(int turmaId, int professorId)
+        [Route("{classId}/associate-subject/{subjectId}")]
+        public IHttpActionResult AssociateSubject(int classId, int subjectId)
         {
-            if (!db.Turmas.Any(t => t.Id == turmaId) || !db.Professores.Any(p => p.Id == professorId))
+            if (!db.Classes.Any(c => c.Id == classId) || !db.Subjects.Any(s => s.Id == subjectId))
                 return NotFound();
 
-            var relacao = new ProfessorTurma
-            {
-                TurmaId = turmaId,
-                ProfessorId = professorId
-            };
-
-            db.ProfessorTurmas.InsertOnSubmit(relacao);
+            var relation = new SubjectClass { ClassId = classId, SubjectId = subjectId };
+            db.SubjectClasses.InsertOnSubmit(relation);
             db.SubmitChanges();
-
-            return Ok("Professor associado à turma com sucesso.");
+            return Ok("Subject successfully associated with the class.");
         }
 
         [HttpPost]
-        [Route("{turmaId}/associate-student/{alunoId}")]
-        public IHttpActionResult AssociateStudent(int turmaId, int alunoId)
+        [Route("{classId}/associate-teacher/{teacherId}")]
+        public IHttpActionResult AssociateTeacher(int classId, int teacherId)
         {
-            var turma = db.Turmas.FirstOrDefault(t => t.Id == turmaId);
-            var aluno = db.Alunos.FirstOrDefault(a => a.Id == alunoId);
-
-            if (turma == null || aluno == null)
+            if (!db.Classes.Any(c => c.Id == classId) || !db.Teachers.Any(t => t.Id == teacherId))
                 return NotFound();
 
-            aluno.TurmaId = turmaId;
+            var relation = new TeacherClass { ClassId = classId, TeacherId = teacherId };
+            db.TeacherClasses.InsertOnSubmit(relation);
             db.SubmitChanges();
-
-            return Ok("Aluno associado à turma com sucesso.");
+            return Ok("Teacher successfully associated with the class.");
         }
 
+        [HttpPost]
+        [Route("{classId}/associate-student/{studentId}")]
+        public IHttpActionResult AssociateStudent(int classId, int studentId)
+        {
+            var cls = db.Classes.FirstOrDefault(c => c.Id == classId);
+            var student = db.Students.FirstOrDefault(s => s.Id == studentId);
 
-        // PUT: api/turmas/5
+            if (cls == null || student == null)
+                return NotFound();
+
+            student.ClassId = classId;
+            db.SubmitChanges();
+            return Ok("Student successfully assigned to the class.");
+        }
+
         [HttpPut]
         [Route("{id}")]
-        public IHttpActionResult Put(int id, [FromBody] Turma dados)
+        public IHttpActionResult Put(int id, [FromBody] Class data)
         {
-            var turma = db.Turmas.FirstOrDefault(t => t.Id == id);
-            if (turma == null)
+            var cls = db.Classes.FirstOrDefault(c => c.Id == id);
+            if (cls == null)
                 return NotFound();
 
-            turma.Nome = dados.Nome;
-            turma.AnoLetivo = dados.AnoLetivo;
-            turma.Curso = dados.Curso;
-            turma.Turno = dados.Turno;
+            cls.Name = data.Name;
+            cls.AcademicYear = data.AcademicYear;
+            cls.Course = data.Course;
+            cls.Shift = data.Shift;
 
             db.SubmitChanges();
-            return Ok(turma);
+            return Ok("Class updated successfully.");
         }
 
         [HttpDelete]
         [Route("{id}")]
-        // DELETE: api/turmas/5
         public IHttpActionResult Delete(int id)
         {
-            var turma = db.Turmas.FirstOrDefault(t => t.Id == id);
-            if (turma == null)
+            var cls = db.Classes.FirstOrDefault(c => c.Id == id);
+            if (cls == null)
                 return NotFound();
 
-            db.Turmas.DeleteOnSubmit(turma);
+            db.Classes.DeleteOnSubmit(cls);
             db.SubmitChanges();
-            return Ok("Turma removida.");
+            return Ok("Class deleted successfully.");
         }
     }
 }

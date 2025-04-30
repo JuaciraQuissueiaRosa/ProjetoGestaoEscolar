@@ -1,109 +1,108 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace SchoolAPI.Controllers
 {
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
-        SchoolDataContext db = new SchoolDataContext("GestaoEscolarDBConnectionString");
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
 
-        /// <summary>
-        /// Return all the students in the database
-        /// </summary>
-        /// <returns></returns>
-        // GET api/students
         [HttpGet]
-        [Route(" ")]
-        public IEnumerable<Aluno> Get()
+        public IHttpActionResult Get()
         {
-            return db.Alunos.ToList();
+            var students = db.Students.ToList();
+            if (!students.Any())
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No students found."));
+            return Ok(students);
         }
 
         [HttpGet]
         [Route("{id}")]
-        // GET api/students/5
-        public Aluno Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return db.Alunos.FirstOrDefault(a => a.Id == id);
+            var student = db.Students.FirstOrDefault(s => s.Id == id);
+
+            if (student == null)
+            {
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No student found with ID = {id}."));
+
+            }
+            else
+            {
+                return Ok(student);
+            }
+               
         }
 
         [HttpGet]
         [Route("search")]
-        public IHttpActionResult SearchStudents(string termo)
+        public IHttpActionResult SearchStudents(string term)
         {
-            if (string.IsNullOrWhiteSpace(termo))
-                return BadRequest("O termo de pesquisa não pode ser vazio.");
+            if (string.IsNullOrWhiteSpace(term))
+                return BadRequest("Search term cannot be empty.");
 
-            termo = termo.ToLower();
+            term = term.ToLower();
 
-            var alunos = db.Alunos
-          .Where(a =>
-              a.Nome.ToLower().Contains(termo) ||
-              a.Id.ToString().Contains(termo) ||
-              a.TurmaId.ToString().Contains(termo)
+            var students = db.Students
+                .Where(s =>
+                    s.FullName.ToLower().Contains(term) ||
+                    s.Id.ToString().Contains(term) ||
+                    s.ClassId.ToString().Contains(term))
+                .ToList();
 
-          )
-          .ToList();
+            if (!students.Any())
+                return Ok("No students matched the search criteria.");
 
-            if (!alunos.Any())
-                ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "Aluno não encontrado"));
-
-            return Ok(alunos); // Retorna os alunos encontrados
+            return Ok(students);
         }
 
-
-        // POST api/students
         [HttpPost]
-        [Route(" ")]
-        public IHttpActionResult Post([FromBody] Aluno aluno)
+        public IHttpActionResult Post([FromBody] Student student)
         {
-            db.Alunos.InsertOnSubmit(aluno);
+            db.Students.InsertOnSubmit(student);
             db.SubmitChanges();
-            return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, aluno));
+            return Ok("Student added successfully.");
         }
 
-        // PUT api/students/5
         [HttpPut]
         [Route("{id}")]
-        public IHttpActionResult Put(int id, [FromBody] Aluno alunoAtualizado)
+        public IHttpActionResult Put(int id, [FromBody] Student updated)
         {
-            var aluno = db.Alunos.FirstOrDefault(a => a.Id == id);
-            if (aluno == null)
+            var student = db.Students.FirstOrDefault(s => s.Id == id);
+            if (student == null)
                 return NotFound();
 
-            aluno.Nome = alunoAtualizado.Nome;
-            aluno.Email = alunoAtualizado.Email;
-            aluno.Contacto = alunoAtualizado.Contacto;
-            aluno.Morada = alunoAtualizado.Morada;
-            aluno.TurmaId = alunoAtualizado.TurmaId; // mudança de turma
+            student.FullName = updated.FullName;
+            student.Email = updated.Email;
+            student.Phone = updated.Phone;
+            student.Address = updated.Address;
+            student.ClassId = updated.ClassId;
 
             db.SubmitChanges();
-
-            return Ok("Aluno atualizado com sucesso.");
+            return Ok("Student updated successfully.");
         }
 
-        // DELETE api/students/5
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
-            var aluno = db.Alunos.FirstOrDefault(a => a.Id == id);
-            if (aluno == null)
+            var student = db.Students.FirstOrDefault(s => s.Id == id);
+            if (student == null)
                 return NotFound();
 
-            bool temNotas = db.Notas.Any(n => n.AlunoId == id);
-            if (temNotas)
-                return BadRequest("Não é possível apagar o aluno porque existem notas associadas.");
+            if (db.Marks.Any(m => m.StudentId == id))
+                return BadRequest("Cannot delete student with existing marks.");
 
-            db.Alunos.DeleteOnSubmit(aluno);
+            db.Students.DeleteOnSubmit(student);
             db.SubmitChanges();
-
-            return Ok("Aluno apagado com sucesso.");
+            return Ok("Student deleted successfully.");
         }
     }
 }

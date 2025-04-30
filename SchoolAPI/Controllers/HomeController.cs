@@ -1,39 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+using System.Web;
+using System.Web.Mvc;
 
 namespace SchoolAPI.Controllers
 {
-    public class HomeController : ApiController
+    public class HomeController : Controller
     {
-        // GET: api/Home
-        public IEnumerable<string> Get()
+        // GET: Home
+        public ActionResult Index()
         {
-            return new string[] { "value1", "value2" };
+            return Content("API of Scholar Management Online");
         }
 
-        // GET: api/Home/5
-        public string Get(int id)
+        // GET: Home/Details/5
+        public ActionResult Details(int id)
         {
-            return "value";
+            return View();
         }
 
-        // POST: api/Home
-        public void Post([FromBody]string value)
+        // GET: Home/Create
+        public ActionResult Create()
         {
+            return View();
         }
 
-        // PUT: api/Home/5
-        public void Put(int id, [FromBody]string value)
+        // POST: Home/Create
+        [HttpPost]
+        public ActionResult Create(FormCollection collection)
         {
+            try
+            {
+                // TODO: Add insert logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
         }
 
-        // DELETE: api/Home/5
-        public void Delete(int id)
+        // GET: Home/Edit/5
+        public ActionResult Edit(int id)
         {
+            return View();
+        }
+
+        // POST: Home/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add update logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Home/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: Home/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
 }
