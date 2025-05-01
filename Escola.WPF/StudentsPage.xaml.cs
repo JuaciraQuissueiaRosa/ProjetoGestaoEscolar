@@ -1,5 +1,7 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using Newtonsoft.Json;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,123 +12,133 @@ namespace Escola.WPF
     /// </summary>
     public partial class StudentsPage : Page
     {
-        private readonly ApiService _apiService;
-        private List<Student> _students;
+        private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
 
         public StudentsPage()
         {
             InitializeComponent();
-            _apiService = new ApiService();
-            LoadStudents();  // Load the students when the page loads
+            _dataService = new ApiService();
+            LoadStudents();  // Carrega os alunos ao iniciar a página
         }
 
         private async void LoadStudents()
         {
             try
             {
-                // Fetch students from the API and bind to the DataGrid
-                _students = await _apiService.GetAsync<Student>("students");
-                dgStudents.ItemsSource = _students;
+                var students = await _dataService.GetStudentsAsync();  // Método correto para pegar os alunos
+                dgStudents.ItemsSource = students;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao carregar os alunos: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        // Create a new student
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
-            // Gather user input (from textboxes or custom dialog)
-            var newStudent = new Student
-            {
-                FullName = txtFullName.Text,  // Replace with user input
-                Phone = txtPhone.Text,       // Replace with user input
-                Email = txtEmail.Text  // Replace with user input
-            };
-
             try
             {
-                await _apiService.PostAsync("students", newStudent);
-                MessageBox.Show("Student created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadStudents();  // Refresh the student list
+                var newStudent = new Student
+                {
+                    FullName = txtFullName.Text,
+                    BirthDate = dpBirthDate.SelectedDate ?? DateTime.Now,
+                    Phone = txtPhone.Text,
+                    Address = txtAddress.Text,
+                    Email = txtEmail.Text
+                };
+
+                await _dataService.AddStudentAsync(newStudent);  // Chamada correta para adicionar um aluno
+                LoadStudents();
+                ClearForm();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error creating student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao criar aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            ClearForm();
         }
 
-        // Edit an existing student
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (dgStudents.SelectedItem is Student selectedStudent)
             {
-                // Modify the selected student's information (e.g., with a dialog or form)
-                selectedStudent.FullName = txtFullName.Text; // Replace with user input
-                selectedStudent.Phone = txtPhone.Text;     // Replace with user input
-                selectedStudent.Email = txtEmail.Text; /*/ Replace with user input*/
-
                 try
                 {
-                    await _apiService.PutAsync("students/" + selectedStudent.Id, selectedStudent);
-                    MessageBox.Show("Student updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadStudents();  // Refresh the student list
+                    selectedStudent.FullName = txtFullName.Text;
+                    selectedStudent.BirthDate = dpBirthDate.SelectedDate ?? DateTime.Now;
+                    selectedStudent.Phone = txtPhone.Text;
+                    selectedStudent.Address = txtAddress.Text;
+                    selectedStudent.Email = txtEmail.Text;
+
+                    await _dataService.UpdateStudentAsync(selectedStudent);  // Chamada correta para editar um aluno
+                    LoadStudents();
+                    ClearForm();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error updating student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Erro ao editar aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
             {
-                MessageBox.Show("Please select a student to edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Selecione um aluno para editar.", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
-            ClearForm();
         }
 
-        // Delete an existing student
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             if (dgStudents.SelectedItem is Student selectedStudent)
             {
-                var result = MessageBox.Show("Are you sure you want to delete this student?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show("Tem certeza de que deseja excluir este aluno?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        await _apiService.DeleteAsync("students/" + selectedStudent.Id);
-                        MessageBox.Show("Student deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadStudents();  // Refresh the student list
+                        await _dataService.DeleteStudentAsync(selectedStudent.Id);  // Chamada correta para excluir o aluno
+                        LoadStudents();
+                        ClearForm();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error deleting student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Erro ao excluir aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
             else
             {
-                MessageBox.Show("Please select a student to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Selecione um aluno para excluir.", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
-            ClearForm();
-
-
         }
 
-        // Clear form fields after creating or editing a student
+        private async void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            string searchTerm = txtSearch.Text.Trim();  // Pega o texto do campo de pesquisa
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                MessageBox.Show("Please enter a search term.");
+                return;
+            }
+
+            // Chama o serviço para buscar os alunos
+            var students = await _dataService.SearchStudentsAsync(searchTerm);
+
+            // Exibe os resultados na DataGrid ou de acordo com a sua UI
+            if (students.Any())
+            {
+                dgStudents.ItemsSource = students;
+            }
+            else
+            {
+                MessageBox.Show("No students matched the search criteria.");
+            }
+        }
         private void ClearForm()
         {
             txtFullName.Clear();
+            dpBirthDate.SelectedDate = null;
             txtPhone.Clear();
+            txtAddress.Clear();
             txtEmail.Clear();
         }
-
-
     }
 }
 

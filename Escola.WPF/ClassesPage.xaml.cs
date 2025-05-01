@@ -10,23 +10,22 @@ namespace Escola.WPF
     /// </summary>
     public partial class ClassesPage : Page
     {
-        private readonly ApiService _apiService;
+        private readonly IDataService _dataService;
         private List<Class> _classes;
 
         public ClassesPage()
         {
             InitializeComponent();
-            _apiService = new ApiService();
-            LoadClasses();  // Load the classes when the page loads
+            _dataService = new ApiService();  // Serviço API para Classes
+            LoadClasses();  // Carrega as classes ao iniciar a página
         }
 
         private async void LoadClasses()
         {
             try
             {
-                // Fetch the classes from the API and bind them to the DataGrid
-                _classes = await _apiService.GetAsync<Class>("classes");
-                dgClasses.ItemsSource = _classes;
+                _classes = await _dataService.GetClassesAsync();  // Obtém as classes da API
+                dgClasses.ItemsSource = _classes;  // Preenche o DataGrid
             }
             catch (Exception ex)
             {
@@ -34,7 +33,6 @@ namespace Escola.WPF
             }
         }
 
-        // Create a new class
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             var newClass = new Class
@@ -46,34 +44,31 @@ namespace Escola.WPF
 
             try
             {
-                await _apiService.PostAsync("classes", newClass);
+                await _dataService.AddClassAsync(newClass);  // Cria uma nova classe via API
                 MessageBox.Show("Class created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadClasses();  // Refresh the class list
-                ClearForm();  // Clear the form after creating a class
+                LoadClasses();  // Atualiza a lista de classes
+                ClearForm();  // Limpa o formulário após criar a classe
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error creating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            ClearForm();
         }
 
-        // Edit an existing class
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (dgClasses.SelectedItem is Class selectedClass)
             {
-                // Modify the selected class information
                 selectedClass.Name = txtClassName.Text;
                 selectedClass.Course = txtGroupName.Text;
                 selectedClass.Shift = txtSchedule.Text;
 
                 try
                 {
-                    await _apiService.PutAsync("classes/" + selectedClass.Id, selectedClass);
+                    await _dataService.UpdateClassAsync(selectedClass);  // Atualiza a classe via API
                     MessageBox.Show("Class updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadClasses();  // Refresh the class list
-                    ClearForm();  // Clear the form after editing a class
+                    LoadClasses();  // Atualiza a lista de classes
+                    ClearForm();
                 }
                 catch (Exception ex)
                 {
@@ -84,10 +79,8 @@ namespace Escola.WPF
             {
                 MessageBox.Show("Please select a class to edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            ClearForm();
         }
 
-        // Delete an existing class
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             if (dgClasses.SelectedItem is Class selectedClass)
@@ -97,9 +90,9 @@ namespace Escola.WPF
                 {
                     try
                     {
-                        await _apiService.DeleteAsync("classes/" + selectedClass.Id);
+                        await _dataService.DeleteClassAsync(selectedClass.Id);  // Deleta a classe via API
                         MessageBox.Show("Class deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadClasses();  // Refresh the class list
+                        LoadClasses();  // Atualiza a lista de classes
                     }
                     catch (Exception ex)
                     {
@@ -111,10 +104,8 @@ namespace Escola.WPF
             {
                 MessageBox.Show("Please select a class to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            ClearForm();
         }
 
-        // Clear form fields after creating or editing a class
         private void ClearForm()
         {
             txtClassName.Clear();
@@ -123,4 +114,3 @@ namespace Escola.WPF
         }
     }
 }
-

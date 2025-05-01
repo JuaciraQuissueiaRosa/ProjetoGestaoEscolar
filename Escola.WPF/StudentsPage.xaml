@@ -20,11 +20,19 @@
             <TextBlock Text="Nome Completo" Margin="0,5" Background="Aqua"/>
             <TextBox Name="txtFullName" Width="200" Margin="0,5"/>
 
+            <TextBlock Text="Data de Nascimento" Margin="0,5" Background="Aqua"/>
+            <DatePicker Name="dpBirthDate" Width="200" Margin="0,5"/>
+
             <TextBlock Text="Telefone" Margin="0,5" Background="Aqua"/>
             <TextBox Name="txtPhone" Width="200" Margin="0,5" />
 
+            <TextBlock Text="Endereço" Margin="0,5" Background="Aqua"/>
+            <TextBox Name="txtAddress" Width="200" Margin="0,5"/>
+
             <TextBlock Text="Email" Margin="0,5" Background="Aqua"/>
             <TextBox Name="txtEmail" Width="200" Margin="0,5"/>
+
+            <TextBox Name="txtSearch" Width="200" Margin="5" Background="Aqua" />
         </StackPanel>
 
         <!-- Tabela de Alunos -->
@@ -39,6 +47,7 @@
                 <DataGridTextColumn Header="Nome Completo" Binding="{Binding FullName}" Width="*"/>
                 <DataGridTextColumn Header="Telefone" Binding="{Binding Phone}" Width="*"/>
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+                <DataGridTextColumn Header="Data de Nascimento" Binding="{Binding BirthDate}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -47,6 +56,9 @@
             <Button Name="btnCreate" Content="Criar" Width="100" Margin="5" Click="btnCreate_Click"/>
             <Button Name="btnEdit" Content="Editar" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Apagar" Width="100" Margin="5" Click="btnDelete_Click"/>
+
+            <Button Content="Search" Width="80" Margin="5" Click="btnSearch_Click"/>
+          
         </StackPanel>
     </Grid>
 </Page>

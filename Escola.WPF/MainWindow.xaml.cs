@@ -8,13 +8,12 @@ namespace Escola.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ApiService apiService;
-        private readonly string urlBase = "https://schoolapi.azurewebsites.net/";
+        
 
         public MainWindow()
         {
             InitializeComponent();
-            apiService = new ApiService();
+          
         }
 
 

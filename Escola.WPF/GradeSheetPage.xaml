@@ -4,11 +4,45 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Escola.WPF"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="GradeSheet">
-
+      mc:Ignorable="d" d:DesignWidth="800"
+      Title="GradeSheet" Height="609">
     <Grid>
-        
+        <!-- DataGrid para exibir as fichas de notas -->
+        <DataGrid x:Name="dgGradeSheets" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10,10,10,150" 
+              AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Student ID" Binding="{Binding StudentId}" />
+                <DataGridTextColumn Header="Class ID" Binding="{Binding ClassId}" />
+                <DataGridTextColumn Header="Date Created" Binding="{Binding CreatedDate}" />
+                <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Campos de entrada para criar/editar uma ficha de nota -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,180,10,10">
+            <!-- Student ID -->
+            <Label Content="Student ID" HorizontalAlignment="Left" Margin="0,5" />
+            <TextBox x:Name="txtStudentId" Width="200" Margin="0,5" Padding="10" />
+
+            <!-- Class ID -->
+            <Label Content="Class ID" HorizontalAlignment="Left" Margin="0,5" />
+            <TextBox x:Name="txtClassId" Width="200" Margin="0,5" Padding="10" />
+
+            <!-- Created Date -->
+            <Label Content="Date Created" HorizontalAlignment="Left" Margin="0,5" />
+            <DatePicker x:Name="dpCreatedDate" Width="200" Margin="0,5" />
+
+            <!-- Comments -->
+            <Label Content="Comments" HorizontalAlignment="Left" Margin="0,5" />
+            <TextBox x:Name="txtComments" Width="200" Margin="0,5" Padding="10" />
+
+            <!-- Botões de Ação -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10">
+                <Button x:Name="btnCreate" Content="Create" Width="75" Margin="5" Padding="10" Click="btnCreate_Click"/>
+                <Button x:Name="btnEdit" Content="Edit" Width="75" Margin="5" Padding="10" Click="btnEdit_Click"/>
+                <Button x:Name="btnDelete" Content="Delete" Width="75" Margin="5" Padding="10" Click="btnDelete_Click"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Page>

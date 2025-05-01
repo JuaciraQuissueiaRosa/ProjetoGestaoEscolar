@@ -8,15 +8,14 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProfessoresPage">
 
-    <Grid Margin="10">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Input Form for Professor Details -->
-        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
+        <!-- Formulário de Input -->
+        <StackPanel Grid.Row="0" Margin="10">
             <TextBlock Text="Professor Name" Margin="0,5"/>
             <TextBox Name="txtProfessorName" Width="200" Margin="0,5"/>
 
@@ -25,55 +24,23 @@
 
             <TextBlock Text="Email" Margin="0,5"/>
             <TextBox Name="txtProfessorEmail" Width="200" Margin="0,5"/>
+
+            <TextBlock Text="Teaching Area" Margin="0,5"/>
+            <TextBox Name="txtProfessorTeachingArea" Width="200" Margin="0,5"/>
+
+            <!-- Botões de Ação -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10">
+                <Button Name="btnCreateProfessor" Content="Create" Width="100" Margin="0,5" Click="btnCreateProfessor_Click"/>
+                <Button Name="btnEditProfessor" Content="Edit" Width="100" Margin="0,5" Click="btnEditProfessor_Click"/>
+                <Button Name="btnDeleteProfessor" Content="Delete" Width="100" Margin="0,5" Click="btnDeleteProfessor_Click"/>
+            </StackPanel>
         </StackPanel>
 
-        <!-- Professors DataGrid -->
-        <DataGrid Name="dgProfessors"
-                  Grid.Row="1"
-                  AutoGenerateColumns="False"
-                  SelectionMode="Single"
-                  IsReadOnly="True"
-                  Margin="0,10,0,0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*"/>
-                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="*"/>
-                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <!-- DataGrid para exibição dos Professores -->
+        <DataGrid x:Name="dgProfessors" Grid.Row="1" Margin="10" AutoGenerateColumns="True" 
+                  SelectionMode="Single" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  IsReadOnly="True" SelectionChanged="dgProfessors_SelectionChanged"/>
 
-        <!-- Action Buttons -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Button Name="btnCreateProfessor" Content="Create Professor" Width="120" Margin="5" Click="btnCreateProfessor_Click"/>
-            <Button Name="btnEditProfessor" Content="Edit Professor" Width="120" Margin="5" Click="btnEditProfessor_Click"/>
-            <Button Name="btnDeleteProfessor" Content="Delete Professor" Width="120" Margin="5" Click="btnDeleteProfessor_Click"/>
-        </StackPanel>
-
-        <!-- Input Form for Subject Details -->
-        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10" VerticalAlignment="Bottom">
-            <TextBlock Text="Subject Name" Margin="0,5"/>
-            <TextBox Name="txtSubjectName" Width="200" Margin="0,5"/>
-        </StackPanel>
-
-        <!-- Subjects DataGrid -->
-        <DataGrid Name="dgSubjects"
-                  Grid.Row="1"
-                  AutoGenerateColumns="False"
-                  SelectionMode="Single"
-                  IsReadOnly="True"
-                  Margin="0,10,0,0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Subject Name" Binding="{Binding Name}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <!-- Action Buttons for Subject -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Button Name="btnCreateSubject" Content="Create Subject" Width="120" Margin="5" Click="btnCreateSubject_Click"/>
-            <Button Name="btnEditSubject" Content="Edit Subject" Width="120" Margin="5" Click="btnEditSubject_Click"/>
-            <Button Name="btnDeleteSubject" Content="Delete Subject" Width="120" Margin="5" Click="btnDeleteSubject_Click"/>
-        </StackPanel>
     </Grid>
 
 </Page>

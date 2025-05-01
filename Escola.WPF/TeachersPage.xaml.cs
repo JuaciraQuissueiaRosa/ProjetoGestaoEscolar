@@ -1,5 +1,6 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,23 +11,22 @@ namespace Escola.WPF
     /// </summary>
     public partial class TeachersPage : Page
     {
-        private readonly ApiService _apiService;
-        private List<Teacher> _professors;
-        private List<Subject> _subjects;
+        private List<Teacher> _professors;  // Lista de professores
+        private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
+
         public TeachersPage()
         {
             InitializeComponent();
-            _apiService = new ApiService();
-            LoadProfessors();  // Load the professors when the page loads
-            LoadSubjects();    // Load the subjects when the page loads
+            _dataService = new ApiService();
+            LoadProfessors();  // Carrega os professores ao iniciar a página
         }
 
-        // Load Professors
+        // Carrega a lista de professores (da API ou SQLite)
         private async void LoadProfessors()
         {
             try
             {
-                _professors = await _apiService.GetAsync<Teacher>("professors");
+                _professors = await _dataService.GetTeachersAsync();  // Obtém os professores, primeiro da API, depois SQLite se necessário
                 dgProfessors.ItemsSource = _professors;
             }
             catch (Exception ex)
@@ -35,36 +35,37 @@ namespace Escola.WPF
             }
         }
 
-        // Load Subjects
-        private async void LoadSubjects()
+        // Evento de seleção de professor no DataGrid
+        private void dgProfessors_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            try
+            if (dgProfessors.SelectedItem is Teacher selectedProfessor)
             {
-                _subjects = await _apiService.GetAsync<Subject>("subjects");
-                dgSubjects.ItemsSource = _subjects;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading subjects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Preenche os campos do formulário com os dados do professor selecionado
+                txtProfessorName.Text = selectedProfessor.FullName;
+                txtProfessorPhone.Text = selectedProfessor.Phone;
+                txtProfessorEmail.Text = selectedProfessor.Email;
+                txtProfessorTeachingArea.Text = selectedProfessor.TeachingArea;
             }
         }
 
-        // Create a new professor
+        // Criar um novo professor
         private async void btnCreateProfessor_Click(object sender, RoutedEventArgs e)
         {
             var newProfessor = new Teacher
             {
                 FullName = txtProfessorName.Text,
                 Phone = txtProfessorPhone.Text,
-                Email = txtProfessorEmail.Text
+                Email = txtProfessorEmail.Text,
+                TeachingArea = txtProfessorTeachingArea.Text
             };
 
             try
             {
-                await _apiService.PostAsync("professors", newProfessor);
+                // Adiciona professor na API e localmente
+                await _dataService.AddTeacherAsync(newProfessor);
                 MessageBox.Show("Professor created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadProfessors();  // Refresh the professor list
-                ClearProfessorForm();  // Clear the form after creating a professor
+                LoadProfessors();  // Recarrega a lista de professores
+                ClearProfessorForm();  // Limpa o formulário
             }
             catch (Exception ex)
             {
@@ -72,7 +73,7 @@ namespace Escola.WPF
             }
         }
 
-        // Edit an existing professor
+        // Editar um professor existente
         private async void btnEditProfessor_Click(object sender, RoutedEventArgs e)
         {
             if (dgProfessors.SelectedItem is Teacher selectedProfessor)
@@ -80,13 +81,15 @@ namespace Escola.WPF
                 selectedProfessor.FullName = txtProfessorName.Text;
                 selectedProfessor.Phone = txtProfessorPhone.Text;
                 selectedProfessor.Email = txtProfessorEmail.Text;
+                selectedProfessor.TeachingArea = txtProfessorTeachingArea.Text;
 
                 try
                 {
-                    await _apiService.PutAsync("professors/" + selectedProfessor.Id, selectedProfessor);
+                    // Atualiza professor na API e localmente
+                    await _dataService.UpdateTeacherAsync(selectedProfessor);
                     MessageBox.Show("Professor updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadProfessors();  // Refresh the professor list
-                    ClearProfessorForm();  // Clear the form after editing a professor
+                    LoadProfessors();  // Recarrega a lista de professores
+                    ClearProfessorForm();  // Limpa o formulário
                 }
                 catch (Exception ex)
                 {
@@ -99,23 +102,38 @@ namespace Escola.WPF
             }
         }
 
-        // Delete an existing professor
+        // Excluir um professor
         private async void btnDeleteProfessor_Click(object sender, RoutedEventArgs e)
         {
             if (dgProfessors.SelectedItem is Teacher selectedProfessor)
             {
                 var result = MessageBox.Show("Are you sure you want to delete this professor?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        await _apiService.DeleteAsync("professors/" + selectedProfessor.Id);
-                        MessageBox.Show("Professor deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadProfessors();  // Refresh the professor list
+                        // Exclui professor da API e localmente
+                        HttpResponseMessage response = await _dataService.DeleteTeacherAsync(selectedProfessor.Id);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show("Professor deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadProfessors();  // Recarrega a lista de professores
+                        }
+                        else
+                        {
+                            string errorMessage = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        MessageBox.Show($"Error deleting professor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error deleting professor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -125,89 +143,13 @@ namespace Escola.WPF
             }
         }
 
-        // Create a new subject
-        private async void btnCreateSubject_Click(object sender, RoutedEventArgs e)
-        {
-            var newSubject = new Subject
-            {
-                Name = txtSubjectName.Text
-            };
-
-            try
-            {
-                await _apiService.PostAsync("subjects", newSubject);
-                MessageBox.Show("Subject created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadSubjects();  // Refresh the subject list
-                ClearSubjectForm();  // Clear the form after creating a subject
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error creating subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        // Edit an existing subject
-        private async void btnEditSubject_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgSubjects.SelectedItem is Subject selectedSubject)
-            {
-                selectedSubject.Name = txtSubjectName.Text;
-
-                try
-                {
-                    await _apiService.PutAsync("subjects/" + selectedSubject.Id, selectedSubject);
-                    MessageBox.Show("Subject updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadSubjects();  // Refresh the subject list
-                    ClearSubjectForm();  // Clear the form after editing a subject
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error updating subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select a subject to edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        // Delete an existing subject
-        private async void btnDeleteSubject_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgSubjects.SelectedItem is Subject selectedSubject)
-            {
-                var result = MessageBox.Show("Are you sure you want to delete this subject?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        await _apiService.DeleteAsync("subjects/" + selectedSubject.Id);
-                        MessageBox.Show("Subject deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadSubjects();  // Refresh the subject list
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error deleting subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select a subject to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        // Clear Professor Form
+        // Limpar o formulário de input
         private void ClearProfessorForm()
         {
             txtProfessorName.Clear();
             txtProfessorPhone.Clear();
             txtProfessorEmail.Clear();
-        }
-
-        // Clear Subject Form
-        private void ClearSubjectForm()
-        {
-            txtSubjectName.Clear();
+            txtProfessorTeachingArea.Clear();
         }
     }
 }
