@@ -57,7 +57,6 @@ namespace Escola.WPF
             MainFrame.Navigate(new EventsPage()); // Corrigir o namespace e o nome da página
         }
 
-
-
+        
     }
 }
