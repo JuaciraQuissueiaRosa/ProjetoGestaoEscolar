@@ -13,39 +13,69 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString1"].ConnectionString);
         // GET: api/Eventos
+        // GET: api/events
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Route("")]
+        public IHttpActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            var events = db.Events.ToList();
+            return Ok(events);
         }
 
-        // GET: api/Eventos/5
+        // GET: api/events/5
         [HttpGet]
         [Route("{id}")]
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            var ev = db.Events.FirstOrDefault(e => e.Id == id);
+            if (ev == null)
+                return NotFound();
+            return Ok(ev);
         }
 
-        // POST: api/Eventos
+        // POST: api/events
         [HttpPost]
-        [Route("")]
-        public void Post([FromBody]string value)
+        public IHttpActionResult Create(Event ev)
         {
+            if (ev == null)
+                return BadRequest("Invalid event data.");
+
+            db.Events.InsertOnSubmit(ev);
+            db.SubmitChanges();
+
+            return Ok(ev);
         }
 
-        // PUT: api/Eventos/5
+        // PUT: api/events/5
         [HttpPut]
         [Route("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, Event updatedEvent)
         {
+            var existing = db.Events.FirstOrDefault(e => e.Id == id);
+            if (existing == null)
+                return NotFound();
+
+            existing.Name = updatedEvent.Name;
+            existing.EventDate = updatedEvent.EventDate;
+            existing.Location = updatedEvent.Location;
+            existing.Description = updatedEvent.Description;
+
+            db.SubmitChanges();
+            return Ok(existing);
         }
 
-        // DELETE: api/Eventos/5
+        // DELETE: api/events/5
         [HttpDelete]
         [Route("{id}")]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            var ev = db.Events.FirstOrDefault(e => e.Id == id);
+            if (ev == null)
+                return NotFound();
+
+            db.Events.DeleteOnSubmit(ev);
+            db.SubmitChanges();
+            return Ok();
         }
     }
 }
