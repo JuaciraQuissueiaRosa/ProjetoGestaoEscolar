@@ -269,7 +269,7 @@ namespace Escola.WPF.Services
 
         public async Task<List<Student>> SearchStudentsAsync(string term)
         {
-            var response = await _client.GetAsync($"api/students/search?term={term}");
+            var response = await _client.GetAsync($"students/search?term={term}");
 
             if (response.IsSuccessStatusCode)
             {

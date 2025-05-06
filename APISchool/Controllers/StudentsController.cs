@@ -65,10 +65,7 @@ namespace SchoolAPI.Controllers
                     s.ClassId.ToString().Contains(term))
                 .ToList();
 
-            if (!students.Any())
-                return Ok("No students matched the search criteria.");
-
-            return Ok(students);
+            return Ok(students); // Sempre retorna uma lista
         }
 
         [HttpPost]

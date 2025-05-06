@@ -41,7 +41,7 @@
                   AutoGenerateColumns="False"
                   SelectionMode="Single"
                   IsReadOnly="True"
-                  Margin="0,10,0,0">
+                  Margin="0,10,0,0" SelectionChanged="dgStudents_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                 <DataGridTextColumn Header="Nome Completo" Binding="{Binding FullName}" Width="*"/>

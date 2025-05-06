@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Linq;
 
 namespace Escola.WPF
 {
@@ -138,6 +139,19 @@ namespace Escola.WPF
             txtPhone.Clear();
             txtAddress.Clear();
             txtEmail.Clear();
+        }
+
+        private void dgStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedStudent = dgStudents.SelectedItem as Student;
+            if (selectedStudent != null)
+            {
+                txtFullName.Text = selectedStudent.FullName;
+                dpBirthDate.SelectedDate = selectedStudent.BirthDate;
+                txtPhone.Text = selectedStudent.Phone;
+                txtAddress.Text = selectedStudent.Address;
+                txtEmail.Text = selectedStudent.Email;
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Windows.Controls;
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for DisciplinasPage.xaml
+    /// Interaction logic for SubjectsPage.xaml
     /// </summary>
     public partial class SubjectsPage : Page
     {
@@ -30,6 +30,7 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Erro ao carregar as disciplinas: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            dgSubjects.Items.Refresh();
         }
 
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
