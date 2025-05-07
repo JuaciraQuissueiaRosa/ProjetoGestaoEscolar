@@ -292,7 +292,7 @@ namespace Escola.WPF.Services
             var response = await _client.GetAsync($"students/{studentId}/history");
             var json = await response.Content.ReadAsStringAsync();
 
-            MessageBox.Show(json);  // <-- isto ajuda a ver o conteúdo real
+            //MessageBox.Show(json);  // <-- isto ajuda a ver o conteúdo real
 
             if (response.IsSuccessStatusCode)
             {

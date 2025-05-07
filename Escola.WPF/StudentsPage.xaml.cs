@@ -97,12 +97,13 @@ namespace Escola.WPF
                     try
                     {
                         await _dataService.DeleteStudentAsync(selectedStudent.Id);  // Chamada correta para excluir o aluno
-                        LoadStudents();
-                        ClearForm();
+                        LoadStudents();  // Recarrega a lista de alunos após a exclusão
+                        ClearForm();  // Limpa o formulário de edição
+                        MessageBox.Show("Aluno excluído com sucesso.", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information); // Confirmação de sucesso
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Erro ao excluir aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Erro ao excluir aluno: {ex.Message}\nDetalhes: {ex.StackTrace}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -114,24 +115,31 @@ namespace Escola.WPF
 
         private async void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            string searchTerm = txtSearch.Text.Trim();  // Pega o texto do campo de pesquisa
-            if (string.IsNullOrEmpty(searchTerm))
+            try
             {
-                MessageBox.Show("Please enter a search term.");
-                return;
-            }
+                string searchTerm = txtSearch.Text.Trim();  // Pega o texto do campo de pesquisa
+                if (string.IsNullOrEmpty(searchTerm))
+                {
+                    MessageBox.Show("Please enter a search term.");
+                    return;
+                }
 
-            // Chama o serviço para buscar os alunos
-            var students = await _dataService.SearchStudentsAsync(searchTerm);
+                // Chama o serviço para buscar os alunos
+                var students = await _dataService.SearchStudentsAsync(searchTerm);
 
-            // Exibe os resultados na DataGrid ou de acordo com a sua UI
-            if (students.Any())
-            {
-                dgStudents.ItemsSource = students;
+                // Exibe os resultados na DataGrid ou de acordo com a sua UI
+                if (students.Any())
+                {
+                    dgStudents.ItemsSource = students;
+                }
+                else
+                {
+                    MessageBox.Show("No students matched the search criteria.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("No students matched the search criteria.");
+                MessageBox.Show($"Ocorreu um erro ao realizar a busca: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -223,15 +231,23 @@ namespace Escola.WPF
 
         private void dgStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedStudent = dgStudents.SelectedItem as Student;
-            if (selectedStudent != null)
+            try
             {
-                txtFullName.Text = selectedStudent.FullName;
-                dpBirthDate.SelectedDate = selectedStudent.BirthDate;
-                txtPhone.Text = selectedStudent.Phone;
-                txtAddress.Text = selectedStudent.Address;
-                txtEmail.Text = selectedStudent.Email;
+                var selectedStudent = dgStudents.SelectedItem as Student;
+                if (selectedStudent != null)
+                {
+                    txtFullName.Text = selectedStudent.FullName;
+                    dpBirthDate.SelectedDate = selectedStudent.BirthDate;
+                    txtPhone.Text = selectedStudent.Phone;
+                    txtAddress.Text = selectedStudent.Address;
+                    txtEmail.Text = selectedStudent.Email;
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocorreu um erro ao selecionar o aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
     }
 }
