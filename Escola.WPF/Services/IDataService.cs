@@ -1,4 +1,5 @@
 ﻿using Escola.WPF.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Escola.WPF.Services
         Task UpdateStudentAsync(Student student);
         Task<HttpResponseMessage> DeleteStudentAsync(int id);
         Task<List<Student>> SearchStudentsAsync(string term);
+        Task<JObject> GetStudentHistoryAsync(int studentId);
 
         // Subjects
         Task<List<Subject>> GetSubjectsAsync();

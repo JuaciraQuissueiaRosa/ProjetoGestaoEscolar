@@ -1,5 +1,6 @@
 ﻿using Escola.WPF.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -283,6 +284,19 @@ namespace Escola.WPF.Services
             }
 
             return new List<Student>();  // Retorna uma lista vazia caso não encontre nada
+        }
+
+        public async Task<JObject> GetStudentHistoryAsync(int studentId)
+        {
+            var response = await _client.GetAsync($"students/{studentId}/history");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                JObject result = JObject.Parse(json);
+                return result;
+            }
+
+            return null;
         }
     }
 

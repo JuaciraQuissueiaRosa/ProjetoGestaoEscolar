@@ -1,7 +1,9 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
@@ -132,6 +134,60 @@ namespace Escola.WPF
                 MessageBox.Show("No students matched the search criteria.");
             }
         }
+
+        private async void btnHistory_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgStudents.SelectedItem is Student selectedStudent)
+            {
+                try
+                {
+                    JObject historyData = await _dataService.GetStudentHistoryAsync(selectedStudent.Id);
+                    if (historyData == null)
+                    {
+                        MessageBox.Show("Erro ao obter o histórico do aluno.");
+                        return;
+                    }
+
+                    // Obter nome do aluno e turma
+                    string studentName = historyData["Student"]?["FullName"]?.ToString() ?? "N/A";
+                    string className = historyData["Class"]?["Name"]?.ToString() ?? "N/A";
+
+                    // Obter lista de médias finais
+                    JArray averages = (JArray)historyData["Averages"];
+
+                    if (averages == null || averages.Count == 0)
+                    {
+                        MessageBox.Show("O aluno não possui histórico registrado.");
+                        return;
+                    }
+
+                    // Montar string com o histórico
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"Histórico do aluno: {studentName}");
+                    sb.AppendLine($"Turma: {className}\n");
+
+                    foreach (var avg in averages)
+                    {
+                        string subject = avg["SubjectName"]?.ToString() ?? "N/A";
+                        string average = avg["Average"]?.ToString() ?? "N/A";
+                        sb.AppendLine($"Disciplina: {subject} - Média Final: {average}");
+                    }
+
+                    MessageBox.Show(sb.ToString(), "Histórico do Aluno");
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao buscar histórico: {ex.Message}");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecione um aluno.");
+            }
+        }
+
+
         private void ClearForm()
         {
             txtFullName.Clear();
@@ -139,6 +195,8 @@ namespace Escola.WPF
             txtPhone.Clear();
             txtAddress.Clear();
             txtEmail.Clear();
+            txtSearch.Clear();
+            dgStudents.SelectedItem = null;
         }
 
         private void dgStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)

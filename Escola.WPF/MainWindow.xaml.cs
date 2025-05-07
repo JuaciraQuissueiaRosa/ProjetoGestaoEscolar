@@ -8,8 +8,6 @@ namespace Escola.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-
         public MainWindow()
         {
             InitializeComponent();

@@ -68,6 +68,52 @@ namespace SchoolAPI.Controllers
             return Ok(students); // Sempre retorna uma lista
         }
 
+        [HttpGet]
+        [Route("{id}/history")]
+        public IHttpActionResult GetStudentHistory(int id)
+        {
+            var student = db.Students.FirstOrDefault(s => s.Id == id);
+            if (student == null)
+                return NotFound();
+
+            var classInfo = db.Classes.FirstOrDefault(c => c.Id == student.ClassId);
+
+            // Carregar todas as notas do aluno com joins
+            var marks = (from m in db.Marks
+                         where m.StudentId == id
+                         select new
+                         {
+                             m.Id,
+                             m.StudentId,
+                             m.SubjectId,
+                             SubjectName = m.Subject.Name,
+                             m.AssessmentType,
+                             m.Grade,
+                             m.AssessmentDate,
+                             m.TeacherId,
+                             TeacherName = m.Teacher.FullName
+                         }).ToList();
+
+            // Carregar médias finais
+            var averages = (from fa in db.FinalAverages
+                            where fa.StudentId == id
+                            select new
+                            {
+                                fa.SubjectId,
+                                SubjectName = fa.Subject.Name,
+                                fa.Average
+                            }).ToList();
+
+            return Ok(new
+            {
+                Student = student,
+                Class = classInfo,
+                Marks = marks,
+                Averages = averages
+            });
+        }
+
+
         [HttpPost]
         public IHttpActionResult Post([FromBody] Student student)
         {

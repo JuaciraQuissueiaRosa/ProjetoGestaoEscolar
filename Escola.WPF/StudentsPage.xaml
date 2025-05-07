@@ -58,7 +58,8 @@
             <Button Name="btnDelete" Content="Apagar" Width="100" Margin="5" Click="btnDelete_Click"/>
 
             <Button Content="Search" Width="80" Margin="5" Click="btnSearch_Click"/>
-          
+
+            <Button Name="btnHistory" Content="Histórico" Width="100" Margin="5" Click="btnHistory_Click"/>
         </StackPanel>
     </Grid>
 </Page>
