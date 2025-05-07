@@ -18,6 +18,9 @@ namespace Escola.WPF
             InitializeComponent();
             _dataService = new ApiService();  // Serviço API para Classes
             LoadClasses();  // Carrega as classes ao iniciar a página
+            LoadStudents();
+            LoadTeachers();
+            LoadSubjects();
         }
 
         private async void LoadClasses()
