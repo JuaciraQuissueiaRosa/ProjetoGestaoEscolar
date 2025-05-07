@@ -144,46 +144,68 @@ namespace Escola.WPF
                     JObject historyData = await _dataService.GetStudentHistoryAsync(selectedStudent.Id);
                     if (historyData == null)
                     {
-                        MessageBox.Show("Erro ao obter o histórico do aluno.");
+                        MessageBox.Show("Erro ao obter o histórico do aluno.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
-                    // Obter nome do aluno e turma
-                    string studentName = historyData["Student"]?["FullName"]?.ToString() ?? "N/A";
-                    string className = historyData["Class"]?["Name"]?.ToString() ?? "N/A";
+                    string studentName = historyData["student"]?["fullName"]?.ToString() ?? "N/A";
+                    string className = historyData["class"]?["name"]?.ToString() ?? "N/A";
+                    JArray averages = (JArray)(historyData["averages"] ?? new JArray());
+                    JArray marks = (JArray)(historyData["marks"] ?? new JArray());
 
-                    // Obter lista de médias finais
-                    JArray averages = (JArray)historyData["Averages"];
-
-                    if (averages == null || averages.Count == 0)
-                    {
-                        MessageBox.Show("O aluno não possui histórico registrado.");
-                        return;
-                    }
-
-                    // Montar string com o histórico
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine($"Histórico do aluno: {studentName}");
-                    sb.AppendLine($"Turma: {className}\n");
+                    sb.AppendLine("📘 Histórico do Aluno");
+                    sb.AppendLine("_______________________________\n");
+                    sb.AppendLine("👤 Nome: " + studentName);
+                    sb.AppendLine("🏫 Turma: " + className);
 
-                    foreach (var avg in averages)
+                    sb.AppendLine("\n🗂️ Médias Finais:");
+                    if (averages.Count == 0)
                     {
-                        string subject = avg["SubjectName"]?.ToString() ?? "N/A";
-                        string average = avg["Average"]?.ToString() ?? "N/A";
-                        sb.AppendLine($"Disciplina: {subject} - Média Final: {average}");
+                        sb.AppendLine("• Nenhuma média disponível.");
+                    }
+                    else
+                    {
+                        foreach (var avg in averages)
+                        {
+                            string subject = avg["subjectName"]?.ToString() ?? "N/A";
+                            string average = avg["average"]?.ToString() ?? "N/A";
+                            sb.AppendLine($"• {subject}: {average}");
+                        }
                     }
 
-                    MessageBox.Show(sb.ToString(), "Histórico do Aluno");
+                    sb.AppendLine("\n📝 Avaliações Realizadas:");
+                    if (marks.Count == 0)
+                    {
+                        sb.AppendLine("• Nenhuma avaliação registrada.");
+                    }
+                    else
+                    {
+                        foreach (var mark in marks)
+                        {
+                            string subject = mark["subjectName"]?.ToString() ?? "N/A";
+                            string type = mark["assessmentType"]?.ToString() ?? "N/A";
+                            string grade = mark["grade"]?.ToString() ?? "N/A";
+                            string date = DateTime.TryParse(mark["assessmentDate"]?.ToString(), out DateTime d)
+                                ? d.ToString("dd/MM/yyyy")
+                                : "N/A";
+                            string teacher = mark["teacherName"]?.ToString() ?? "N/A";
 
+                            sb.AppendLine($"• {subject} - {type}");
+                            sb.AppendLine($"  Nota: {grade}   Data: {date}   Professor: {teacher}");
+                        }
+                    }
+
+                    MessageBox.Show(sb.ToString(), "Histórico do Aluno", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Erro ao buscar histórico: {ex.Message}");
+                    MessageBox.Show($"Erro ao buscar histórico: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
             {
-                MessageBox.Show("Selecione um aluno.");
+                MessageBox.Show("Selecione um aluno.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

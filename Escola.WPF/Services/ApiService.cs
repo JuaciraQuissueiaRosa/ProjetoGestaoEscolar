@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using System.Windows;
 
 namespace Escola.WPF.Services
 {
@@ -289,9 +290,12 @@ namespace Escola.WPF.Services
         public async Task<JObject> GetStudentHistoryAsync(int studentId)
         {
             var response = await _client.GetAsync($"students/{studentId}/history");
+            var json = await response.Content.ReadAsStringAsync();
+
+            MessageBox.Show(json);  // <-- isto ajuda a ver o conteúdo real
+
             if (response.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();
                 JObject result = JObject.Parse(json);
                 return result;
             }

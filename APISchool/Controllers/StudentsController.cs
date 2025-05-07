@@ -78,7 +78,6 @@ namespace SchoolAPI.Controllers
 
             var classInfo = db.Classes.FirstOrDefault(c => c.Id == student.ClassId);
 
-            // Carregar todas as notas do aluno com joins
             var marks = (from m in db.Marks
                          where m.StudentId == id
                          select new
@@ -94,7 +93,6 @@ namespace SchoolAPI.Controllers
                              TeacherName = m.Teacher.FullName
                          }).ToList();
 
-            // Carregar médias finais
             var averages = (from fa in db.FinalAverages
                             where fa.StudentId == id
                             select new
@@ -104,13 +102,24 @@ namespace SchoolAPI.Controllers
                                 fa.Average
                             }).ToList();
 
-            return Ok(new
+            // Resultado final agrupado como esperado
+            var result = new
             {
-                Student = student,
-                Class = classInfo,
+                Student = new
+                {
+                    student.Id,
+                    student.FullName
+                },
+                Class = classInfo == null ? null : new
+                {
+                    classInfo.Id,
+                    classInfo.Name
+                },
                 Marks = marks,
                 Averages = averages
-            });
+            };
+
+            return Ok(result);
         }
 
 
