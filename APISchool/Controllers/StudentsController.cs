@@ -62,11 +62,27 @@ namespace SchoolAPI.Controllers
                 .Where(s =>
                     s.FullName.ToLower().Contains(term) ||
                     s.Id.ToString().Contains(term) ||
-                    s.ClassId.ToString().Contains(term))
+                    (s.Class != null && s.Class.Name.ToLower().Contains(term))
+                )
+                .Select(s => new
+                {
+                    s.Id,
+                    s.FullName,
+                    s.BirthDate,
+                    s.Phone,
+                    s.Address,
+                    s.Email,
+                    Class = s.Class == null ? null : new
+                    {
+                        s.Class.Id,
+                        s.Class.Name
+                    }
+                })
                 .ToList();
 
-            return Ok(students); // Sempre retorna uma lista
+            return Ok(students);
         }
+
 
         [HttpGet]
         [Route("{id}/history")]
