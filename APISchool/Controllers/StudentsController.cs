@@ -90,7 +90,7 @@ namespace SchoolAPI.Controllers
         {
             var student = db.Students.FirstOrDefault(s => s.Id == id);
             if (student == null)
-                return NotFound();
+                return Content(HttpStatusCode.NotFound, $"Student with ID {id} not found.");
 
             var classInfo = db.Classes.FirstOrDefault(c => c.Id == student.ClassId);
 
