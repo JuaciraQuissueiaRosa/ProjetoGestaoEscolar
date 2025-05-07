@@ -53,90 +53,115 @@ namespace SchoolAPI.Controllers
         [Route("search")]
         public IHttpActionResult SearchStudents(string term)
         {
-            if (string.IsNullOrWhiteSpace(term))
-                return BadRequest("Search term cannot be empty.");
+            try
+            {
+                if (string.IsNullOrWhiteSpace(term))
+                    return BadRequest("Search term cannot be empty.");
 
-            term = term.ToLower();
+                term = term.ToLower();
 
-            var students = db.Students
-                .Where(s =>
-                    s.FullName.ToLower().Contains(term) ||
-                    s.Id.ToString().Contains(term) ||
-                    (s.Class != null && s.Class.Name.ToLower().Contains(term))
-                )
-                .Select(s => new
-                {
-                    s.Id,
-                    s.FullName,
-                    s.BirthDate,
-                    s.Phone,
-                    s.Address,
-                    s.Email,
-                    Class = s.Class == null ? null : new
+                var students = db.Students
+                    .Where(s =>
+                        s.FullName.ToLower().Contains(term) ||
+                        s.Id.ToString().Contains(term) ||
+                        (s.Class != null && s.Class.Name.ToLower().Contains(term))
+                    )
+                    .Select(s => new
                     {
-                        s.Class.Id,
-                        s.Class.Name
-                    }
-                })
-                .ToList();
+                        s.Id,
+                        s.FullName,
+                        s.BirthDate,
+                        s.Phone,
+                        s.Address,
+                        s.Email,
+                        Class = s.Class == null ? null : new
+                        {
+                            s.Class.Id,
+                            s.Class.Name
+                        }
+                    })
+                    .ToList();
 
-            return Ok(students);
+                if (!students.Any())
+                    return Content(HttpStatusCode.NotFound, "No students matched the search criteria.");
+
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(new Exception("An error occurred while searching for students: " + ex.Message));
+            }
         }
+
 
 
         [HttpGet]
         [Route("{id}/history")]
         public IHttpActionResult GetStudentHistory(int id)
         {
-            var student = db.Students.FirstOrDefault(s => s.Id == id);
-            if (student == null)
-                return Content(HttpStatusCode.NotFound, $"Student with ID {id} not found.");
-
-            var classInfo = db.Classes.FirstOrDefault(c => c.Id == student.ClassId);
-
-            var marks = (from m in db.Marks
-                         where m.StudentId == id
-                         select new
-                         {
-                             m.Id,
-                             m.StudentId,
-                             m.SubjectId,
-                             SubjectName = m.Subject.Name,
-                             m.AssessmentType,
-                             m.Grade,
-                             m.AssessmentDate,
-                             m.TeacherId,
-                             TeacherName = m.Teacher.FullName
-                         }).ToList();
-
-            var averages = (from fa in db.FinalAverages
-                            where fa.StudentId == id
-                            select new
-                            {
-                                fa.SubjectId,
-                                SubjectName = fa.Subject.Name,
-                                fa.Average
-                            }).ToList();
-
-            // Resultado final agrupado como esperado
-            var result = new
+            try
             {
-                Student = new
+                var student = db.Students.FirstOrDefault(s => s.Id == id);
+                if (student == null || string.IsNullOrWhiteSpace(student.FullName))
                 {
-                    student.Id,
-                    student.FullName
-                },
-                Class = classInfo == null ? null : new
-                {
-                    classInfo.Id,
-                    classInfo.Name
-                },
-                Marks = marks,
-                Averages = averages
-            };
+                    return Content(HttpStatusCode.NotFound, new { message = $"Student with ID {id} not found or incomplete data." });
+                }
 
-            return Ok(result);
+                var classInfo = db.Classes.FirstOrDefault(c => c.Id == student.ClassId);
+
+                var marks = (from m in db.Marks
+                             where m.StudentId == id
+                             select new
+                             {
+                                 m.Id,
+                                 m.StudentId,
+                                 m.SubjectId,
+                                 SubjectName = m.Subject.Name,
+                                 m.AssessmentType,
+                                 m.Grade,
+                                 m.AssessmentDate,
+                                 m.TeacherId,
+                                 TeacherName = m.Teacher.FullName
+                             }).ToList();
+
+                var averages = (from fa in db.FinalAverages
+                                where fa.StudentId == id
+                                select new
+                                {
+                                    fa.SubjectId,
+                                    SubjectName = fa.Subject.Name,
+                                    fa.Average
+                                }).ToList();
+
+                if (classInfo == null && !marks.Any() && !averages.Any())
+                {
+                    return Content(HttpStatusCode.NotFound, new { message = $"No academic history found for student with ID {id}." });
+                }
+
+                var result = new
+                {
+                    Student = new
+                    {
+                        student.Id,
+                        student.FullName
+                    },
+                    Class = classInfo == null ? null : new
+                    {
+                        classInfo.Id,
+                        classInfo.Name
+                    },
+                    Marks = marks,
+                    Averages = averages
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(new Exception("An error occurred while retrieving the student history: " + ex.Message));
+            }
         }
+
 
 
         [HttpPost]
