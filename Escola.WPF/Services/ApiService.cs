@@ -302,6 +302,24 @@ namespace Escola.WPF.Services
 
             return null;
         }
+
+        public async Task<bool> AssociateTeacherToClassAsync(int classId, int teacherId)
+        {
+            var response = await _client.PostAsync($"classes/{classId}/associate-teacher/{teacherId}", null);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AssociateSubjectToClassAsync(int classId, int subjectId)
+        {
+            var response = await _client.PostAsync($"classes/{classId}/associate-subject/{subjectId}", null);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AssociateStudentToClassAsync(int classId, int studentId)
+        {
+            var response = await _client.PostAsync($"classes/{classId}/associate-student/{studentId}", null);
+            return response.IsSuccessStatusCode;
+        }
     }
 
 }

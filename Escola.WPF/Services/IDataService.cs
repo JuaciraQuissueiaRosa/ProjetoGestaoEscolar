@@ -39,6 +39,9 @@ namespace Escola.WPF.Services
         Task<Class> GetClassByIdAsync(int id);
         Task AddClassAsync(Class turma);
         Task UpdateClassAsync(Class turma);
+        Task<bool> AssociateTeacherToClassAsync(int classId, int teacherId);
+        Task<bool> AssociateSubjectToClassAsync(int classId, int subjectId);
+        Task<bool> AssociateStudentToClassAsync(int classId, int studentId);
         Task<HttpResponseMessage> DeleteClassAsync(int id);
 
         // Marks

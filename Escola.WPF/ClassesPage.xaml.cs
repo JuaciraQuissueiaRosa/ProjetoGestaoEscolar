@@ -33,6 +33,46 @@ namespace Escola.WPF
             }
         }
 
+        private async void LoadStudents()
+        {
+            try
+            {
+                var students = await _dataService.GetStudentsAsync();
+                cbStudents.ItemsSource = students;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void LoadTeachers()
+        {
+            try
+            {
+                var teachers = await _dataService.GetTeachersAsync();
+                cbTeachers.ItemsSource = teachers;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading teachers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void LoadSubjects()
+        {
+            try
+            {
+                var subjects = await _dataService.GetSubjectsAsync();
+                cbSubjects.ItemsSource = subjects;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading subjects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             var newClass = new Class
@@ -111,6 +151,47 @@ namespace Escola.WPF
             txtClassName.Clear();
             txtGroupName.Clear();
             txtSchedule.Clear();
+        }
+
+        private void dgClasses_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private async void btnAssociate_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgClasses.SelectedItem is Class selectedClass)
+            {
+                var classId = selectedClass.Id;
+                var messages = new List<string>();
+
+                // Associar Aluno
+                if (cbStudents.SelectedValue is int studentId)
+                {
+                    bool result = await _dataService.AssociateStudentToClassAsync(classId, studentId);
+                    messages.Add(result ? $"✓ Student associated." : "✗ Failed to associate student.");
+                }
+
+                // Associar Professor
+                if (cbTeachers.SelectedValue is int teacherId)
+                {
+                    bool result = await _dataService.AssociateTeacherToClassAsync(classId, teacherId);
+                    messages.Add(result ? $"✓ Teacher associated." : "✗ Failed to associate teacher.");
+                }
+
+                // Associar Disciplina
+                if (cbSubjects.SelectedValue is int subjectId)
+                {
+                    bool result = await _dataService.AssociateSubjectToClassAsync(classId, subjectId);
+                    messages.Add(result ? $"✓ Subject associated." : "✗ Failed to associate subject.");
+                }
+
+                MessageBox.Show(string.Join("\n", messages), "Association Result", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Please select a class first.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }
