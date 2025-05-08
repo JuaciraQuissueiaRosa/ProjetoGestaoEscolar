@@ -14,10 +14,18 @@ namespace Escola.WPF
 
         public SubjectsPage()
         {
-            InitializeComponent();
-            _dataService = new ApiService();
-            LoadSubjects();  // Carrega as disciplinas ao iniciar a página
-            LoadTeachers(); // Carrega os professores no ComboBox
+            try
+            {
+                InitializeComponent();
+                _dataService = new ApiService();
+                LoadSubjects();  // Carrega as disciplinas ao iniciar a página
+                LoadTeachers(); // Carrega os professores no ComboBox
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initialize page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         private async void LoadSubjects()
@@ -29,7 +37,7 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar as disciplinas: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading subjects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             dgSubjects.Items.Refresh();
         }
@@ -43,7 +51,7 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar professores: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading teachers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -63,79 +71,112 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar disciplina: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error create subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            var selectedSubject = (Subject)dgSubjects.SelectedItem;
-            if (selectedSubject == null)
-            {
-                MessageBox.Show("Selecione uma disciplina para editar.");
-                return;
-            }
-
             try
             {
-                selectedSubject.Name = txtSubjectName.Text;
-                selectedSubject.WeeklyHours = int.Parse(txtWeeklyHours.Text);
-                await _dataService.UpdateSubjectAsync(selectedSubject);  // Chamada correta para editar a disciplina
-                LoadSubjects();
-                ClearInputs();
+                var selectedSubject = (Subject)dgSubjects.SelectedItem;
+                if (selectedSubject == null)
+                {
+                    MessageBox.Show("You must have to selection one subject to update.");
+                    return;
+                }
+
+                try
+                {
+                    selectedSubject.Name = txtSubjectName.Text;
+                    selectedSubject.WeeklyHours = int.Parse(txtWeeklyHours.Text);
+                    await _dataService.UpdateSubjectAsync(selectedSubject);  // Chamada correta para editar a disciplina
+                    LoadSubjects();
+                    ClearInputs();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao editar disciplina: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
         private async void btnAssociateTeacher_Click(object sender, RoutedEventArgs e)
         {
-            if (dgSubjects.SelectedItem is Subject selectedSubject && cbTeachers.SelectedItem is Teacher selectedTeacher)
+            try
             {
-                try
+                if (dgSubjects.SelectedItem is Subject selectedSubject && cbTeachers.SelectedItem is Teacher selectedTeacher)
                 {
-                    await _dataService.AssociateTeacherToSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
-                    MessageBox.Show("Professor associado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    try
+                    {
+                        await _dataService.AssociateTeacherToSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
+                        MessageBox.Show("Teacher associated with success!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error associate teacher: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Erro ao associar professor: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Please, selection one subject and one teacher.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Selecione uma disciplina e um professor.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            var selectedSubject = (Subject)dgSubjects.SelectedItem;
-            if (selectedSubject == null)
-            {
-                MessageBox.Show("Selecione uma disciplina para apagar.");
-                return;
-            }
-
             try
             {
-                await _dataService.DeleteSubjectAsync(selectedSubject.Id);  // Chamada correta para deletar a disciplina
-                LoadSubjects();
-                ClearInputs();
+                var selectedSubject = (Subject)dgSubjects.SelectedItem;
+                if (selectedSubject == null)
+                {
+                    MessageBox.Show("Selection one subject to delete.");
+                    return;
+                }
+
+                try
+                {
+                    await _dataService.DeleteSubjectAsync(selectedSubject.Id);  // Chamada correta para deletar a disciplina
+                    LoadSubjects();
+                    ClearInputs();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error delete subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao apagar disciplina: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error delete subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
         private void ClearInputs()
         {
-            txtSubjectName.Clear();
-            txtWeeklyHours.Clear();
+            try
+            {
+                txtSubjectName.Clear();
+                txtWeeklyHours.Clear();
+                cbTeachers.SelectedIndex = -1;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error clean the inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+          
         }
     }
 }

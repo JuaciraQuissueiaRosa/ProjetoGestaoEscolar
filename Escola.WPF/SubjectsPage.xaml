@@ -27,19 +27,19 @@
         <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,10">
             <!-- Subject Name -->
             <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Subject Name:" Width="150" VerticalAlignment="Center"/>
+                <Label Content="Subject Name:" Width="150" VerticalAlignment="Center" Background="White"/>
                 <TextBox Name="txtSubjectName" Width="200" />
             </StackPanel>
 
             <!-- Weekly Hours -->
             <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Weekly Hours:" Width="150" VerticalAlignment="Center"/>
+                <Label Content="Weekly Hours:" Width="150" VerticalAlignment="Center" Background="White"/>
                 <TextBox Name="txtWeeklyHours" Width="200" />
             </StackPanel>
 
             <!-- Teacher Association -->
             <StackPanel Orientation="Horizontal" Margin="0,10">
-                <Label Content="Select Teacher:" Width="150" VerticalAlignment="Center"/>
+                <Label Content="Select Teacher:" Width="150" VerticalAlignment="Center" Background="White"/>
                 <ComboBox Name="cbTeachers" Width="200" DisplayMemberPath="FullName" SelectedValuePath="Id"/>
             </StackPanel>
         </StackPanel>

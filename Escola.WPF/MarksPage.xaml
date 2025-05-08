@@ -43,6 +43,11 @@
                 <TextBlock Text="Score:"/>
                 <TextBox Name="txtScore" Width="150" Margin="0,5,0,0"/>
             </StackPanel>
+
+            <StackPanel Grid.Column="0" Margin="5">
+                <TextBlock Text="Assessment Date:"/>
+                <DatePicker Name="dpAssessmentDate" Width="150" Margin="0,5,0,0"/>
+            </StackPanel>
         </Grid>
 
         <!-- Botões -->

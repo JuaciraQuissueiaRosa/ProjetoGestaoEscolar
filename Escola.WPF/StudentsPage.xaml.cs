@@ -33,7 +33,7 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar os alunos: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -56,61 +56,79 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error create the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            if (dgStudents.SelectedItem is Student selectedStudent)
+            try
             {
-                try
+                if (dgStudents.SelectedItem is Student selectedStudent)
                 {
-                    selectedStudent.FullName = txtFullName.Text;
-                    selectedStudent.BirthDate = dpBirthDate.SelectedDate ?? DateTime.Now;
-                    selectedStudent.Phone = txtPhone.Text;
-                    selectedStudent.Address = txtAddress.Text;
-                    selectedStudent.Email = txtEmail.Text;
+                    try
+                    {
+                        selectedStudent.FullName = txtFullName.Text;
+                        selectedStudent.BirthDate = dpBirthDate.SelectedDate ?? DateTime.Now;
+                        selectedStudent.Phone = txtPhone.Text;
+                        selectedStudent.Address = txtAddress.Text;
+                        selectedStudent.Email = txtEmail.Text;
 
-                    await _dataService.UpdateStudentAsync(selectedStudent);  // Chamada correta para editar um aluno
-                    LoadStudents();
-                    ClearForm();
+                        await _dataService.UpdateStudentAsync(selectedStudent);  // Chamada correta para editar um aluno
+                        LoadStudents();
+                        ClearForm();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error update the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Erro ao editar aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Choose one student to update", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Selecione um aluno para editar.", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error update the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (dgStudents.SelectedItem is Student selectedStudent)
+            try
             {
-                var result = MessageBox.Show("Tem certeza de que deseja excluir este aluno?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
+                if (dgStudents.SelectedItem is Student selectedStudent)
                 {
-                    try
+                    var result = MessageBox.Show("Are you sure that you want to delete this student?", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        await _dataService.DeleteStudentAsync(selectedStudent.Id);  // Chamada correta para excluir o aluno
-                        LoadStudents();  // Recarrega a lista de alunos após a exclusão
-                        ClearForm();  // Limpa o formulário de edição
-                        MessageBox.Show("Aluno excluído com sucesso.", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information); // Confirmação de sucesso
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erro ao excluir aluno: {ex.Message}\nDetalhes: {ex.StackTrace}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                        try
+                        {
+                            await _dataService.DeleteStudentAsync(selectedStudent.Id);  // Chamada correta para excluir o aluno
+                            LoadStudents();  // Recarrega a lista de alunos após a exclusão
+                            ClearForm();  // Limpa o formulário de edição
+                            MessageBox.Show("Student deleted with success.", "Information", MessageBoxButton.OK, MessageBoxImage.Information); // Confirmação de sucesso
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error by delete the student: {ex.Message}\nDetails: {ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Choose one student to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Selecione um aluno para excluir.", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error by delete the student: {ex.Message}\nDetails: {ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+
+
         }
 
         private async void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -139,94 +157,110 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro ao realizar a busca: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by search the students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async void btnHistory_Click(object sender, RoutedEventArgs e)
         {
-            if (dgStudents.SelectedItem is Student selectedStudent)
+            try
             {
-                try
+                if (dgStudents.SelectedItem is Student selectedStudent)
                 {
-                    JObject historyData = await _dataService.GetStudentHistoryAsync(selectedStudent.Id);
-                    if (historyData == null)
+                    try
                     {
-                        MessageBox.Show("Erro ao obter o histórico do aluno.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    string studentName = historyData["student"]?["fullName"]?.ToString() ?? "N/A";
-                    string className = historyData["class"]?["name"]?.ToString() ?? "N/A";
-                    JArray averages = (JArray)(historyData["averages"] ?? new JArray());
-                    JArray marks = (JArray)(historyData["marks"] ?? new JArray());
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("📘 Histórico do Aluno");
-                    sb.AppendLine("_______________________________\n");
-                    sb.AppendLine("👤 Nome: " + studentName);
-                    sb.AppendLine("🏫 Turma: " + className);
-
-                    sb.AppendLine("\n🗂️ Médias Finais:");
-                    if (averages.Count == 0)
-                    {
-                        sb.AppendLine("• Nenhuma média disponível.");
-                    }
-                    else
-                    {
-                        foreach (var avg in averages)
+                        JObject historyData = await _dataService.GetStudentHistoryAsync(selectedStudent.Id);
+                        if (historyData == null)
                         {
-                            string subject = avg["subjectName"]?.ToString() ?? "N/A";
-                            string average = avg["average"]?.ToString() ?? "N/A";
-                            sb.AppendLine($"• {subject}: {average}");
+                            MessageBox.Show("Error by get the student history.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
-                    }
 
-                    sb.AppendLine("\n📝 Avaliações Realizadas:");
-                    if (marks.Count == 0)
-                    {
-                        sb.AppendLine("• Nenhuma avaliação registrada.");
-                    }
-                    else
-                    {
-                        foreach (var mark in marks)
+                        string studentName = historyData["student"]?["fullName"]?.ToString() ?? "N/A";
+                        string className = historyData["class"]?["name"]?.ToString() ?? "N/A";
+                        JArray averages = (JArray)(historyData["averages"] ?? new JArray());
+                        JArray marks = (JArray)(historyData["marks"] ?? new JArray());
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("📘 Histórico do Aluno");
+                        sb.AppendLine("_______________________________\n");
+                        sb.AppendLine("👤 Nome: " + studentName);
+                        sb.AppendLine("🏫 Turma: " + className);
+
+                        sb.AppendLine("\n🗂️ Médias Finais:");
+                        if (averages.Count == 0)
                         {
-                            string subject = mark["subjectName"]?.ToString() ?? "N/A";
-                            string type = mark["assessmentType"]?.ToString() ?? "N/A";
-                            string grade = mark["grade"]?.ToString() ?? "N/A";
-                            string date = DateTime.TryParse(mark["assessmentDate"]?.ToString(), out DateTime d)
-                                ? d.ToString("dd/MM/yyyy")
-                                : "N/A";
-                            string teacher = mark["teacherName"]?.ToString() ?? "N/A";
-
-                            sb.AppendLine($"• {subject} - {type}");
-                            sb.AppendLine($"  Nota: {grade}   Data: {date}   Professor: {teacher}");
+                            sb.AppendLine("• Nenhuma média disponível.");
                         }
-                    }
+                        else
+                        {
+                            foreach (var avg in averages)
+                            {
+                                string subject = avg["subjectName"]?.ToString() ?? "N/A";
+                                string average = avg["average"]?.ToString() ?? "N/A";
+                                sb.AppendLine($"• {subject}: {average}");
+                            }
+                        }
 
-                    MessageBox.Show(sb.ToString(), "Histórico do Aluno", MessageBoxButton.OK, MessageBoxImage.Information);
+                        sb.AppendLine("\n📝 Avaliações Realizadas:");
+                        if (marks.Count == 0)
+                        {
+                            sb.AppendLine("• Nenhuma avaliação registrada.");
+                        }
+                        else
+                        {
+                            foreach (var mark in marks)
+                            {
+                                string subject = mark["subjectName"]?.ToString() ?? "N/A";
+                                string type = mark["assessmentType"]?.ToString() ?? "N/A";
+                                string grade = mark["grade"]?.ToString() ?? "N/A";
+                                string date = DateTime.TryParse(mark["assessmentDate"]?.ToString(), out DateTime d)
+                                    ? d.ToString("dd/MM/yyyy")
+                                    : "N/A";
+                                string teacher = mark["teacherName"]?.ToString() ?? "N/A";
+
+                                sb.AppendLine($"• {subject} - {type}");
+                                sb.AppendLine($"  Grade: {grade}   Date: {date}   Teacher: {teacher}");
+                            }
+                        }
+
+                        MessageBox.Show(sb.ToString(), "History of student", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error to see the history: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Erro ao buscar histórico: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Selection one student.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Selecione um aluno.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error to see the history: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
 
         private void ClearForm()
         {
-            txtFullName.Clear();
-            dpBirthDate.SelectedDate = null;
-            txtPhone.Clear();
-            txtAddress.Clear();
-            txtEmail.Clear();
-            txtSearch.Clear();
-            dgStudents.SelectedItem = null;
+            try
+            {
+                txtFullName.Clear();
+                dpBirthDate.SelectedDate = null;
+                txtPhone.Clear();
+                txtAddress.Clear();
+                txtEmail.Clear();
+                txtSearch.Clear();
+                dgStudents.SelectedItem = null;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error to clean the inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+          
         }
 
         private void dgStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -245,7 +279,7 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro ao selecionar o aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error to selection student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

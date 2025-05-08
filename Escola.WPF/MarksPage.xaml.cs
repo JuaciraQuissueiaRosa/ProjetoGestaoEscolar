@@ -14,9 +14,16 @@ namespace Escola.WPF
 
         public MarksPage()
         {
-            InitializeComponent();
-            _dataService = new ApiService();
-            LoadMarks();  // Carrega as notas ao iniciar a página
+            try
+            {
+                InitializeComponent();
+                _dataService = new ApiService();
+                LoadMarks();  // Carrega as notas ao iniciar a página
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initialize page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private async void LoadMarks()
@@ -28,7 +35,7 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar as notas: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading marks: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -42,46 +49,54 @@ namespace Escola.WPF
                     SubjectId = int.Parse(txtSubjectId.Text),
                     AssessmentType = txtAssessmentType.Text,
                     Grade = float.Parse(txtScore.Text),
-                    AssessmentDate = DateTime.Now,
-                    TeacherId = 1 // Exemplo de ID do professor
+                    AssessmentDate = dpAssessmentDate.SelectedDate ?? DateTime.Now,
+                    TeacherId = 1 // Ou selecionar via ComboBox no futuro
                 };
 
-                await _dataService.AddMarkAsync(newMark);  // Chamada ao serviço para adicionar a nota
-                LoadMarks();  // Atualiza a lista de notas
-                ClearInputs();  // Limpa os campos
+                await _dataService.AddMarkAsync(newMark);
+                LoadMarks();
+                ClearInputs();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar nota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error creating mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            var selectedMark = (Mark)dgMarks.SelectedItem;
-            if (selectedMark == null)
-            {
-                MessageBox.Show("Selecione uma nota para editar.");
-                return;
-            }
-
             try
             {
-                selectedMark.StudentId = int.Parse(txtStudentId.Text);
-                selectedMark.SubjectId = int.Parse(txtSubjectId.Text);
-                selectedMark.AssessmentType = txtAssessmentType.Text;
-                selectedMark.Grade = float.Parse(txtScore.Text);
-                selectedMark.AssessmentDate = DateTime.Now;
-                selectedMark.TeacherId = 1;
+                var selectedMark = (Mark)dgMarks.SelectedItem;
+                if (selectedMark == null)
+                {
+                    MessageBox.Show("You must have to selection one mark to update.");
+                    return;
+                }
 
-                await _dataService.UpdateMarkAsync(selectedMark);  // Chamada ao serviço para atualizar a nota
-                LoadMarks();  // Atualiza a lista de notas
-                ClearInputs();  // Limpa os campos
+                try
+                {
+                    selectedMark.StudentId = int.Parse(txtStudentId.Text);
+                    selectedMark.SubjectId = int.Parse(txtSubjectId.Text);
+                    selectedMark.AssessmentType = txtAssessmentType.Text;
+                    selectedMark.Grade = float.Parse(txtScore.Text);
+                    selectedMark.AssessmentDate = dpAssessmentDate.SelectedDate ?? DateTime.Now;
+                    selectedMark.TeacherId = 1;
+
+                    await _dataService.UpdateMarkAsync(selectedMark);
+                    LoadMarks();
+                    ClearInputs();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error to update mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao editar nota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error to update mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
@@ -89,7 +104,7 @@ namespace Escola.WPF
             var selectedMark = (Mark)dgMarks.SelectedItem;
             if (selectedMark == null)
             {
-                MessageBox.Show("Selecione uma nota para apagar.");
+                MessageBox.Show("Selection one mark to delete.");
                 return;
             }
 
@@ -101,16 +116,24 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao apagar nota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error to delete mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ClearInputs()
         {
-            txtStudentId.Clear();
-            txtSubjectId.Clear();
-            txtAssessmentType.Clear();
-            txtScore.Clear();
+            try
+            {
+                txtStudentId.Clear();
+                txtSubjectId.Clear();
+                txtAssessmentType.Clear();
+                txtScore.Clear();
+                dpAssessmentDate.SelectedDate = null;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error to clean inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

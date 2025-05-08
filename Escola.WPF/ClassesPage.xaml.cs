@@ -15,12 +15,20 @@ namespace Escola.WPF
 
         public ClassesPage()
         {
-            InitializeComponent();
-            _dataService = new ApiService();  // Serviço API para Classes
-            LoadClasses();  // Carrega as classes ao iniciar a página
-            LoadStudents();
-            LoadTeachers();
-            LoadSubjects();
+            try
+            {
+                InitializeComponent();
+                _dataService = new ApiService();  // Serviço API para Classes
+                LoadClasses();  // Carrega as classes ao iniciar a página
+                LoadStudents();
+                LoadTeachers();
+                LoadSubjects();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+          
         }
 
         private async void LoadClasses()
