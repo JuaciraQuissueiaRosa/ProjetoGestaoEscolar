@@ -120,6 +120,39 @@ namespace SchoolAPI.Controllers
             return Ok(existing);
         }
 
+        [HttpDelete]
+        [Route("{eventId}/remove-student/{studentId}")]
+        public IHttpActionResult RemoveStudentFromEvent(int eventId, int studentId)
+        {
+            var participation = db.EventParticipations
+                .FirstOrDefault(p => p.EventId == eventId && p.StudentId == studentId);
+
+            if (participation == null)
+                return NotFound();
+
+            db.EventParticipations.DeleteOnSubmit(participation);
+            db.SubmitChanges();
+
+            return Ok("Student removed from event.");
+        }
+
+        [HttpDelete]
+        [Route("{eventId}/remove-teacher/{teacherId}")]
+        public IHttpActionResult RemoveTeacherFromEvent(int eventId, int teacherId)
+        {
+            var participation = db.EventParticipations
+                .FirstOrDefault(p => p.EventId == eventId && p.TeacherId == teacherId);
+
+            if (participation == null)
+                return NotFound();
+
+            db.EventParticipations.DeleteOnSubmit(participation);
+            db.SubmitChanges();
+
+            return Ok("Teacher removed from event.");
+        }
+
+
         // DELETE: api/events/5
         [HttpDelete]
         [Route("{id}")]

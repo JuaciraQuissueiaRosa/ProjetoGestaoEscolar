@@ -338,6 +338,18 @@ namespace Escola.WPF.Services
             var response = await _client.PostAsync($"events/{eventId}/associate-teacher/{teacherId}", null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task RemoveStudentFromEventAsync(int eventId, int studentId)
+        {
+            var response = await _client.DeleteAsync($"events/{eventId}/remove-student/{studentId}");
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task RemoveTeacherFromEventAsync(int eventId, int teacherId)
+        {
+            var response = await _client.DeleteAsync($"events/{eventId}/remove-teacher/{teacherId}");
+            response.EnsureSuccessStatusCode();
+        }
     }
 
 }

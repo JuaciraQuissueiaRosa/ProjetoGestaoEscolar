@@ -153,6 +153,39 @@ namespace Escola.WPF
             }
 
         }
+        private async void btnRemoveStudent_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgEvents.SelectedItem is Event selectedEvent && cbStudents.SelectedItem is Student selectedStudent)
+            {
+                try
+                {
+                    await _eventService.RemoveStudentFromEventAsync(selectedEvent.Id, selectedStudent.Id);
+                    MessageBox.Show("Student removed from event.");
+                    LoadEvents(); // Atualiza grid
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error removing student: {ex.Message}");
+                }
+            }
+        }
+
+        private async void btnRemoveTeacher_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgEvents.SelectedItem is Event selectedEvent && cbTeachers.SelectedItem is Teacher selectedTeacher)
+            {
+                try
+                {
+                    await _eventService.RemoveTeacherFromEventAsync(selectedEvent.Id, selectedTeacher.Id);
+                    MessageBox.Show("Teacher removed from event.");
+                    LoadEvents(); // Atualiza grid
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error removing teacher: {ex.Message}");
+                }
+            }
+        }
 
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
