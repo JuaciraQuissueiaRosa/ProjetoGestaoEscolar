@@ -17,6 +17,7 @@ namespace Escola.WPF
             InitializeComponent();
             _dataService = new ApiService();
             LoadSubjects();  // Carrega as disciplinas ao iniciar a página
+            LoadTeachers(); // Carrega os professores no ComboBox
         }
 
         private async void LoadSubjects()
@@ -31,6 +32,19 @@ namespace Escola.WPF
                 MessageBox.Show($"Erro ao carregar as disciplinas: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             dgSubjects.Items.Refresh();
+        }
+
+        private async void LoadTeachers()
+        {
+            try
+            {
+                var teachers = await _dataService.GetTeachersAsync();
+                cbTeachers.ItemsSource = teachers;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar professores: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
@@ -75,6 +89,27 @@ namespace Escola.WPF
                 MessageBox.Show($"Erro ao editar disciplina: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private async void btnAssociateTeacher_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgSubjects.SelectedItem is Subject selectedSubject && cbTeachers.SelectedItem is Teacher selectedTeacher)
+            {
+                try
+                {
+                    await _dataService.AssociateTeacherToSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
+                    MessageBox.Show("Professor associado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao associar professor: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecione uma disciplina e um professor.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {

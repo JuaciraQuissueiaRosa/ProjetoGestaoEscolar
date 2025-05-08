@@ -320,6 +320,12 @@ namespace Escola.WPF.Services
             var response = await _client.PostAsync($"classes/{classId}/associate-student/{studentId}", null);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task AssociateTeacherToSubjectAsync(int subjectId, int teacherId)
+        {
+            var response = await _client.PostAsync($"subjects/{subjectId}/associate-teacher/{teacherId}", null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 
 }

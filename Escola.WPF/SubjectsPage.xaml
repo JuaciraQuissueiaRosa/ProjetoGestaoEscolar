@@ -20,6 +20,7 @@
             <Button Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
             <Button Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
+            <Button Content="Associate Teacher" Width="140" Margin="2" Click="btnAssociateTeacher_Click"/>
         </StackPanel>
 
         <!-- Input Fields (Labels and TextBoxes) -->
@@ -35,7 +36,15 @@
                 <Label Content="Weekly Hours:" Width="150" VerticalAlignment="Center"/>
                 <TextBox Name="txtWeeklyHours" Width="200" />
             </StackPanel>
+
+            <!-- Teacher Association -->
+            <StackPanel Orientation="Horizontal" Margin="0,10">
+                <Label Content="Select Teacher:" Width="150" VerticalAlignment="Center"/>
+                <ComboBox Name="cbTeachers" Width="200" DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+            </StackPanel>
         </StackPanel>
+        
+        
 
         <!-- Subjects DataGrid -->
         <DataGrid Name="dgSubjects"
