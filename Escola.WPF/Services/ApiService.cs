@@ -326,6 +326,18 @@ namespace Escola.WPF.Services
             var response = await _client.PostAsync($"subjects/{subjectId}/associate-teacher/{teacherId}", null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task AssociateStudentToEventAsync(int eventId, int studentId)
+        {
+            var response = await _client.PostAsync($"events/{eventId}/associate-student/{studentId}", null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task AssociateTeacherToEventAsync(int eventId, int teacherId)
+        {
+            var response = await _client.PostAsync($"events/{eventId}/associate-teacher/{teacherId}", null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 
 }

@@ -13,13 +13,27 @@ namespace SchoolAPI.Controllers
     public class EventsController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
-        
+
         // GET: api/events
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
         {
-            var events = db.Events.ToList();
+            var events = db.Events.Select(e => new
+            {
+                e.Id,
+                e.Name,
+                e.Description,
+                e.EventDate,
+                e.Location,
+                Students = e.EventParticipations
+                             .Where(p => p.StudentId != null)
+                             .Select(p => new { p.Student.Id, p.Student.FullName }).ToList(),
+                Teachers = e.EventParticipations
+                             .Where(p => p.TeacherId != null)
+                             .Select(p => new { p.Teacher.Id, p.Teacher.FullName }).ToList()
+            }).ToList();
+
             return Ok(events);
         }
 
@@ -46,6 +60,47 @@ namespace SchoolAPI.Controllers
 
             return Ok(ev);
         }
+
+        [HttpPost]
+        [Route("{eventId}/associate-student/{studentId}")]
+        public IHttpActionResult AssociateStudent(int eventId, int studentId)
+        {
+            if (!db.Events.Any(e => e.Id == eventId) || !db.Students.Any(s => s.Id == studentId))
+                return NotFound();
+
+            var exists = db.EventParticipations.Any(p => p.EventId == eventId && p.StudentId == studentId);
+            if (exists)
+                return BadRequest("This student is already associated with the event.");
+
+            db.EventParticipations.InsertOnSubmit(new EventParticipation
+            {
+                EventId = eventId,
+                StudentId = studentId
+            });
+            db.SubmitChanges();
+            return Ok("Student associated with event successfully.");
+        }
+
+        [HttpPost]
+        [Route("{eventId}/associate-teacher/{teacherId}")]
+        public IHttpActionResult AssociateTeacher(int eventId, int teacherId)
+        {
+            if (!db.Events.Any(e => e.Id == eventId) || !db.Teachers.Any(t => t.Id == teacherId))
+                return NotFound();
+
+            var exists = db.EventParticipations.Any(p => p.EventId == eventId && p.TeacherId == teacherId);
+            if (exists)
+                return BadRequest("This teacher is already associated with the event.");
+
+            db.EventParticipations.InsertOnSubmit(new EventParticipation
+            {
+                EventId = eventId,
+                TeacherId = teacherId
+            });
+            db.SubmitChanges();
+            return Ok("Teacher associated with event successfully.");
+        }
+
 
         // PUT: api/events/5
         [HttpPut]

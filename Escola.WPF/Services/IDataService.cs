@@ -64,6 +64,8 @@ namespace Escola.WPF.Services
         Task<Event> GetEventByIdAsync(int id);
         Task AddEventAsync(Event ev);
         Task UpdateEventAsync(Event ev);
+        Task AssociateStudentToEventAsync(int eventId, int studentId);
+        Task AssociateTeacherToEventAsync(int eventId, int teacherId);
         Task<HttpResponseMessage> DeleteEventAsync(int id);
 
         // TimeTables

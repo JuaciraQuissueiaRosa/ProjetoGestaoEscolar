@@ -11,8 +11,13 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Formulário -->
             <RowDefinition Height="Auto"/>
+            <!-- ComboBox de associação -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botões -->
             <RowDefinition Height="*"/>
+            <!-- DataGrid -->
         </Grid.RowDefinitions>
 
         <!-- Formulário de entrada -->
@@ -45,21 +50,37 @@
             </StackPanel>
         </Grid>
 
+        <!-- ComboBoxes para associar -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5,0,10">
+            <StackPanel Margin="5">
+                <TextBlock Text="Select Student:" />
+                <ComboBox Name="cbStudents" Width="150" DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+            </StackPanel>
+            <StackPanel Margin="5">
+                <TextBlock Text="Select Teacher:" />
+                <ComboBox Name="cbTeachers" Width="150" DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+            </StackPanel>
+        </StackPanel>
+
         <!-- Botões -->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,0,15">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,0,15">
             <Button Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
             <Button Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
+            <Button Content="Add Teacher" Width="120" Margin="5" Click="btnAssociateTeacher_Click"/>
+            <Button Content="Add Student" Width="120" Margin="5" Click="btnAssociateStudent_Click"/>
         </StackPanel>
 
         <!-- DataGrid -->
-        <DataGrid Name="dgEvents" Grid.Row="2" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True">
+        <DataGrid Name="dgEvents" Grid.Row="3" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="Event Date" Binding="{Binding EventDate}" Width="*"/>
                 <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="*"/>
+                <DataGridTextColumn Header="Students" Binding="{Binding StudentNames}" Width="*"/>
+                <DataGridTextColumn Header="Teachers" Binding="{Binding TeacherNames}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
