@@ -355,7 +355,7 @@ namespace Escola.WPF.Services
 
         public async Task<List<FinalAverage>> GetFinalAveragesByStudent(int studentId)
         {
-            var response = await _client.GetAsync($"finalaverages/student/{studentId}");
+            var response = await _client.GetAsync($"averages/student/{studentId}");
             if (!response.IsSuccessStatusCode)
                 return new List<FinalAverage>();
 
