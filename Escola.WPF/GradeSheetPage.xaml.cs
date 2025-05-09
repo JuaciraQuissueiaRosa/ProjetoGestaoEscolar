@@ -1,5 +1,9 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot.Wpf;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -31,7 +35,59 @@ namespace Escola.WPF
                 MessageBox.Show($"Erro ao carregar as fichas de notas: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private async void LoadPerformanceChart(int studentId)
+        {
+            try
+            {
+                var averages = await _dataService.GetFinalAveragesByStudent(studentId);
 
+                if (averages == null || !averages.Any())
+                {
+                    MessageBox.Show("Este aluno não possui médias registradas.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Prepara os dados para o gráfico
+                string[] labels = averages.Select(a => a.SubjectName).ToArray();
+                double[] values = averages.Select(a => (double)a.Average).ToArray();
+
+                // Cria o modelo do gráfico
+                var plotModel = new PlotModel { Title = "Média por Disciplina" };
+
+                // Cria uma série de barras
+                var barSeries = new BarSeries
+                {
+                    ItemsSource = values.Select((value, index) => new BarItem { Value = value }).ToArray(),
+                };
+
+                // Adiciona a série ao gráfico
+                plotModel.Series.Add(barSeries);
+
+                // Define o eixo X
+                plotModel.Axes.Add(new OxyPlot.Axes.CategoryAxis
+                {
+                    Position = OxyPlot.Axes.AxisPosition.Bottom,
+                    Key = "Subjects",
+                    ItemsSource = labels
+                });
+
+                // Define o eixo Y
+                plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis
+                {
+                    Position = OxyPlot.Axes.AxisPosition.Left,
+                    Minimum = 0,
+                    Maximum = 20
+                });
+
+                // Atribui o gráfico ao controle
+                plotView.Model = plotModel;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao gerar gráfico: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -107,6 +163,14 @@ namespace Escola.WPF
             txtClassId.Clear();
             dpCreatedDate.SelectedDate = null;
             txtComments.Clear();
+        }
+
+        private void dgGradeSheets_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgGradeSheets.SelectedItem is GradeSheet selected)
+            {
+                LoadPerformanceChart(selected.StudentId);
+            }
         }
     }
 }

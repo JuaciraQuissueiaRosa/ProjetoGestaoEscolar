@@ -19,6 +19,8 @@ namespace Escola.WPF.Services
             {
                 BaseAddress = new Uri(baseUrl)
             };
+            // Define o timeout para 30 segundos
+            _client.Timeout = TimeSpan.FromSeconds(30);  // Timeout de 30 segundos
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
@@ -349,6 +351,17 @@ namespace Escola.WPF.Services
         {
             var response = await _client.DeleteAsync($"events/{eventId}/remove-teacher/{teacherId}");
             response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<List<FinalAverage>> GetFinalAveragesByStudent(int studentId)
+        {
+            var response = await _client.GetAsync($"finalaverages/student/{studentId}");
+            if (!response.IsSuccessStatusCode)
+                return new List<FinalAverage>();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<List<FinalAverage>>(content);
+            return data ?? new List<FinalAverage>();
         }
     }
 

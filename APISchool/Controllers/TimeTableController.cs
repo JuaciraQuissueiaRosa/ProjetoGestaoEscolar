@@ -15,6 +15,7 @@ namespace SchoolAPI.Controllers
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
         // GET:  api/timetable
         [HttpGet]
+        [Route("")]
         public IHttpActionResult Get()
         {
 

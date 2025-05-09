@@ -57,6 +57,7 @@ namespace Escola.WPF.Services
         Task<GradeSheet> GetReportByIdAsync(int id);
         Task AddReportAsync(GradeSheet report);
         Task UpdateReportAsync(GradeSheet report);
+        Task<List<FinalAverage>> GetFinalAveragesByStudent(int studentId);
         Task<HttpResponseMessage> DeleteReportAsync(int id);
 
         // Events

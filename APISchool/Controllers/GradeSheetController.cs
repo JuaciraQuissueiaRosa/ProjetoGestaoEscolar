@@ -13,40 +13,162 @@ namespace SchoolAPI.Controllers
     public class GradeSheetController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
-        // GET: api/Pautas
+        // GET: api/gradesheet
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Route("")]
+        public IHttpActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            var sheets = db.GradeSheets.Select(p => new
+            {
+                p.Id,
+                StudentName = p.Student.FullName,
+                ClassName = p.Class.Name,
+                p.CreatedDate,
+                p.Comments,
+                SubjectGrades = db.FinalAverages
+                    .Where(f => f.StudentId == p.StudentId)
+                    .Select(f => new
+                    {
+                        SubjectName = f.Subject.Name,
+                        Average = f.Average
+                    }).ToList()
+            }).ToList();
+
+            return Ok(sheets);
         }
 
-        // GET: api/Pautas/5
+        // GET: api/gradesheet/5
         [HttpGet]
         [Route("{id}")]
-        public string Get(int id)
+        public IHttpActionResult GetById(int id)
         {
-            return "value";
+            try
+            {
+                var pauta = db.GradeSheets.FirstOrDefault(p => p.Id == id);
+                if (pauta == null)
+                    return NotFound();
+
+                var subjectGrades = db.FinalAverages
+                    .Where(f => f.StudentId == pauta.StudentId)
+                    .Select(f => new
+                    {
+                        SubjectName = f.Subject.Name,
+                        Average = f.Average
+                    }).ToList();
+
+                return Ok(new
+                {
+                    GradeSheet = new
+                    {
+                        pauta.Id,
+                        StudentName = pauta.Student.FullName,
+                        ClassName = pauta.Class.Name,
+                        pauta.CreatedDate,
+                        pauta.Comments
+                    },
+                    Averages = subjectGrades
+                });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
-        // POST: api/Pautas
+        [HttpGet]
+        [Route("averages/student/{studentId}")]
+        public IHttpActionResult GetFinalAveragesByStudent(int studentId)
+        {
+            try
+            {
+                var averages = db.FinalAverages
+                    .Where(f => f.StudentId == studentId)
+                    .Select(f => new
+                    {
+                        f.Id,
+                        f.StudentId,
+                        f.SubjectId,
+                        SubjectName = f.Subject.Name,
+                        f.Average
+                    })
+                    .ToList();
+
+                if (!averages.Any())
+                    return NotFound();
+
+                return Ok(averages);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        // POST: api/gradesheet
         [HttpPost]
         [Route("")]
-        public void Post([FromBody]string value)
+        public IHttpActionResult Post([FromBody] GradeSheet data)
         {
+            if (data == null)
+                return BadRequest("Dados inválidos.");
+
+            try
+            {
+                db.GradeSheets.InsertOnSubmit(data);
+                db.SubmitChanges();
+                return Ok("Ficha de notas criada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
-        // PUT: api/Pautas/5
+        // PUT: api/gradesheet/5
         [HttpPut]
         [Route("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody] GradeSheet data)
         {
+            try
+            {
+                var existing = db.GradeSheets.FirstOrDefault(p => p.Id == id);
+                if (existing == null)
+                    return NotFound();
+
+                existing.StudentId = data.StudentId;
+                existing.ClassId = data.ClassId;
+                existing.CreatedDate = data.CreatedDate;
+                existing.Comments = data.Comments;
+
+                db.SubmitChanges();
+                return Ok("Ficha de notas atualizada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
-        // DELETE: api/Pautas/5
+        // DELETE: api/gradesheet/5
         [HttpDelete]
         [Route("{id}")]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            try
+            {
+                var pauta = db.GradeSheets.FirstOrDefault(p => p.Id == id);
+                if (pauta == null)
+                    return NotFound();
+
+                db.GradeSheets.DeleteOnSubmit(pauta);
+                db.SubmitChanges();
+
+                return Ok("Ficha de notas removida com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

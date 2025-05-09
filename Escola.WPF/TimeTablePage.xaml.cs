@@ -1,5 +1,8 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -46,7 +49,7 @@ namespace Escola.WPF
                 MessageBox.Show($"Erro ao carregar comboboxes: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+      
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -127,5 +130,7 @@ namespace Escola.WPF
             txtStartTime.Clear();
             txtEndTime.Clear();
         }
+
+    
     }
 }
