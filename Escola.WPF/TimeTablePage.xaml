@@ -6,59 +6,64 @@
       xmlns:local="clr-namespace:Escola.WPF"
       mc:Ignorable="d" d:DesignWidth="800"
       Title="TimeTablePage" Height="674">
-    <Grid>
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- DataGrid para exibir os horários -->
-        <DataGrid x:Name="dgTimeTable" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10" 
-              AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" Grid.Row="1">
+        <!-- Formulário -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Coluna 1 -->
+            <StackPanel Grid.Column="0" Margin="10">
+                <TextBlock Text="Class" Margin="0,5"/>
+                <ComboBox x:Name="txtClassId" Width="300" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+
+                <TextBlock Text="Subject" Margin="10,15,0,5"/>
+                <ComboBox x:Name="txtSubjectId" Width="300" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+
+                <TextBlock Text="Teacher" Margin="10,15,0,5"/>
+                <ComboBox x:Name="txtTeacherId" Width="300" DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+            </StackPanel>
+
+            <!-- Coluna 2 -->
+            <StackPanel Grid.Column="1" Margin="10">
+                <TextBlock Text="Day of Week" Margin="0,5"/>
+                <TextBox x:Name="txtDayOfWeek" Width="300"/>
+
+                <TextBlock Text="Start Time (HH:mm)" Margin="10,15,0,5"/>
+                <TextBox x:Name="txtStartTime" Width="300"/>
+
+                <TextBlock Text="End Time (HH:mm)" Margin="10,15,0,5"/>
+                <TextBox x:Name="txtEndTime" Width="300"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Tabela -->
+        <DataGrid x:Name="dgTimeTable" Grid.Row="1" Margin="0,10"
+              AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
-                <DataGridTextColumn Header="Class ID" Binding="{Binding ClassId}" />
-                <DataGridTextColumn Header="Subject ID" Binding="{Binding SubjectId}" />
-                <DataGridTextColumn Header="Teacher ID" Binding="{Binding TeacherId}" />
-                <DataGridTextColumn Header="Day of Week" Binding="{Binding DayOfWeek}" />
-                <DataGridTextColumn Header="Start Time" Binding="{Binding StartTime}" />
-                <DataGridTextColumn Header="End Time" Binding="{Binding EndTime}" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="Class ID" Binding="{Binding ClassId}" Width="*"/>
+                <DataGridTextColumn Header="Subject ID" Binding="{Binding SubjectId}" Width="*"/>
+                <DataGridTextColumn Header="Teacher ID" Binding="{Binding TeacherId}" Width="*"/>
+                <DataGridTextColumn Header="Day" Binding="{Binding DayOfWeek}" Width="*"/>
+                <DataGridTextColumn Header="Start" Binding="{Binding StartTime}" Width="*"/>
+                <DataGridTextColumn Header="End" Binding="{Binding EndTime}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- Campos de entrada para criar/editar horários -->
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" Grid.Row="0">
-            <!-- Class ID -->
-            <Label Content="Class ID" HorizontalAlignment="Left" Margin="0,5" />
-            <TextBox x:Name="txtClassId" Width="300" Margin="0,5" Padding="10" />
-
-            <!-- Subject ID -->
-            <Label Content="Subject ID" HorizontalAlignment="Left" Margin="0,5" />
-            <TextBox x:Name="txtSubjectId" Width="300" Margin="0,5" Padding="10" />
-
-            <!-- Teacher ID -->
-            <Label Content="Teacher ID" HorizontalAlignment="Left" Margin="0,5" />
-            <TextBox x:Name="txtTeacherId" Width="300" Margin="0,5" Padding="10" />
-
-            <!-- Day of Week -->
-            <Label Content="Day of Week" HorizontalAlignment="Left" Margin="0,5" />
-            <TextBox x:Name="txtDayOfWeek" Width="300" Margin="0,5" Padding="10" />
-
-            <!-- Start Time -->
-            <Label Content="Start Time (HH:mm)" HorizontalAlignment="Left" Margin="0,5" />
-            <TextBox x:Name="txtStartTime" Width="300" Margin="0,5" Padding="10" />
-
-            <!-- End Time -->
-            <Label Content="End Time (HH:mm)" HorizontalAlignment="Left" Margin="0,5" />
-            <TextBox x:Name="txtEndTime" Width="300" Margin="0,5" Padding="10" />
-        </StackPanel>
-
-        <!-- Botões de Ação -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" Grid.Row="2">
-            <Button x:Name="btnCreate" Content="Create" Width="100" Margin="5" Padding="10" Click="btnCreate_Click"/>
-            <Button x:Name="btnEdit" Content="Edit" Width="100" Margin="5" Padding="10" Click="btnEdit_Click"/>
-            <Button x:Name="btnDelete" Content="Delete" Width="100" Margin="5" Padding="10" Click="btnDelete_Click"/>
+        <!-- Botões -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Button x:Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
+            <Button x:Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
+            <Button x:Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
         </StackPanel>
     </Grid>
 </Page>

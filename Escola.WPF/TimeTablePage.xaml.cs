@@ -16,19 +16,34 @@ namespace Escola.WPF
         {
             InitializeComponent();
             _dataService = new ApiService();
-            LoadTimeTable();  // Carrega as informações ao iniciar a página
+            LoadTimeTable();
+            LoadComboBoxes(); // <- importante!
         }
 
         private async void LoadTimeTable()
         {
             try
             {
-                var records = await _dataService.GetTimeTablesAsync();  // Obtém todos os registros da tabela
-                dgTimeTable.ItemsSource = records;  // Preenche o DataGrid
+                var records = await _dataService.GetTimeTablesAsync();
+                dgTimeTable.ItemsSource = records;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao carregar os horários: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void LoadComboBoxes()
+        {
+            try
+            {
+                txtClassId.ItemsSource = await _dataService.GetClassesAsync();
+                txtSubjectId.ItemsSource = await _dataService.GetSubjectsAsync();
+                txtTeacherId.ItemsSource = await _dataService.GetTeachersAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar comboboxes: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -38,16 +53,17 @@ namespace Escola.WPF
             {
                 var newRecord = new TimeTable
                 {
-                    ClassId = int.Parse(txtClassId.Text),
-                    SubjectId = int.Parse(txtSubjectId.Text),
-                    TeacherId = int.Parse(txtTeacherId.Text),
+                    ClassId = (int)txtClassId.SelectedValue,
+                    SubjectId = (int)txtSubjectId.SelectedValue,
+                    TeacherId = (int)txtTeacherId.SelectedValue,
                     DayOfWeek = txtDayOfWeek.Text,
                     StartTime = TimeSpan.Parse(txtStartTime.Text),
                     EndTime = TimeSpan.Parse(txtEndTime.Text)
                 };
-                await _dataService.AddTimeTableAsync(newRecord);  // Adiciona o novo horário
-                LoadTimeTable();  // Atualiza a lista após a criação
-                ClearInputs();  // Limpa os campos de entrada
+
+                await _dataService.AddTimeTableAsync(newRecord);
+                LoadTimeTable();
+                ClearInputs();
             }
             catch (Exception ex)
             {
@@ -57,8 +73,7 @@ namespace Escola.WPF
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            var selected = (TimeTable)dgTimeTable.SelectedItem;
-            if (selected == null)
+            if (dgTimeTable.SelectedItem is not TimeTable selected)
             {
                 MessageBox.Show("Selecione um horário para editar.");
                 return;
@@ -66,16 +81,16 @@ namespace Escola.WPF
 
             try
             {
-                selected.ClassId = int.Parse(txtClassId.Text);
-                selected.SubjectId = int.Parse(txtSubjectId.Text);
-                selected.TeacherId = int.Parse(txtTeacherId.Text);
+                selected.ClassId = (int)txtClassId.SelectedValue;
+                selected.SubjectId = (int)txtSubjectId.SelectedValue;
+                selected.TeacherId = (int)txtTeacherId.SelectedValue;
                 selected.DayOfWeek = txtDayOfWeek.Text;
                 selected.StartTime = TimeSpan.Parse(txtStartTime.Text);
                 selected.EndTime = TimeSpan.Parse(txtEndTime.Text);
 
-                await _dataService.UpdateTimeTableAsync(selected);  // Atualiza o horário selecionado
-                LoadTimeTable();  // Atualiza a lista após a edição
-                ClearInputs();  // Limpa os campos de entrada
+                await _dataService.UpdateTimeTableAsync(selected);
+                LoadTimeTable();
+                ClearInputs();
             }
             catch (Exception ex)
             {
@@ -85,8 +100,7 @@ namespace Escola.WPF
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            var selected = (TimeTable)dgTimeTable.SelectedItem;
-            if (selected == null)
+            if (dgTimeTable.SelectedItem is not TimeTable selected)
             {
                 MessageBox.Show("Selecione um horário para excluir.");
                 return;
@@ -94,9 +108,9 @@ namespace Escola.WPF
 
             try
             {
-                await _dataService.DeleteTimeTableAsync(selected.Id);  // Deleta o horário selecionado
-                LoadTimeTable();  // Atualiza a lista após a exclusão
-                ClearInputs();  // Limpa os campos de entrada
+                await _dataService.DeleteTimeTableAsync(selected.Id);
+                LoadTimeTable();
+                ClearInputs();
             }
             catch (Exception ex)
             {
@@ -106,9 +120,9 @@ namespace Escola.WPF
 
         private void ClearInputs()
         {
-            txtClassId.Clear();
-            txtSubjectId.Clear();
-            txtTeacherId.Clear();
+            txtClassId.SelectedIndex = -1;
+            txtSubjectId.SelectedIndex = -1;
+            txtTeacherId.SelectedIndex = -1;
             txtDayOfWeek.Clear();
             txtStartTime.Clear();
             txtEndTime.Clear();

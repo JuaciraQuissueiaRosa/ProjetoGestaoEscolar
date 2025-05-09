@@ -24,32 +24,69 @@ namespace SchoolAPI.Controllers
             return Ok(timetables);
         }
 
-        // GET:  api/timetable/5
-        [HttpGet]
-        [Route("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST:  api/timetable
         [HttpPost]
-        public void Post([FromBody]string value)
+        [Route("")]
+        public IHttpActionResult Post([FromBody] Timetable data)
         {
+            if (data == null)
+                return BadRequest("Invalid timetable data.");
+
+            // Verificar conflitos de horário
+            var conflict = db.Timetables.Any(t =>
+                t.ClassId == data.ClassId &&
+                t.DayOfWeek == data.DayOfWeek &&
+                ((data.StartTime >= t.StartTime && data.StartTime < t.EndTime) ||
+                 (data.EndTime > t.StartTime && data.EndTime <= t.EndTime)));
+
+            if (conflict)
+                return BadRequest("Schedule conflict detected for the class.");
+
+            db.Timetables.InsertOnSubmit(data);
+            db.SubmitChanges();
+            return Ok("Timetable entry created.");
         }
 
-        // PUT: api/timetable/5
         [HttpPut]
         [Route("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody] Timetable updated)
         {
+            var timetable = db.Timetables.FirstOrDefault(t => t.Id == id);
+            if (timetable == null)
+                return NotFound();
+
+            // Verificar conflitos, ignorando o próprio horário
+            var conflict = db.Timetables.Any(t =>
+                t.Id != id &&
+                t.ClassId == updated.ClassId &&
+                t.DayOfWeek == updated.DayOfWeek &&
+                ((updated.StartTime >= t.StartTime && updated.StartTime < t.EndTime) ||
+                 (updated.EndTime > t.StartTime && updated.EndTime <= t.EndTime)));
+
+            if (conflict)
+                return BadRequest("Schedule conflict detected for the class.");
+
+            timetable.ClassId = updated.ClassId;
+            timetable.SubjectId = updated.SubjectId;
+            timetable.TeacherId = updated.TeacherId;
+            timetable.DayOfWeek = updated.DayOfWeek;
+            timetable.StartTime = updated.StartTime;
+            timetable.EndTime = updated.EndTime;
+
+            db.SubmitChanges();
+            return Ok("Timetable entry updated.");
         }
 
-        // DELETE:  api/timetable/5
         [HttpDelete]
         [Route("{id}")]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
+            var timetable = db.Timetables.FirstOrDefault(t => t.Id == id);
+            if (timetable == null)
+                return NotFound();
+
+            db.Timetables.DeleteOnSubmit(timetable);
+            db.SubmitChanges();
+            return Ok("Timetable entry deleted.");
         }
     }
 }

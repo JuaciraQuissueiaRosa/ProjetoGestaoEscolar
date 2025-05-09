@@ -78,7 +78,8 @@ namespace Escola.WPF
                     Description = txtDescription.Text
                 };
                 await _eventService.AddEventAsync(newEvent); // Chama o método correto AddEventAsync
-                LoadEvents();
+                LoadEvents(); // Atualiza grid
+                dgEvents.Items.Refresh(); // <-- esse força atualização visual
             }
             catch (Exception ex)
             {
@@ -97,7 +98,8 @@ namespace Escola.WPF
                 selectedEvent.Location = txtLocation.Text;
                 selectedEvent.Description = txtDescription.Text;
                 await _eventService.UpdateEventAsync(selectedEvent); // Chama o método correto UpdateEventAsync
-                LoadEvents();
+                LoadEvents(); // Atualiza grid
+                dgEvents.Items.Refresh(); // <-- esse força atualização visual
             }
             catch (Exception ex)
             {
@@ -116,6 +118,8 @@ namespace Escola.WPF
                     {
                         await _eventService.AssociateStudentToEventAsync(selectedEvent.Id, selectedStudent.Id);
                         MessageBox.Show("Student successfully associated.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadEvents(); // Atualiza grid
+                        dgEvents.Items.Refresh(); // <-- esse força atualização visual
                     }
                     catch (Exception ex)
                     {
@@ -140,6 +144,8 @@ namespace Escola.WPF
                     {
                         await _eventService.AssociateTeacherToEventAsync(selectedEvent.Id, selectedTeacher.Id);
                         MessageBox.Show("Teacher successfully associated.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadEvents(); // Atualiza grid
+                        dgEvents.Items.Refresh(); // <-- esse força atualização visual
                     }
                     catch (Exception ex)
                     {
@@ -162,6 +168,7 @@ namespace Escola.WPF
                     await _eventService.RemoveStudentFromEventAsync(selectedEvent.Id, selectedStudent.Id);
                     MessageBox.Show("Student removed from event.");
                     LoadEvents(); // Atualiza grid
+                    dgEvents.Items.Refresh(); // <-- esse força atualização visual
                 }
                 catch (Exception ex)
                 {
@@ -179,6 +186,7 @@ namespace Escola.WPF
                     await _eventService.RemoveTeacherFromEventAsync(selectedEvent.Id, selectedTeacher.Id);
                     MessageBox.Show("Teacher removed from event.");
                     LoadEvents(); // Atualiza grid
+                    dgEvents.Items.Refresh(); // <-- esse força atualização visual
                 }
                 catch (Exception ex)
                 {
@@ -195,6 +203,7 @@ namespace Escola.WPF
                 var selectedEvent = (Event)dgEvents.SelectedItem;
                 await _eventService.DeleteEventAsync(selectedEvent.Id); // Chama o método correto DeleteEventAsync
                 LoadEvents();
+                dgEvents.Items.Refresh(); // <-- esse força atualização visual
             }
             catch (Exception ex)
             {
