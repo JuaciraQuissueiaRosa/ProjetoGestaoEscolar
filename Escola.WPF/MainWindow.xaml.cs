@@ -44,11 +44,7 @@ namespace Escola.WPF
         {
             MainFrame.Navigate(new TimeTablesPage()); // Corrigir o namespace e o nome da página
         }
-        private void BtnLoadGradeSheets_Click(object sender, RoutedEventArgs e)
-        {
-            MainFrame.Navigate(new GradeSheetsPage()); // Corrigir o namespace e o nome da página
-        }
-
+    
         private void BtnLoadEvents_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new EventsPage()); // Corrigir o namespace e o nome da página
