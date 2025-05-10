@@ -158,7 +158,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ClassesController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
-    <Compile Include="Controllers\GradeSheetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MarksController.cs" />
     <Compile Include="Controllers\StudentsController.cs" />

@@ -52,13 +52,7 @@ namespace Escola.WPF.Services
         Task UpdateMarkAsync(Mark mark);
         Task<HttpResponseMessage> DeleteMarkAsync(int id);
 
-        // Reports (GradeSheet)
-        Task<List<GradeSheet>> GetReportsAsync();
-        Task<GradeSheet> GetReportByIdAsync(int id);
-        Task AddReportAsync(GradeSheet report);
-        Task UpdateReportAsync(GradeSheet report);
-        Task<List<FinalAverage>> GetFinalAveragesByStudent(int studentId);
-        Task<HttpResponseMessage> DeleteReportAsync(int id);
+     
 
         // Events
         Task<List<Event>> GetEventsAsync();

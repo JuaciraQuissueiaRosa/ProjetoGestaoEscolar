@@ -20,7 +20,7 @@ namespace Escola.WPF.Services
                 BaseAddress = new Uri(baseUrl)
             };
             // Define o timeout para 30 segundos
-            _client.Timeout = TimeSpan.FromSeconds(30);  // Timeout de 30 segundos
+            _client.Timeout = TimeSpan.FromSeconds(600);  // Timeout de 30 segundos
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
@@ -179,35 +179,11 @@ namespace Escola.WPF.Services
             return await _client.DeleteAsync($"marks/{id}");
         }
 
-        public async Task<List<GradeSheet>> GetReportsAsync()
-        {
-            var response = await _client.GetAsync("reports");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<GradeSheet>>();
-        }
-
-        public async Task<GradeSheet> GetReportByIdAsync(int id)
-        {
-            var response = await _client.GetAsync($"reports/{id}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<GradeSheet>();
-        }
-
-        public async Task AddReportAsync(GradeSheet report)
-        {
-            var response = await _client.PostAsJsonAsync("reports", report);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task UpdateReportAsync(GradeSheet report)
-        {
-            var response = await _client.PutAsJsonAsync($"reports/{report.Id}", report);
-            response.EnsureSuccessStatusCode();
-        }
+    
 
         public async Task<HttpResponseMessage> DeleteReportAsync(int id)
         {
-            return await _client.DeleteAsync($"reports/{id}");
+            return await _client.DeleteAsync($"gradesheet/{id}");
         }
 
         public async Task<List<Event>> GetEventsAsync()
@@ -242,33 +218,33 @@ namespace Escola.WPF.Services
         }
         public async Task<List<TimeTable>> GetTimeTablesAsync()
         {
-            var response = await _client.GetAsync("timetables");
+            var response = await _client.GetAsync("timetable");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<TimeTable>>();
         }
 
         public async Task<TimeTable> GetTimeTableByIdAsync(int id)
         {
-            var response = await _client.GetAsync($"timetables/{id}");
+            var response = await _client.GetAsync($"timetable/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<TimeTable>();
         }
 
         public async Task AddTimeTableAsync(TimeTable timeTable)
         {
-            var response = await _client.PostAsJsonAsync("timetables", timeTable);
+            var response = await _client.PostAsJsonAsync("timetable", timeTable);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task UpdateTimeTableAsync(TimeTable timeTable)
         {
-            var response = await _client.PutAsJsonAsync($"timetables/{timeTable.Id}", timeTable);
+            var response = await _client.PutAsJsonAsync($"timetable/{timeTable.Id}", timeTable);
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<HttpResponseMessage> DeleteTimeTableAsync(int id)
         {
-            return await _client.DeleteAsync($"timetables/{id}");
+            return await _client.DeleteAsync($"timetable/{id}");
         }
 
         public async Task<List<Student>> SearchStudentsAsync(string term)
@@ -353,16 +329,7 @@ namespace Escola.WPF.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<List<FinalAverage>> GetFinalAveragesByStudent(int studentId)
-        {
-            var response = await _client.GetAsync($"averages/student/{studentId}");
-            if (!response.IsSuccessStatusCode)
-                return new List<FinalAverage>();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var data = JsonConvert.DeserializeObject<List<FinalAverage>>(content);
-            return data ?? new List<FinalAverage>();
-        }
+    
     }
 
 }

@@ -6,7 +6,6 @@
       <Column Name="AcademicYear" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="Course" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Shift" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
-      <Association Name="Class_GradeSheet" Member="GradeSheets" ThisKey="Id" OtherKey="ClassId" Type="GradeSheet" />
       <Association Name="Class_Student" Member="Students" ThisKey="Id" OtherKey="ClassId" Type="Student" />
       <Association Name="Class_SubjectClass" Member="SubjectClasses" ThisKey="Id" OtherKey="ClassId" Type="SubjectClass" />
       <Association Name="Class_TeacherClass" Member="TeacherClasses" ThisKey="Id" OtherKey="ClassId" Type="TeacherClass" />
@@ -44,17 +43,6 @@
       <Association Name="Subject_FinalAverage" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.GradeSheets" Member="GradeSheets">
-    <Type Name="GradeSheet">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="StudentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="ClassId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="CreatedDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="Comments" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Association Name="Class_GradeSheet" Member="Class" ThisKey="ClassId" OtherKey="Id" Type="Class" IsForeignKey="true" />
-      <Association Name="Student_GradeSheet" Member="Student" ThisKey="StudentId" OtherKey="Id" Type="Student" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Marks" Member="Marks">
     <Type Name="Mark">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -80,7 +68,6 @@
       <Column Name="ClassId" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Student_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="StudentId" Type="EventParticipation" />
       <Association Name="Student_FinalAverage" Member="FinalAverages" ThisKey="Id" OtherKey="StudentId" Type="FinalAverage" />
-      <Association Name="Student_GradeSheet" Member="GradeSheets" ThisKey="Id" OtherKey="StudentId" Type="GradeSheet" />
       <Association Name="Student_Mark" Member="Marks" ThisKey="Id" OtherKey="StudentId" Type="Mark" />
       <Association Name="Class_Student" Member="Class" ThisKey="ClassId" OtherKey="Id" Type="Class" IsForeignKey="true" />
     </Type>

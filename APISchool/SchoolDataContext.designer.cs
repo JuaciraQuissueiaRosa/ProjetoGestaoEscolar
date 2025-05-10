@@ -23,7 +23,7 @@ namespace APISchool
 	
 	
 	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="GestaoEscolarRG")]
-	public partial class SchoolDataContext : System.Data.Linq.DataContext
+	public partial class SchoolDataContextDataContext : System.Data.Linq.DataContext
 	{
 		
 		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
@@ -42,9 +42,6 @@ namespace APISchool
     partial void InsertFinalAverage(FinalAverage instance);
     partial void UpdateFinalAverage(FinalAverage instance);
     partial void DeleteFinalAverage(FinalAverage instance);
-    partial void InsertGradeSheet(GradeSheet instance);
-    partial void UpdateGradeSheet(GradeSheet instance);
-    partial void DeleteGradeSheet(GradeSheet instance);
     partial void InsertMark(Mark instance);
     partial void UpdateMark(Mark instance);
     partial void DeleteMark(Mark instance);
@@ -71,25 +68,25 @@ namespace APISchool
     partial void DeleteTimetable(Timetable instance);
     #endregion
 		
-		public SchoolDataContext(string connection) : 
+		public SchoolDataContextDataContext(string connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public SchoolDataContext(System.Data.IDbConnection connection) : 
+		public SchoolDataContextDataContext(System.Data.IDbConnection connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public SchoolDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public SchoolDataContextDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public SchoolDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public SchoolDataContextDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
@@ -124,14 +121,6 @@ namespace APISchool
 			get
 			{
 				return this.GetTable<FinalAverage>();
-			}
-		}
-		
-		public System.Data.Linq.Table<GradeSheet> GradeSheets
-		{
-			get
-			{
-				return this.GetTable<GradeSheet>();
 			}
 		}
 		
@@ -216,8 +205,6 @@ namespace APISchool
 		
 		private string _Shift;
 		
-		private EntitySet<GradeSheet> _GradeSheets;
-		
 		private EntitySet<Student> _Students;
 		
 		private EntitySet<SubjectClass> _SubjectClasses;
@@ -244,7 +231,6 @@ namespace APISchool
 		
 		public Class()
 		{
-			this._GradeSheets = new EntitySet<GradeSheet>(new Action<GradeSheet>(this.attach_GradeSheets), new Action<GradeSheet>(this.detach_GradeSheets));
 			this._Students = new EntitySet<Student>(new Action<Student>(this.attach_Students), new Action<Student>(this.detach_Students));
 			this._SubjectClasses = new EntitySet<SubjectClass>(new Action<SubjectClass>(this.attach_SubjectClasses), new Action<SubjectClass>(this.detach_SubjectClasses));
 			this._TeacherClasses = new EntitySet<TeacherClass>(new Action<TeacherClass>(this.attach_TeacherClasses), new Action<TeacherClass>(this.detach_TeacherClasses));
@@ -352,19 +338,6 @@ namespace APISchool
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Class_GradeSheet", Storage="_GradeSheets", ThisKey="Id", OtherKey="ClassId")]
-		public EntitySet<GradeSheet> GradeSheets
-		{
-			get
-			{
-				return this._GradeSheets;
-			}
-			set
-			{
-				this._GradeSheets.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Class_Student", Storage="_Students", ThisKey="Id", OtherKey="ClassId")]
 		public EntitySet<Student> Students
 		{
@@ -435,18 +408,6 @@ namespace APISchool
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_GradeSheets(GradeSheet entity)
-		{
-			this.SendPropertyChanging();
-			entity.Class = this;
-		}
-		
-		private void detach_GradeSheets(GradeSheet entity)
-		{
-			this.SendPropertyChanging();
-			entity.Class = null;
 		}
 		
 		private void attach_Students(Student entity)
@@ -1157,246 +1118,6 @@ namespace APISchool
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.GradeSheets")]
-	public partial class GradeSheet : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private System.Nullable<int> _StudentId;
-		
-		private System.Nullable<int> _ClassId;
-		
-		private System.Nullable<System.DateTime> _CreatedDate;
-		
-		private string _Comments;
-		
-		private EntityRef<Class> _Class;
-		
-		private EntityRef<Student> _Student;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnStudentIdChanging(System.Nullable<int> value);
-    partial void OnStudentIdChanged();
-    partial void OnClassIdChanging(System.Nullable<int> value);
-    partial void OnClassIdChanged();
-    partial void OnCreatedDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnCreatedDateChanged();
-    partial void OnCommentsChanging(string value);
-    partial void OnCommentsChanged();
-    #endregion
-		
-		public GradeSheet()
-		{
-			this._Class = default(EntityRef<Class>);
-			this._Student = default(EntityRef<Student>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StudentId", DbType="Int")]
-		public System.Nullable<int> StudentId
-		{
-			get
-			{
-				return this._StudentId;
-			}
-			set
-			{
-				if ((this._StudentId != value))
-				{
-					if (this._Student.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStudentIdChanging(value);
-					this.SendPropertyChanging();
-					this._StudentId = value;
-					this.SendPropertyChanged("StudentId");
-					this.OnStudentIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ClassId", DbType="Int")]
-		public System.Nullable<int> ClassId
-		{
-			get
-			{
-				return this._ClassId;
-			}
-			set
-			{
-				if ((this._ClassId != value))
-				{
-					if (this._Class.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnClassIdChanging(value);
-					this.SendPropertyChanging();
-					this._ClassId = value;
-					this.SendPropertyChanged("ClassId");
-					this.OnClassIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="Date")]
-		public System.Nullable<System.DateTime> CreatedDate
-		{
-			get
-			{
-				return this._CreatedDate;
-			}
-			set
-			{
-				if ((this._CreatedDate != value))
-				{
-					this.OnCreatedDateChanging(value);
-					this.SendPropertyChanging();
-					this._CreatedDate = value;
-					this.SendPropertyChanged("CreatedDate");
-					this.OnCreatedDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comments", DbType="NVarChar(255)")]
-		public string Comments
-		{
-			get
-			{
-				return this._Comments;
-			}
-			set
-			{
-				if ((this._Comments != value))
-				{
-					this.OnCommentsChanging(value);
-					this.SendPropertyChanging();
-					this._Comments = value;
-					this.SendPropertyChanged("Comments");
-					this.OnCommentsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Class_GradeSheet", Storage="_Class", ThisKey="ClassId", OtherKey="Id", IsForeignKey=true)]
-		public Class Class
-		{
-			get
-			{
-				return this._Class.Entity;
-			}
-			set
-			{
-				Class previousValue = this._Class.Entity;
-				if (((previousValue != value) 
-							|| (this._Class.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Class.Entity = null;
-						previousValue.GradeSheets.Remove(this);
-					}
-					this._Class.Entity = value;
-					if ((value != null))
-					{
-						value.GradeSheets.Add(this);
-						this._ClassId = value.Id;
-					}
-					else
-					{
-						this._ClassId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Class");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_GradeSheet", Storage="_Student", ThisKey="StudentId", OtherKey="Id", IsForeignKey=true)]
-		public Student Student
-		{
-			get
-			{
-				return this._Student.Entity;
-			}
-			set
-			{
-				Student previousValue = this._Student.Entity;
-				if (((previousValue != value) 
-							|| (this._Student.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Student.Entity = null;
-						previousValue.GradeSheets.Remove(this);
-					}
-					this._Student.Entity = value;
-					if ((value != null))
-					{
-						value.GradeSheets.Add(this);
-						this._StudentId = value.Id;
-					}
-					else
-					{
-						this._StudentId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Student");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Marks")]
 	public partial class Mark : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1750,8 +1471,6 @@ namespace APISchool
 		
 		private EntitySet<FinalAverage> _FinalAverages;
 		
-		private EntitySet<GradeSheet> _GradeSheets;
-		
 		private EntitySet<Mark> _Marks;
 		
 		private EntityRef<Class> _Class;
@@ -1780,7 +1499,6 @@ namespace APISchool
 		{
 			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
 			this._FinalAverages = new EntitySet<FinalAverage>(new Action<FinalAverage>(this.attach_FinalAverages), new Action<FinalAverage>(this.detach_FinalAverages));
-			this._GradeSheets = new EntitySet<GradeSheet>(new Action<GradeSheet>(this.attach_GradeSheets), new Action<GradeSheet>(this.detach_GradeSheets));
 			this._Marks = new EntitySet<Mark>(new Action<Mark>(this.attach_Marks), new Action<Mark>(this.detach_Marks));
 			this._Class = default(EntityRef<Class>);
 			OnCreated();
@@ -1956,19 +1674,6 @@ namespace APISchool
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_GradeSheet", Storage="_GradeSheets", ThisKey="Id", OtherKey="StudentId")]
-		public EntitySet<GradeSheet> GradeSheets
-		{
-			get
-			{
-				return this._GradeSheets;
-			}
-			set
-			{
-				this._GradeSheets.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_Mark", Storage="_Marks", ThisKey="Id", OtherKey="StudentId")]
 		public EntitySet<Mark> Marks
 		{
@@ -2055,18 +1760,6 @@ namespace APISchool
 		}
 		
 		private void detach_FinalAverages(FinalAverage entity)
-		{
-			this.SendPropertyChanging();
-			entity.Student = null;
-		}
-		
-		private void attach_GradeSheets(GradeSheet entity)
-		{
-			this.SendPropertyChanging();
-			entity.Student = this;
-		}
-		
-		private void detach_GradeSheets(GradeSheet entity)
 		{
 			this.SendPropertyChanging();
 			entity.Student = null;
