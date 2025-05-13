@@ -18,21 +18,44 @@ namespace SchoolAPI.Controllers
         [HttpGet]
         public IHttpActionResult Get()
         {
-            var subjects = db.Subjects.ToList();
+            var subjects = db.Subjects
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Name,
+                    s.WeeklyHours,
+                    TeacherNamesList = s.TeacherSubjects.Select(ts => ts.Teacher.FullName).ToList()
+                })
+                .ToList();
+
             if (!subjects.Any())
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No subject found."));
+
             return Ok(subjects);
         }
+
 
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
-            var subject = db.Subjects.FirstOrDefault(s => s.Id == id);
+            var subject = db.Subjects
+                .Where(s => s.Id == id)
+                .Select(s => new
+                {
+                    s.Id,
+                    s.Name,
+                    s.WeeklyHours,
+                    TeacherNamesList = s.TeacherSubjects.Select(ts => ts.Teacher.FullName).ToList()
+                })
+                .FirstOrDefault();
+
             if (subject == null)
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No subject found with ID = {id}."));
+
             return Ok(subject);
         }
+
 
         [HttpPost]
         public IHttpActionResult Post([FromBody] Subject subject)

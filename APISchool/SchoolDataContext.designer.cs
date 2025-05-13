@@ -23,7 +23,7 @@ namespace APISchool
 	
 	
 	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="GestaoEscolarRG")]
-	public partial class SchoolDataContextDataContext : System.Data.Linq.DataContext
+	public partial class SchoolDataContext : System.Data.Linq.DataContext
 	{
 		
 		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
@@ -68,25 +68,25 @@ namespace APISchool
     partial void DeleteTimetable(Timetable instance);
     #endregion
 		
-		public SchoolDataContextDataContext(string connection) : 
+		public SchoolDataContext(string connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public SchoolDataContextDataContext(System.Data.IDbConnection connection) : 
+		public SchoolDataContext(System.Data.IDbConnection connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public SchoolDataContextDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public SchoolDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public SchoolDataContextDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public SchoolDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();

@@ -16,9 +16,22 @@ namespace SchoolAPI.Controllers
 
         // GET: api/marks
         [HttpGet]
-        public IEnumerable<Mark> Get()
+        public IHttpActionResult Get()
         {
-            return db.Marks.ToList();
+            var marks = db.Marks.Select(m => new
+            {
+                m.Id,
+                m.StudentId,
+                m.SubjectId,
+                m.AssessmentType,
+                m.Grade,
+                m.AssessmentDate,
+                m.TeacherId,
+                StudentName = m.Student.FullName,
+                SubjectName = m.Subject.Name
+            }).ToList();
+
+            return Ok(marks);
         }
 
         // POST: api/marks
