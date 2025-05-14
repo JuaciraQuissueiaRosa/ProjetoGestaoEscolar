@@ -24,7 +24,9 @@ namespace SchoolAPI.Controllers
                     s.Id,
                     s.Name,
                     s.WeeklyHours,
-                    TeacherNamesList = s.TeacherSubjects.Select(ts => ts.Teacher.FullName).ToList()
+                    TeacherNamesList = s.TeacherSubjects
+                             .Where(p => p.TeacherId != null)
+                             .Select(p => new { p.Teacher.Id, p.Teacher.FullName }).ToList()
                 })
                 .ToList();
 

@@ -53,6 +53,9 @@
                 <DataGridTextColumn Header="Class Name" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Group Name" Binding="{Binding Course}" Width="*"/>
                 <DataGridTextColumn Header="Schedule" Binding="{Binding Shift}" Width="*"/>
+                <DataGridTextColumn Header="Students" Binding="{Binding StudentNames}" Width="*"/>
+                <DataGridTextColumn Header="Subjects" Binding="{Binding SubjectNames}" Width="*"/>
+                <DataGridTextColumn Header="Teachers" Binding="{Binding TeacherNames}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 

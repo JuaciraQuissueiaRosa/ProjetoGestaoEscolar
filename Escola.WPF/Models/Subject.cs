@@ -9,8 +9,9 @@
         public List<Teacher> TeacherNamesList { get; set; } = new();
       
         //join to show teachers names of subjects in wpf client side
+
         public string TeacherNames => TeacherNamesList != null && TeacherNamesList.Any()
-            ? string.Join(", ", TeacherNamesList.Select(t => t.FullName))
-            : "-";
+           ? string.Join(", ", TeacherNamesList.Select(s => s.FullName))
+           : "-";
     }
 }

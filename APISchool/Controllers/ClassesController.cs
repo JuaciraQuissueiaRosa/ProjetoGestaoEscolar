@@ -16,11 +16,33 @@ namespace SchoolAPI.Controllers
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
 
         [HttpGet]
+        [Route("")]
         public IHttpActionResult Get()
         {
-            var classes = db.Classes.ToList();
-            if (!classes.Any())
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No classes found."));
+            var classes = db.Classes.Select(c => new
+            {
+                c.Id,
+                c.Name,
+                c.AcademicYear,
+                c.Course,
+                c.Shift,
+
+                Students = db.Students
+          .Where(s => s.ClassId == c.Id)
+          .Select(s => new { s.Id, s.FullName })
+          .ToList(),
+
+                Teachers = db.TeacherClasses
+          .Where(tc => tc.ClassId == c.Id)
+          .Select(tc => new { tc.Teacher.Id, tc.Teacher.FullName })
+          .ToList(),
+
+                Subjects = db.SubjectClasses
+          .Where(sc => sc.ClassId == c.Id)
+          .Select(sc => new { sc.Subject.Id, sc.Subject.Name })
+          .ToList()
+            }).ToList();
+
             return Ok(classes);
         }
 

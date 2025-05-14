@@ -15,7 +15,7 @@
 
         public List<Subject> Subjects { get; set; } = new();
 
-        // Propriedades auxiliares para visualização
+
         public string StudentNames => Teachers != null && Teachers.Any()
             ? string.Join(", ", Teachers.Select(s => s.FullName))
             : "-";
