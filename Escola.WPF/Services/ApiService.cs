@@ -179,13 +179,6 @@ namespace Escola.WPF.Services
             return await _client.DeleteAsync($"marks/{id}");
         }
 
-    
-
-        public async Task<HttpResponseMessage> DeleteReportAsync(int id)
-        {
-            return await _client.DeleteAsync($"gradesheet/{id}");
-        }
-
         public async Task<List<Event>> GetEventsAsync()
         {
             var response = await _client.GetAsync("events");

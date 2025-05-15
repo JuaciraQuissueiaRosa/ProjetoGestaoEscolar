@@ -70,6 +70,7 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateTeachersInputs()) return;
                 var newProfessor = new Teacher
                 {
                     FullName = txtProfessorName.Text,
@@ -103,6 +104,7 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateTeachersInputs()) return;
                 if (dgProfessors.SelectedItem is Teacher selectedProfessor)
                 {
                     selectedProfessor.FullName = txtProfessorName.Text;
@@ -183,6 +185,35 @@ namespace Escola.WPF
             }
 
         }
+        private bool ValidateTeachersInputs()
+        {
+            if (string.IsNullOrWhiteSpace(txtProfessorName.Text))
+            {
+                MessageBox.Show("O nome do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtProfessorPhone.Text))
+            {
+                MessageBox.Show("O telefone do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtProfessorEmail.Text))
+            {
+                MessageBox.Show("O email do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtProfessorTeachingArea.Text))
+            {
+                MessageBox.Show("A área de ensino do professor é obrigatória.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
 
         // Limpar o formulário de input
         private void ClearProfessorForm()

@@ -11,18 +11,9 @@
         public int TeacherId { get; set; }
 
 
-      
-        public List<Student> Students { get; set; } = new();
-        public List<Subject> Subjects { get; set; } = new();
 
-        // Additional properties for wpf
-        public string StudentNames => Students != null && Students.Any()
-            ? string.Join(", ", Students.Select(s => s.FullName))
-            : "-";
-
-        public string SubjectNames => Subjects != null && Subjects.Any()
-            ? string.Join(", ", Subjects.Select(t => t.Name))
-            : "-";
+        public string StudentName { get; set; }
+        public string SubjectName { get; set; }
 
 
     }

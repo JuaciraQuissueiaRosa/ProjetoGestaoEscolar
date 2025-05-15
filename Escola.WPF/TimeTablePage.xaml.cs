@@ -54,6 +54,7 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateInputs()) return;
                 var newRecord = new TimeTable
                 {
                     ClassId = (int)txtClassId.SelectedValue,
@@ -84,6 +85,7 @@ namespace Escola.WPF
 
             try
             {
+                if (!ValidateInputs()) return;
                 selected.ClassId = (int)txtClassId.SelectedValue;
                 selected.SubjectId = (int)txtSubjectId.SelectedValue;
                 selected.TeacherId = (int)txtTeacherId.SelectedValue;
@@ -119,6 +121,53 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Erro ao excluir o horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private bool ValidateInputs()
+        {
+            if (txtClassId.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione uma turma.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (txtSubjectId.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione uma disciplina.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (txtTeacherId.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione um professor.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtDayOfWeek.Text))
+            {
+                MessageBox.Show("Indique o dia da semana.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (!TimeSpan.TryParse(txtStartTime.Text, out var start))
+            {
+                MessageBox.Show("Hora de início inválida. Use o formato HH:mm (ex: 08:30).", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (!TimeSpan.TryParse(txtEndTime.Text, out var end))
+            {
+                MessageBox.Show("Hora de fim inválida. Use o formato HH:mm (ex: 10:00).", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (end <= start)
+            {
+                MessageBox.Show("A hora de fim deve ser posterior à hora de início.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
         }
 
         private void ClearInputs()

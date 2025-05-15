@@ -59,6 +59,7 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateSubjectInputs()) return;
                 var newSubject = new Subject
                 {
                     Name = txtSubjectName.Text,
@@ -79,6 +80,7 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateSubjectInputs()) return;
                 var selectedSubject = (Subject)dgSubjects.SelectedItem;
                 if (selectedSubject == null)
                 {
@@ -178,6 +180,24 @@ namespace Escola.WPF
             }
           
         }
+
+        private bool ValidateSubjectInputs()
+        {
+            if (string.IsNullOrWhiteSpace(txtSubjectName.Text))
+            {
+                MessageBox.Show("O nome da disciplina é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (!int.TryParse(txtWeeklyHours.Text, out int hours) || hours < 1)
+            {
+                MessageBox.Show("Carga horária semanal inválida. Deve ser um número inteiro positivo.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }
 

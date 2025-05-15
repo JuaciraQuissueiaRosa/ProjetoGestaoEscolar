@@ -22,13 +22,13 @@ namespace SchoolAPI.Controllers
             {
                 m.Id,
                 m.StudentId,
+                StudentName = m.Student.FullName, // JOIN automático via FK
                 m.SubjectId,
+                SubjectName = m.Subject.Name,     // JOIN automático via FK
                 m.AssessmentType,
                 m.Grade,
                 m.AssessmentDate,
-                m.TeacherId,
-                StudentName = m.Student.FullName,
-                SubjectName = m.Subject.Name
+                m.TeacherId
             }).ToList();
 
             return Ok(marks);
