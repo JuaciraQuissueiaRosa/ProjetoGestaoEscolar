@@ -16,6 +16,7 @@ namespace SchoolAPI.Controllers
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
 
         [HttpGet]
+        [Route("")]
         public IHttpActionResult Get()
         {
             try
@@ -164,12 +165,26 @@ namespace SchoolAPI.Controllers
 
 
 
+        // POST: api/students
         [HttpPost]
-        public IHttpActionResult Post([FromBody] Student student)
+        [Route("")]
+        public IHttpActionResult Post([FromBody] Student data)
         {
-            db.Students.InsertOnSubmit(student);
+            if (data == null)
+                return BadRequest("Invalid student data.");
+
+            var newStudent = new Student
+            {
+                FullName = data.FullName,
+                Email = data.Email,
+                Phone = data.Phone,
+                Address = data.Address,
+                ClassId = data.ClassId
+            };
+
+            db.Students.InsertOnSubmit(newStudent);
             db.SubmitChanges();
-            return Ok("Student added successfully.");
+            return Ok(newStudent); // Retorna com o Id gerado
         }
 
         [HttpPut]

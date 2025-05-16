@@ -16,6 +16,7 @@ namespace SchoolAPI.Controllers
 
         // GET: api/marks
         [HttpGet]
+        [Route("")]
         public IHttpActionResult Get()
         {
             var marks = db.Marks.Select(m => new
@@ -36,8 +37,12 @@ namespace SchoolAPI.Controllers
 
         // POST: api/marks
         [HttpPost]
+        [Route("")]
         public IHttpActionResult Post([FromBody] Mark data)
         {
+            if (data.StudentId == null || data.SubjectId == null)
+                return BadRequest("StudentId and SubjectId are required.");
+
             int startYear = DateTime.Now.Year;
             int endYear = startYear + 1;
 
@@ -50,12 +55,23 @@ namespace SchoolAPI.Controllers
             if (data.AssessmentDate > academicYearEnd)
                 return BadRequest($"The academic year {startYear}/{endYear} has ended. Adding marks is not allowed.");
 
-            db.Marks.InsertOnSubmit(data);
+            var newMark = new Mark
+            {
+                StudentId = data.StudentId,
+                SubjectId = data.SubjectId,
+                Grade = data.Grade,
+                AssessmentType = data.AssessmentType,
+                AssessmentDate = data.AssessmentDate
+                // Id não é atribuído aqui – o banco gera automaticamente
+            };
+
+            db.Marks.InsertOnSubmit(newMark);
             db.SubmitChanges();
 
-            UpdateAverage(data.StudentId.Value, data.SubjectId.Value);
-            return Ok("Mark added successfully.");
+            UpdateAverage(newMark.StudentId.Value, newMark.SubjectId.Value);
+            return Ok(newMark); // Retorna o objeto completo com ID atribuído
         }
+
 
         // PUT: api/marks/5
         [HttpPut]

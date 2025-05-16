@@ -57,11 +57,19 @@ namespace SchoolAPI.Controllers
         }
 
         [HttpPost]
+        [Route("")]
         public IHttpActionResult Post([FromBody] Class newClass)
         {
             db.Classes.InsertOnSubmit(newClass);
             db.SubmitChanges();
-            return Ok("Class created successfully.");
+
+            return Ok(new
+            {
+                newClass.Name,
+                newClass.AcademicYear,
+                newClass.Course,
+                newClass.Shift
+            });
         }
 
         [HttpPost]

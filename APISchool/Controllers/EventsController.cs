@@ -48,17 +48,26 @@ namespace SchoolAPI.Controllers
             return Ok(ev);
         }
 
-        // POST: api/events
         [HttpPost]
-        public IHttpActionResult Create(Event ev)
+        [Route("")]
+        public IHttpActionResult Post([FromBody] Event data)
         {
-            if (ev == null)
+            if (data == null)
                 return BadRequest("Invalid event data.");
 
-            db.Events.InsertOnSubmit(ev);
+            var newEvent = new Event
+            {
+                Name = data.Name,
+                EventDate = data.EventDate,
+                Location = data.Location,
+                Description = data.Description
+                // Não precisa atribuir ID manualmente (assume que o banco gera automaticamente)
+            };
+
+            db.Events.InsertOnSubmit(newEvent);
             db.SubmitChanges();
 
-            return Ok(ev);
+            return Ok(newEvent); // Retorna o evento já com o ID atribuído
         }
 
         [HttpPost]

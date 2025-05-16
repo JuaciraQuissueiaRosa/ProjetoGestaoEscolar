@@ -16,6 +16,7 @@ namespace SchoolAPI.Controllers
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
 
         [HttpGet]
+        [Route("")]
         public IHttpActionResult Get()
         {
             var subjects = db.Subjects
@@ -59,12 +60,24 @@ namespace SchoolAPI.Controllers
         }
 
 
+        // POST: api/subjects
         [HttpPost]
-        public IHttpActionResult Post([FromBody] Subject subject)
+        [Route("")]
+        public IHttpActionResult Post([FromBody] Subject data)
         {
-            db.Subjects.InsertOnSubmit(subject);
+            if (data == null)
+                return BadRequest("Invalid subject data.");
+
+            var newSubject = new Subject
+            {
+                Name = data.Name,
+                WeeklyHours = data.WeeklyHours
+            };
+
+            db.Subjects.InsertOnSubmit(newSubject);
             db.SubmitChanges();
-            return Ok("Subject created successfully.");
+
+            return Ok(newSubject); // Retorna com o Id gerado
         }
 
         [HttpPost]

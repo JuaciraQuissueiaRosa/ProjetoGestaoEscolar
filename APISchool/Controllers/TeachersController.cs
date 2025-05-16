@@ -16,6 +16,7 @@ namespace SchoolAPI.Controllers
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
 
         [HttpGet]
+        [Route("")]
         public IHttpActionResult Get()
         {
             var teachers = db.Teachers.ToList();
@@ -34,18 +35,26 @@ namespace SchoolAPI.Controllers
             return Ok(teacher);
         }
 
+        // POST: api/teachers
         [HttpPost]
-        public IHttpActionResult Post([FromBody] Teacher teacher)
+        [Route("")]
+        public IHttpActionResult Post([FromBody] Teacher data)
         {
-            if (teacher == null)
+            if (data == null)
                 return BadRequest("Invalid teacher data.");
 
-            // Garantir que o ID não seja definido manualmente
-            teacher.Id = 0;
+            var newTeacher = new Teacher
+            {
+                FullName = data.FullName,
+                Email = data.Email,
+                Phone = data.Phone,
+                TeachingArea = data.TeachingArea
+            };
 
-            db.Teachers.InsertOnSubmit(teacher);
+            db.Teachers.InsertOnSubmit(newTeacher);
             db.SubmitChanges();
-            return Ok("Teacher added successfully.");
+
+            return Ok(newTeacher); // Retorna com o Id gerado
         }
 
         [HttpPut]
