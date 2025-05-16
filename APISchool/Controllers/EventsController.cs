@@ -164,7 +164,7 @@ namespace SchoolAPI.Controllers
 
             db.Events.DeleteOnSubmit(ev);
             db.SubmitChanges();
-            return Ok();
+            return Ok("Event deleted with success.");
         }
     }
 }

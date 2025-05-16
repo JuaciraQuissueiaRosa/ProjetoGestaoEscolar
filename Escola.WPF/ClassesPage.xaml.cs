@@ -95,6 +95,7 @@ namespace Escola.WPF
                 {
                     Name = txtClassName.Text,
                     Course = txtGroupName.Text,
+                    AcademicYear = txtAcademicYear.Text,
                     Shift = txtSchedule.Text
                 };
 
@@ -126,6 +127,7 @@ namespace Escola.WPF
                 if (dgClasses.SelectedItem is Class selectedClass)
                 {
                     selectedClass.Name = txtClassName.Text;
+                    selectedClass.AcademicYear = txtAcademicYear.Text;
                     selectedClass.Course = txtGroupName.Text;
                     selectedClass.Shift = txtSchedule.Text;
 
@@ -191,11 +193,26 @@ namespace Escola.WPF
             txtClassName.Clear();
             txtGroupName.Clear();
             txtSchedule.Clear();
+            txtAcademicYear.Clear();
         }
 
         private void dgClasses_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            try
+            {
+                var selectedClass = dgClasses.SelectedItem as Class;
+                if (selectedClass != null)
+                {
+                    txtClassName.Text = selectedClass.Name;
+                    txtGroupName.Text = selectedClass.Course;
+                   txtAcademicYear.Text = selectedClass.AcademicYear;
+                    txtSchedule.Text = selectedClass.Shift;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao selecionar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private async void btnAssociate_Click(object sender, RoutedEventArgs e)
@@ -228,6 +245,7 @@ namespace Escola.WPF
                         messages.Add(result ? $"✓ Subject associated." : "✗ Failed to associate subject.");
                     }
 
+                    LoadClasses(); // Atualiza o DataGrid com os dados atualizados da turma
                     MessageBox.Show(string.Join("\n", messages), "Association Result", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -258,6 +276,11 @@ namespace Escola.WPF
                 if (string.IsNullOrWhiteSpace(txtGroupName.Text))
                 {
                     HighlightError(txtGroupName, "O curso é obrigatório.");
+                    return false;
+                }
+                if (string.IsNullOrWhiteSpace(txtAcademicYear.Text))
+                {
+                    HighlightError(txtAcademicYear, "O ano letivo é obrigatório.");
                     return false;
                 }
 

@@ -213,6 +213,25 @@ namespace Escola.WPF
             txtEndTime.Clear();
         }
 
-    
+        private void dgTimeTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var selected = dgTimeTable.SelectedItem as TimeTable;
+                if (selected != null)
+                {
+                    txtClassId.SelectedValue = selected.ClassId;
+                    txtSubjectId.SelectedValue = selected.SubjectId;
+                    txtTeacherId.SelectedValue = selected.TeacherId;
+                    txtDayOfWeek.Text = selected.DayOfWeek;
+                    txtStartTime.Text = selected.StartTime.ToString(@"hh\:mm");
+                    txtEndTime.Text = selected.EndTime.ToString(@"hh\:mm");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao selecionar horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

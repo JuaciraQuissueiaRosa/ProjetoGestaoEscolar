@@ -13,7 +13,7 @@ namespace Escola.WPF.Services
     {
         private readonly HttpClient _client;
 
-        public ApiService(string baseUrl = "https://schoolapi.azurewebsites.net/api/")
+        public ApiService(string baseUrl = "https://apischool.azurewebsites.net/api/")
         {
             _client = new HttpClient
             {

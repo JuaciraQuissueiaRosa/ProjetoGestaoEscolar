@@ -225,6 +225,7 @@
       <LastGenOutput>SchoolDataContext.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Properties\PublishProfiles\APISchool - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\SchoolAPI - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />

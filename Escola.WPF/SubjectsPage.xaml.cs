@@ -15,35 +15,33 @@ namespace Escola.WPF
 
         public SubjectsPage()
         {
-            try
+            InitializeComponent();
+            _dataService = new ApiService();
+
+            Loaded += async (s, e) =>
             {
-                InitializeComponent();
-                _dataService = new ApiService();
-                LoadSubjects();  // Carrega as disciplinas ao iniciar a página
-                LoadTeachers(); // Carrega os professores no ComboBox
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error initialize page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                await ReloadSubjectsAsync();
+                await LoadTeachers();
+            };
 
         }
 
-        private async void LoadSubjects()
+        private async Task ReloadSubjectsAsync()
         {
             try
             {
-                var subjects = await _dataService.GetSubjectsAsync();  // Método correto para pegar as disciplinas
+                var subjects = await _dataService.GetSubjectsAsync();
+                dgSubjects.ItemsSource = null; // <-- força reset
                 dgSubjects.ItemsSource = subjects;
+                ClearInputs(); // limpa também
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading subjects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error reloading subjects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            dgSubjects.Items.Refresh();
         }
 
-        private async void LoadTeachers()
+        private async Task LoadTeachers()
         {
             try
             {
@@ -68,7 +66,7 @@ namespace Escola.WPF
                 };
 
                 await _dataService.AddSubjectAsync(newSubject);  // Chamada correta para adicionar a disciplina
-                LoadSubjects();
+                ReloadSubjectsAsync();
                 ClearInputs();
             }
             catch (Exception ex)
@@ -94,7 +92,7 @@ namespace Escola.WPF
                     selectedSubject.Name = txtSubjectName.Text;
                     selectedSubject.WeeklyHours = int.Parse(txtWeeklyHours.Text);
                     await _dataService.UpdateSubjectAsync(selectedSubject);  // Chamada correta para editar a disciplina
-                    LoadSubjects();
+                    ReloadSubjectsAsync();
                     ClearInputs();
                 }
                 catch (Exception ex)
@@ -140,32 +138,44 @@ namespace Escola.WPF
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (dgSubjects.SelectedItem is not Subject selectedSubject)
+            {
+                MessageBox.Show("Please select a subject to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                $"Are you sure you want to delete the subject \"{selectedSubject.Name}\"?",
+                "Confirm Deletion",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if (confirm != MessageBoxResult.Yes) return;
+
             try
             {
-                var selectedSubject = (Subject)dgSubjects.SelectedItem;
-                if (selectedSubject == null)
-                {
-                    MessageBox.Show("Selection one subject to delete.");
-                    return;
-                }
+                var response = await _dataService.DeleteSubjectAsync(selectedSubject.Id);
 
-                try
+                if (response.IsSuccessStatusCode)
                 {
-                    await _dataService.DeleteSubjectAsync(selectedSubject.Id);  // Chamada correta para deletar a disciplina
-                    LoadSubjects();
-                    ClearInputs();
+                    await ReloadSubjectsAsync();
+                    MessageBox.Show("Subject deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Error delete subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Captura a mensagem personalizada da API (como "Cannot delete subject associated with teachers.")
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show(errorMessage, "Delete Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error delete subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
+
+
 
         private void ClearInputs()
         {
@@ -223,9 +233,23 @@ namespace Escola.WPF
             txtWeeklyHours.ToolTip = null;
         }
 
+        private void dgSubjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var selectedSubject = dgSubjects.SelectedItem as Subject;
+                if (selectedSubject != null)
+                {
+                    txtSubjectName.Text = selectedSubject.Name;
+                    txtWeeklyHours.Text = selectedSubject.WeeklyHours.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao selecionar disciplina: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-
-
+        }
     }
 }
 

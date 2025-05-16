@@ -251,15 +251,12 @@ namespace Escola.WPF
                     txtAssessmentType.Text = selectedMark.AssessmentType;
                     txtScore.Text = selectedMark.Grade.ToString("F2");
                     dpAssessmentDate.SelectedDate = selectedMark.AssessmentDate;
-                    // Se tiver ComboBox de professores:
-                    // cbTeachers.SelectedValue = selectedMark.TeacherId;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error selecting mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
     }
 }

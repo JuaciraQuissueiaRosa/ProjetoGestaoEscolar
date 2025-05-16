@@ -74,7 +74,7 @@
         </StackPanel>
 
         <!-- DataGrid -->
-        <DataGrid Name="dgEvents" Grid.Row="3" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True">
+        <DataGrid Name="dgEvents" Grid.Row="3" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True" SelectionChanged="dgEvents_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>

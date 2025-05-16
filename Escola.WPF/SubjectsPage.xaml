@@ -51,7 +51,7 @@
                   Grid.Row="1"
                   AutoGenerateColumns="False"
                   SelectionMode="Single"
-                  IsReadOnly="True">
+                  IsReadOnly="True" SelectionChanged="dgSubjects_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>

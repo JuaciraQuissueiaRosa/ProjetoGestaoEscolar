@@ -194,8 +194,9 @@ namespace APISchool
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
+
+     
+        private int _Id;
 		
 		private string _Name;
 		

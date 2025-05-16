@@ -47,7 +47,7 @@
 
         <!-- Tabela -->
         <DataGrid x:Name="dgTimeTable" Grid.Row="1" Margin="0,10"
-              AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True">
+              AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True" SelectionChanged="dgTimeTable_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                 <DataGridTextColumn Header="Class ID" Binding="{Binding ClassId}" Width="*"/>

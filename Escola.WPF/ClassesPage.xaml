@@ -26,6 +26,11 @@
             <TextBlock Text="Group Name" Margin="0,5"/>
             <TextBox Name="txtGroupName" Width="200" Margin="0,5"/>
 
+            <StackPanel Margin="5">
+                <TextBlock Text="Academic Year:" />
+                <TextBox Name="txtAcademicYear" Width="150" />
+            </StackPanel>
+
             <TextBlock Text="Schedule" Margin="0,5"/>
             <TextBox Name="txtSchedule" Width="200" Margin="0,5"/>
 
@@ -53,6 +58,7 @@
                 <DataGridTextColumn Header="Class Name" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Group Name" Binding="{Binding Course}" Width="*"/>
                 <DataGridTextColumn Header="Schedule" Binding="{Binding Shift}" Width="*"/>
+                <DataGridTextColumn Header="Academic Year" Binding="{Binding AcademicYear}" Width="*"/>
                 <DataGridTextColumn Header="Students" Binding="{Binding StudentNames}" Width="*"/>
                 <DataGridTextColumn Header="Subjects" Binding="{Binding SubjectNames}" Width="*"/>
                 <DataGridTextColumn Header="Teachers" Binding="{Binding TeacherNames}" Width="*"/>

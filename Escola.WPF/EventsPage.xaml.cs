@@ -276,5 +276,24 @@ namespace Escola.WPF
             field.BorderBrush = Brushes.Red;
             field.ToolTip = message;
         }
+
+        private void dgEvents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var selectedEvent = dgEvents.SelectedItem as Event;
+                if (selectedEvent != null)
+                {
+                    txtName.Text = selectedEvent.Name;
+                    txtEventDate.Text = selectedEvent.EventDate.ToString("yyyy-MM-dd");
+                    txtLocation.Text = selectedEvent.Location;
+                    txtDescription.Text = selectedEvent.Description;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao selecionar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
