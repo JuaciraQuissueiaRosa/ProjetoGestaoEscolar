@@ -2,6 +2,7 @@
 using Escola.WPF.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace Escola.WPF
@@ -70,6 +71,8 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateEventInputs())
+                    return;
                 var newEvent = new Event
                 {
                     Name = txtName.Text,
@@ -92,6 +95,8 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateEventInputs())
+                    return;
                 var selectedEvent = (Event)dgEvents.SelectedItem;
                 selectedEvent.Name = txtName.Text;
                 selectedEvent.EventDate = DateTime.Parse(txtEventDate.Text);
@@ -209,6 +214,67 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Error by delete event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private bool ValidateEventInputs()
+        {
+            try
+            {
+                ClearEventFieldBorders();
+
+                if (string.IsNullOrWhiteSpace(txtName.Text))
+                {
+                    ShowValidationError(txtName, "O nome do evento é obrigatório.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtEventDate.Text) || !DateTime.TryParse(txtEventDate.Text, out _))
+                {
+                    ShowValidationError(txtEventDate, "Data do evento inválida ou vazia.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtLocation.Text))
+                {
+                    ShowValidationError(txtLocation, "A localização é obrigatória.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtDescription.Text))
+                {
+                    ShowValidationError(txtDescription, "A descrição é obrigatória.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao validar o evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+   
+
+        private void ClearEventFieldBorders()
+        {
+            txtName.ClearValue(Border.BorderBrushProperty);
+            txtEventDate.ClearValue(Border.BorderBrushProperty);
+            txtLocation.ClearValue(Border.BorderBrushProperty);
+            txtDescription.ClearValue(Border.BorderBrushProperty);
+
+            txtName.ToolTip = null;
+            txtEventDate.ToolTip = null;
+            txtLocation.ToolTip = null;
+            txtDescription.ToolTip = null;
+        }
+
+        private void ShowValidationError(TextBox field, string message)
+        {
+            MessageBox.Show(message, "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+            field.BorderBrush = Brushes.Red;
+            field.ToolTip = message;
         }
     }
 }

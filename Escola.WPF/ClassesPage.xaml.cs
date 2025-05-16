@@ -2,6 +2,7 @@
 using Escola.WPF.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Escola.WPF
 {
@@ -86,75 +87,103 @@ namespace Escola.WPF
 
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
-            var newClass = new Class
-            {
-                Name = txtClassName.Text,
-                Course = txtGroupName.Text,
-                Shift = txtSchedule.Text
-            };
-
             try
             {
-                await _dataService.AddClassAsync(newClass);  // Cria uma nova classe via API
-                MessageBox.Show("Class created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadClasses();  // Atualiza a lista de classes
-                ClearForm();  // Limpa o formulário após criar a classe
+                if (!ValidateClassInputs())
+                    return;
+                var newClass = new Class
+                {
+                    Name = txtClassName.Text,
+                    Course = txtGroupName.Text,
+                    Shift = txtSchedule.Text
+                };
+
+                try
+                {
+                    await _dataService.AddClassAsync(newClass);  // Cria uma nova classe via API
+                    MessageBox.Show("Class created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LoadClasses();  // Atualiza a lista de classes
+                    ClearForm();  // Limpa o formulário após criar a classe
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error creating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error creating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+          
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            if (dgClasses.SelectedItem is Class selectedClass)
+            try
             {
-                selectedClass.Name = txtClassName.Text;
-                selectedClass.Course = txtGroupName.Text;
-                selectedClass.Shift = txtSchedule.Text;
+                if (!ValidateClassInputs())
+                    return;
+                if (dgClasses.SelectedItem is Class selectedClass)
+                {
+                    selectedClass.Name = txtClassName.Text;
+                    selectedClass.Course = txtGroupName.Text;
+                    selectedClass.Shift = txtSchedule.Text;
 
-                try
-                {
-                    await _dataService.UpdateClassAsync(selectedClass);  // Atualiza a classe via API
-                    MessageBox.Show("Class updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadClasses();  // Atualiza a lista de classes
-                    ClearForm();
+                    try
+                    {
+                        await _dataService.UpdateClassAsync(selectedClass);  // Atualiza a classe via API
+                        MessageBox.Show("Class updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadClasses();  // Atualiza a lista de classes
+                        ClearForm();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error updating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Error updating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Please select a class to edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please select a class to edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error updating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+          
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (dgClasses.SelectedItem is Class selectedClass)
+            try
             {
-                var result = MessageBox.Show("Are you sure you want to delete this class?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
+                if (dgClasses.SelectedItem is Class selectedClass)
                 {
-                    try
+                    var result = MessageBox.Show("Are you sure you want to delete this class?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        await _dataService.DeleteClassAsync(selectedClass.Id);  // Deleta a classe via API
-                        MessageBox.Show("Class deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadClasses();  // Atualiza a lista de classes
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error deleting class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        try
+                        {
+                            await _dataService.DeleteClassAsync(selectedClass.Id);  // Deleta a classe via API
+                            MessageBox.Show("Class deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadClasses();  // Atualiza a lista de classes
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error deleting class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Please select a class to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please select a class to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error deleting class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+           
         }
 
         private void ClearForm()
@@ -171,38 +200,106 @@ namespace Escola.WPF
 
         private async void btnAssociate_Click(object sender, RoutedEventArgs e)
         {
-            if (dgClasses.SelectedItem is Class selectedClass)
+            try
             {
-                var classId = selectedClass.Id;
-                var messages = new List<string>();
-
-                // Associar Aluno
-                if (cbStudents.SelectedValue is int studentId)
+                if (dgClasses.SelectedItem is Class selectedClass)
                 {
-                    bool result = await _dataService.AssociateStudentToClassAsync(classId, studentId);
-                    messages.Add(result ? $"✓ Student associated." : "✗ Failed to associate student.");
-                }
+                    var classId = selectedClass.Id;
+                    var messages = new List<string>();
 
-                // Associar Professor
-                if (cbTeachers.SelectedValue is int teacherId)
+                    // Associar Aluno
+                    if (cbStudents.SelectedValue is int studentId)
+                    {
+                        bool result = await _dataService.AssociateStudentToClassAsync(classId, studentId);
+                        messages.Add(result ? $"✓ Student associated." : "✗ Failed to associate student.");
+                    }
+
+                    // Associar Professor
+                    if (cbTeachers.SelectedValue is int teacherId)
+                    {
+                        bool result = await _dataService.AssociateTeacherToClassAsync(classId, teacherId);
+                        messages.Add(result ? $"✓ Teacher associated." : "✗ Failed to associate teacher.");
+                    }
+
+                    // Associar Disciplina
+                    if (cbSubjects.SelectedValue is int subjectId)
+                    {
+                        bool result = await _dataService.AssociateSubjectToClassAsync(classId, subjectId);
+                        messages.Add(result ? $"✓ Subject associated." : "✗ Failed to associate subject.");
+                    }
+
+                    MessageBox.Show(string.Join("\n", messages), "Association Result", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
                 {
-                    bool result = await _dataService.AssociateTeacherToClassAsync(classId, teacherId);
-                    messages.Add(result ? $"✓ Teacher associated." : "✗ Failed to associate teacher.");
+                    MessageBox.Show("Please select a class first.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-
-                // Associar Disciplina
-                if (cbSubjects.SelectedValue is int subjectId)
-                {
-                    bool result = await _dataService.AssociateSubjectToClassAsync(classId, subjectId);
-                    messages.Add(result ? $"✓ Subject associated." : "✗ Failed to associate subject.");
-                }
-
-                MessageBox.Show(string.Join("\n", messages), "Association Result", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please select a class first.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+
+        private bool ValidateClassInputs()
+        {
+            try
+            {
+                ClearClassFieldBorders();
+
+                if (string.IsNullOrWhiteSpace(txtClassName.Text))
+                {
+                    HighlightError(txtClassName, "O nome da turma é obrigatório.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtGroupName.Text))
+                {
+                    HighlightError(txtGroupName, "O curso é obrigatório.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtSchedule.Text))
+                {
+                    HighlightError(txtSchedule, "O turno é obrigatório.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao validar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
+        private void HighlightError(Control control, string tooltip)
+        {
+            control.BorderBrush = Brushes.Red;
+            control.ToolTip = tooltip;
+        }
+
+        private void ClearClassFieldBorders()
+        {
+            try
+            {
+                txtClassName.ClearValue(Border.BorderBrushProperty);
+                txtGroupName.ClearValue(Border.BorderBrushProperty);
+                txtSchedule.ClearValue(Border.BorderBrushProperty);
+
+                txtClassName.ToolTip = null;
+                txtGroupName.ToolTip = null;
+                txtSchedule.ToolTip = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao validar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+               
+            }
+           
+        }
+
     }
 }

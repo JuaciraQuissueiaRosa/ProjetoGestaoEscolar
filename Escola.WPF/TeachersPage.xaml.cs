@@ -1,13 +1,15 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for ProfessoresPage.xaml
+    /// Interaction logic for TeachersPage.xaml
     /// </summary>
     public partial class TeachersPage : Page
     {
@@ -187,31 +189,55 @@ namespace Escola.WPF
         }
         private bool ValidateTeachersInputs()
         {
-            if (string.IsNullOrWhiteSpace(txtProfessorName.Text))
+            try
             {
-                MessageBox.Show("O nome do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                ClearFieldBorders();
+                if (string.IsNullOrWhiteSpace(txtProfessorName.Text))
+                {
+                    MessageBox.Show("O nome do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    HighlightError(txtProfessorName);
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtProfessorPhone.Text))
+                {
+                    MessageBox.Show("O telefone do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    HighlightError(txtProfessorPhone);
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtProfessorEmail.Text))
+                {
+                    MessageBox.Show("O email do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    HighlightError(txtProfessorEmail);
+                    return false;
+                }
+                else if (!IsValidEmail(txtProfessorEmail.Text))
+                {
+                    MessageBox.Show("Formato de email inválido.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    HighlightError(txtProfessorEmail);
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtProfessorTeachingArea.Text))
+                {
+                    MessageBox.Show("A área de ensino é obrigatória.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    HighlightError(txtProfessorTeachingArea);
+                    return false;
+                }
+
+                return true;
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txtProfessorPhone.Text))
-            {
-                MessageBox.Show("O telefone do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
 
-            if (string.IsNullOrWhiteSpace(txtProfessorEmail.Text))
-            {
-                MessageBox.Show("O email do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtProfessorTeachingArea.Text))
-            {
-                MessageBox.Show("A área de ensino do professor é obrigatória.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
         }
 
 
@@ -230,6 +256,40 @@ namespace Escola.WPF
                 MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+        }
+
+        private void HighlightError(Control control)
+        {
+            try
+            {
+                control.BorderBrush = Brushes.Red;
+                control.BorderThickness = new Thickness(2);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error highlighting field.{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ClearFieldBorders()
+        {
+            try
+            {
+                txtProfessorName.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+                txtProfessorPhone.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+                txtProfessorEmail.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+                txtProfessorTeachingArea.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
     }
 }

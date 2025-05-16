@@ -32,7 +32,8 @@
             <TextBlock Text="Email" Margin="0,5" Background="Aqua"/>
             <TextBox Name="txtEmail" Width="200" Margin="0,5"/>
 
-            <TextBox Name="txtSearch" Width="200" Margin="5" Background="Aqua" />
+            <TextBlock Text="Search" Margin="0,5" Background="Aqua"/>
+            <TextBox Name="txtSearch" Width="200" Margin="5" />
         </StackPanel>
 
         <!-- Tabela de Alunos -->

@@ -2,6 +2,7 @@
 using Escola.WPF.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Escola.WPF
 {
@@ -183,20 +184,47 @@ namespace Escola.WPF
 
         private bool ValidateSubjectInputs()
         {
-            if (string.IsNullOrWhiteSpace(txtSubjectName.Text))
+            try
             {
-                MessageBox.Show("O nome da disciplina é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ClearFieldBorders();
+
+                if (string.IsNullOrWhiteSpace(txtSubjectName.Text))
+                {
+                    HighlightError(txtSubjectName, "O nome da disciplina é obrigatório.");
+                    return false;
+                }
+
+                if (!int.TryParse(txtWeeklyHours.Text, out int hours) || hours < 1)
+                {
+                    HighlightError(txtWeeklyHours, "Carga horária semanal inválida.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro de validação: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-
-            if (!int.TryParse(txtWeeklyHours.Text, out int hours) || hours < 1)
-            {
-                MessageBox.Show("Carga horária semanal inválida. Deve ser um número inteiro positivo.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
         }
+        private void HighlightError(Control control, string tooltip)
+        {
+            control.BorderBrush = Brushes.Red;
+            control.ToolTip = tooltip;
+        }
+
+        private void ClearFieldBorders()
+        {
+            txtSubjectName.ClearValue(Border.BorderBrushProperty);
+            txtWeeklyHours.ClearValue(Border.BorderBrushProperty);
+
+            txtSubjectName.ToolTip = null;
+            txtWeeklyHours.ToolTip = null;
+        }
+
+
+
 
     }
 }

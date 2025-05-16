@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace Escola.WPF
@@ -41,6 +42,8 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateStudentInputs())
+                    return;
                 var newStudent = new Student
                 {
                     FullName = txtFullName.Text,
@@ -64,6 +67,8 @@ namespace Escola.WPF
         {
             try
             {
+                if (!ValidateStudentInputs())
+                    return;
                 if (dgStudents.SelectedItem is Student selectedStudent)
                 {
                     try
@@ -283,6 +288,102 @@ namespace Escola.WPF
             }
 
         }
+
+        private bool ValidateStudentInputs()
+        {
+            try
+            {
+                ClearStudentFieldBorders();
+
+                if (string.IsNullOrWhiteSpace(txtFullName.Text))
+                {
+                    ShowValidationError(txtFullName, "O nome completo é obrigatório.");
+                    return false;
+                }
+
+                if (dpBirthDate.SelectedDate == null)
+                {
+                    MessageBox.Show("A data de nascimento é obrigatória.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    dpBirthDate.BorderBrush = Brushes.Red;
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtPhone.Text))
+                {
+                    ShowValidationError(txtPhone, "O telefone é obrigatório.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtAddress.Text))
+                {
+                    ShowValidationError(txtAddress, "O endereço é obrigatório.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtEmail.Text))
+                {
+                    ShowValidationError(txtEmail, "O email é obrigatório.");
+                    return false;
+                }
+                else if (!IsValidEmail(txtEmail.Text))
+                {
+                    ShowValidationError(txtEmail, "Formato de email inválido.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao validar campos: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        private void ShowValidationError(TextBox field, string message)
+        {
+            MessageBox.Show(message, "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+            field.BorderBrush = Brushes.Red;
+            field.ToolTip = message;
+        }
+
+        private void ClearStudentFieldBorders()
+        {
+            try
+            {
+
+                txtFullName.ClearValue(Border.BorderBrushProperty);
+                txtPhone.ClearValue(Border.BorderBrushProperty);
+                txtAddress.ClearValue(Border.BorderBrushProperty);
+                txtEmail.ClearValue(Border.BorderBrushProperty);
+                dpBirthDate.ClearValue(Border.BorderBrushProperty);
+
+                txtFullName.ToolTip = null;
+                txtPhone.ToolTip = null;
+                txtAddress.ToolTip = null;
+                txtEmail.ToolTip = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+              
+            }
+
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
 

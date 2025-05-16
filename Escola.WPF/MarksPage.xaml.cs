@@ -2,6 +2,7 @@
 using Escola.WPF.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Escola.WPF
 {
@@ -86,7 +87,7 @@ namespace Escola.WPF
                 LoadSubjects();
                 LoadStudents();
                 ClearInputs();
-                ValidateInputs();
+               
             }
             catch (Exception ex)
             {
@@ -174,37 +175,67 @@ namespace Escola.WPF
         }
         private bool ValidateInputs()
         {
-            if (cbStudents.SelectedItem == null)
+            try
             {
-                MessageBox.Show("Please select a student.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ClearMarkFieldBorders();
+
+                if (cbStudents.SelectedItem == null)
+                {
+                    HighlightError(cbStudents, "Selecione um aluno.");
+                    return false;
+                }
+
+                if (cbSubjects.SelectedItem == null)
+                {
+                    HighlightError(cbSubjects, "Selecione uma disciplina.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtAssessmentType.Text))
+                {
+                    HighlightError(txtAssessmentType, "Insira o tipo de avaliação.");
+                    return false;
+                }
+
+                if (!float.TryParse(txtScore.Text, out float score) || score < 0 || score > 20)
+                {
+                    HighlightError(txtScore, "Insira uma nota entre 0 e 20.");
+                    return false;
+                }
+
+                if (dpAssessmentDate.SelectedDate == null)
+                {
+                    HighlightError(dpAssessmentDate, "Selecione uma data de avaliação.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+        private void HighlightError(Control control, string tooltip)
+        {
+            control.BorderBrush = Brushes.Red;
+            control.ToolTip = tooltip;
+        }
 
-            if (cbSubjects.SelectedItem == null)
-            {
-                MessageBox.Show("Please select a subject.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
+        private void ClearMarkFieldBorders()
+        {
+            cbStudents.ClearValue(Border.BorderBrushProperty);
+            cbSubjects.ClearValue(Border.BorderBrushProperty);
+            txtAssessmentType.ClearValue(Border.BorderBrushProperty);
+            txtScore.ClearValue(Border.BorderBrushProperty);
+            dpAssessmentDate.ClearValue(Border.BorderBrushProperty);
 
-            if (string.IsNullOrWhiteSpace(txtAssessmentType.Text))
-            {
-                MessageBox.Show("Please enter the assessment type.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (!float.TryParse(txtScore.Text, out float score) || score < 0 || score > 20)
-            {
-                MessageBox.Show("Please enter a valid score between 0 and 20.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (dpAssessmentDate.SelectedDate == null)
-            {
-                MessageBox.Show("Please select a valid assessment date.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
+            cbStudents.ToolTip = null;
+            cbSubjects.ToolTip = null;
+            txtAssessmentType.ToolTip = null;
+            txtScore.ToolTip = null;
+            dpAssessmentDate.ToolTip = null;
         }
 
 

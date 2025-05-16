@@ -5,6 +5,7 @@ using OxyPlot.Series;
 using OxyPlot;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Escola.WPF
 {
@@ -125,49 +126,81 @@ namespace Escola.WPF
 
         private bool ValidateInputs()
         {
-            if (txtClassId.SelectedItem == null)
+            try
             {
-                MessageBox.Show("Selecione uma turma.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ClearFieldBorders();
+
+                if (txtClassId.SelectedItem == null)
+                {
+                    HighlightError(txtClassId, "Selecione uma turma.");
+                    return false;
+                }
+
+                if (txtSubjectId.SelectedItem == null)
+                {
+                    HighlightError(txtSubjectId, "Selecione uma disciplina.");
+                    return false;
+                }
+
+                if (txtTeacherId.SelectedItem == null)
+                {
+                    HighlightError(txtTeacherId, "Selecione um professor.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtDayOfWeek.Text))
+                {
+                    HighlightError(txtDayOfWeek, "Indique o dia da semana.");
+                    return false;
+                }
+
+                if (!TimeSpan.TryParse(txtStartTime.Text, out var start))
+                {
+                    HighlightError(txtStartTime, "Hora de início inválida.");
+                    return false;
+                }
+
+                if (!TimeSpan.TryParse(txtEndTime.Text, out var end))
+                {
+                    HighlightError(txtEndTime, "Hora de fim inválida.");
+                    return false;
+                }
+
+                if (end <= start)
+                {
+                    HighlightError(txtEndTime, "Hora de fim deve ser posterior à hora de início.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro de validação: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+        private void HighlightError(Control control, string tooltip)
+        {
+            control.BorderBrush = Brushes.Red;
+            control.ToolTip = tooltip;
+        }
 
-            if (txtSubjectId.SelectedItem == null)
-            {
-                MessageBox.Show("Selecione uma disciplina.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
+        private void ClearFieldBorders()
+        {
+            txtClassId.ClearValue(Border.BorderBrushProperty);
+            txtSubjectId.ClearValue(Border.BorderBrushProperty);
+            txtTeacherId.ClearValue(Border.BorderBrushProperty);
+            txtDayOfWeek.ClearValue(Border.BorderBrushProperty);
+            txtStartTime.ClearValue(Border.BorderBrushProperty);
+            txtEndTime.ClearValue(Border.BorderBrushProperty);
 
-            if (txtTeacherId.SelectedItem == null)
-            {
-                MessageBox.Show("Selecione um professor.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtDayOfWeek.Text))
-            {
-                MessageBox.Show("Indique o dia da semana.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (!TimeSpan.TryParse(txtStartTime.Text, out var start))
-            {
-                MessageBox.Show("Hora de início inválida. Use o formato HH:mm (ex: 08:30).", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (!TimeSpan.TryParse(txtEndTime.Text, out var end))
-            {
-                MessageBox.Show("Hora de fim inválida. Use o formato HH:mm (ex: 10:00).", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            if (end <= start)
-            {
-                MessageBox.Show("A hora de fim deve ser posterior à hora de início.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
+            txtClassId.ToolTip = null;
+            txtSubjectId.ToolTip = null;
+            txtTeacherId.ToolTip = null;
+            txtDayOfWeek.ToolTip = null;
+            txtStartTime.ToolTip = null;
+            txtEndTime.ToolTip = null;
         }
 
         private void ClearInputs()
