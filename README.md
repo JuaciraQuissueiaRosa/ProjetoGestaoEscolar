@@ -52,7 +52,7 @@ git clone https://github.com/JuaciraQuissueiaRosa/ProjetoGestaoEscolar.git
 	3.	Client (WPF):
 	•	Requirements: .NET 8 SDK
 	•	Open the WPF project in Visual Studio or compatible IDE.
-	•	Run the project; it will connect automatically to the API hosted on Azure : https://schoolapi.azurewebsites.net
+	•	Run the project; it will connect automatically to the API hosted on Azure : https://apischool.azurewebsites.net/
 
 ⸻
 
