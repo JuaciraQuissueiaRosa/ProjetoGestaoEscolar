@@ -19,9 +19,18 @@ namespace SchoolAPI.Controllers
         [Route("")]
         public IHttpActionResult Get()
         {
-            var teachers = db.Teachers.ToList();
+            var teachers = db.Teachers.Select(t => new
+            {
+                t.Id,
+                t.FullName,
+                t.Email,
+                t.Phone,
+                t.TeachingArea
+            }).ToList();
+
             if (!teachers.Any())
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No teachers found."));
+
             return Ok(teachers);
         }
 
@@ -29,11 +38,24 @@ namespace SchoolAPI.Controllers
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
-            var teacher = db.Teachers.FirstOrDefault(t => t.Id == id);
+            var teacher = db.Teachers
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.FullName,
+                    t.Email,
+                    t.Phone,
+                    t.TeachingArea
+                })
+                .FirstOrDefault();
+
             if (teacher == null)
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No teacher found with ID = {id}."));
+
             return Ok(teacher);
         }
+
 
         // POST: api/teachers
         [HttpPost]

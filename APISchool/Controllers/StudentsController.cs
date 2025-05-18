@@ -14,16 +14,27 @@ namespace SchoolAPI.Controllers
     public class StudentsController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
-
+        // GET: api/students
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
         {
             try
             {
-                var students = db.Students.ToList();
+                var students = db.Students.Select(s => new
+                {
+                    s.Id,
+                    s.FullName,
+                    s.Email,
+                    s.Phone,
+                    s.Address,
+                    s.ClassId,
+                    ClassName = s.Class != null ? s.Class.Name : null
+                }).ToList();
+
                 if (!students.Any())
                     return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No students found."));
+
                 return Ok(students);
             }
             catch (Exception ex)
@@ -32,22 +43,29 @@ namespace SchoolAPI.Controllers
             }
         }
 
+        // GET: api/students/{id}
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
         {
-            var student = db.Students.FirstOrDefault(s => s.Id == id);
+            var student = db.Students
+                .Where(s => s.Id == id)
+                .Select(s => new
+                {
+                    s.Id,
+                    s.FullName,
+                    s.Email,
+                    s.Phone,
+                    s.Address,
+                    s.ClassId,
+                    ClassName = s.Class != null ? s.Class.Name : null
+                })
+                .FirstOrDefault();
 
             if (student == null)
-            {
                 return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No student found with ID = {id}."));
 
-            }
-            else
-            {
-                return Ok(student);
-            }
-               
+            return Ok(student);
         }
 
         [HttpGet]

@@ -109,29 +109,29 @@ namespace Escola.WPF
                     var result = MessageBox.Show("Are you sure that you want to delete this student?", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
                     {
-                        try
+                        var response = await _dataService.DeleteStudentAsync(selectedStudent.Id);
+
+                        if (!response.IsSuccessStatusCode)
                         {
-                            await _dataService.DeleteStudentAsync(selectedStudent.Id);  // Chamada correta para excluir o aluno
-                            LoadStudents();  // Recarrega a lista de alunos após a exclusão
-                            ClearForm();  // Limpa o formulário de edição
-                            MessageBox.Show("Student deleted with success.", "Information", MessageBoxButton.OK, MessageBoxImage.Information); // Confirmação de sucesso
+                            var errorMessage = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Não foi possível apagar o aluno:\n{errorMessage}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Error by delete the student: {ex.Message}\nDetails: {ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+
+                        LoadStudents();  // Recarrega os dados
+                        ClearForm();     // Limpa o formulário
+                        MessageBox.Show("Aluno apagado com sucesso.", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Choose one student to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Selecione um aluno para apagar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error by delete the student: {ex.Message}\nDetails: {ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao apagar aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
 
 
         }

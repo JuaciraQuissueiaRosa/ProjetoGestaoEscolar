@@ -50,9 +50,9 @@
               AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True" SelectionChanged="dgTimeTable_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Class ID" Binding="{Binding ClassId}" Width="*"/>
-                <DataGridTextColumn Header="Subject ID" Binding="{Binding SubjectId}" Width="*"/>
-                <DataGridTextColumn Header="Teacher ID" Binding="{Binding TeacherId}" Width="*"/>
+                <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="*"/>
+                <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="*"/>
+                <DataGridTextColumn Header="Teacher" Binding="{Binding TeacherName}" Width="*"/>
                 <DataGridTextColumn Header="Day" Binding="{Binding DayOfWeek}" Width="*"/>
                 <DataGridTextColumn Header="Start" Binding="{Binding StartTime}" Width="*"/>
                 <DataGridTextColumn Header="End" Binding="{Binding EndTime}" Width="*"/>

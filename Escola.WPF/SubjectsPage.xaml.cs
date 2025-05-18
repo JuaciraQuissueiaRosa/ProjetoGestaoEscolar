@@ -1,5 +1,6 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -31,9 +32,8 @@ namespace Escola.WPF
             try
             {
                 var subjects = await _dataService.GetSubjectsAsync();
-                dgSubjects.ItemsSource = null; // <-- força reset
                 dgSubjects.ItemsSource = subjects;
-                ClearInputs(); // limpa também
+                dgSubjects.Items.Refresh();
             }
             catch (Exception ex)
             {
@@ -117,6 +117,8 @@ namespace Escola.WPF
                     {
                         await _dataService.AssociateTeacherToSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
                         MessageBox.Show("Teacher associated with success!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        await ReloadSubjectsAsync(); // <-- Atualiza a DataGrid automaticamente
                     }
                     catch (Exception ex)
                     {
@@ -151,29 +153,27 @@ namespace Escola.WPF
                 MessageBoxImage.Question
             );
 
-            if (confirm != MessageBoxResult.Yes) return;
+            if (confirm != MessageBoxResult.Yes)
+                return;
 
             try
             {
-                var response = await _dataService.DeleteSubjectAsync(selectedSubject.Id);
+                await _dataService.DeleteSubjectAsync(selectedSubject.Id);
+                MessageBox.Show("Subject deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    await ReloadSubjectsAsync();
-                    MessageBox.Show("Subject deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    // Captura a mensagem personalizada da API (como "Cannot delete subject associated with teachers.")
-                    string errorMessage = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show(errorMessage, "Delete Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                await ReloadSubjectsAsync(); // Atualiza a lista do DataGrid
+                ClearInputs(); // Limpa os campos do formulário
+            }
+            catch (HttpRequestException httpEx)
+            {
+                MessageBox.Show($"HTTP error: {httpEx.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
 
 

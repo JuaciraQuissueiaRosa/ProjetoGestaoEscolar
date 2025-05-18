@@ -18,12 +18,26 @@ namespace SchoolAPI.Controllers
         [Route("")]
         public IHttpActionResult Get()
         {
+            var timetables = db.Timetables.Select(t => new
+            {
+                t.Id,
+                t.ClassId,
+                ClassName = t.Class.Name,
+                t.SubjectId,
+                SubjectName = t.Subject.Name,
+                t.TeacherId,
+                TeacherName = t.Teacher.FullName,
+                t.DayOfWeek,
+                t.StartTime,
+                t.EndTime
+            }).ToList();
 
-            var timetables = db.Timetables.ToList();
             if (!timetables.Any())
-                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, $"No timetables found."));
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, "No timetables found."));
+
             return Ok(timetables);
         }
+
 
         [HttpPost]
         [Route("")]

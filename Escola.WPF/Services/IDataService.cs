@@ -33,7 +33,7 @@ namespace Escola.WPF.Services
         Task<Subject> GetSubjectByIdAsync(int id);
         Task AddSubjectAsync(Subject subject);
         Task UpdateSubjectAsync(Subject subject);
-        Task<HttpResponseMessage> DeleteSubjectAsync(int id);
+        Task DeleteSubjectAsync(int id);
 
         // Classes
         Task<List<Class>> GetClassesAsync();
@@ -68,8 +68,8 @@ namespace Escola.WPF.Services
         // TimeTables
         Task<List<TimeTable>> GetTimeTablesAsync();
         Task<TimeTable> GetTimeTableByIdAsync(int id);
-        Task AddTimeTableAsync(TimeTable timeTable);
-        Task UpdateTimeTableAsync(TimeTable timeTable);
+        Task<HttpResponseMessage> AddTimeTableAsync(TimeTable timeTable);
+        Task<HttpResponseMessage> UpdateTimeTableAsync(TimeTable timeTable);
         Task<HttpResponseMessage> DeleteTimeTableAsync(int id);
     }
 }

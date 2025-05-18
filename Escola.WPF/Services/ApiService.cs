@@ -113,11 +113,16 @@ namespace Escola.WPF.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<HttpResponseMessage> DeleteSubjectAsync(int id)
+        public async Task DeleteSubjectAsync(int id)
         {
-            return await _client.DeleteAsync($"subjects/{id}");
-        }
+            var response = await _client.DeleteAsync($"subjects/{id}");
 
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception(errorMessage);
+            }
+        }
         public async Task<List<Class>> GetClassesAsync()
         {
             var response = await _client.GetAsync("classes");
@@ -223,18 +228,15 @@ namespace Escola.WPF.Services
             return await response.Content.ReadFromJsonAsync<TimeTable>();
         }
 
-        public async Task AddTimeTableAsync(TimeTable timeTable)
+        public async Task<HttpResponseMessage> AddTimeTableAsync(TimeTable timeTable)
         {
-            var response = await _client.PostAsJsonAsync("timetable", timeTable);
-            response.EnsureSuccessStatusCode();
+            return await _client.PostAsJsonAsync("timetable", timeTable);
         }
 
-        public async Task UpdateTimeTableAsync(TimeTable timeTable)
+        public async Task<HttpResponseMessage> UpdateTimeTableAsync(TimeTable timeTable)
         {
-            var response = await _client.PutAsJsonAsync($"timetable/{timeTable.Id}", timeTable);
-            response.EnsureSuccessStatusCode();
+            return await _client.PutAsJsonAsync($"timetable/{timeTable.Id}", timeTable);
         }
-
         public async Task<HttpResponseMessage> DeleteTimeTableAsync(int id)
         {
             return await _client.DeleteAsync($"timetable/{id}");

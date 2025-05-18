@@ -66,13 +66,21 @@ namespace Escola.WPF
                     EndTime = TimeSpan.Parse(txtEndTime.Text)
                 };
 
-                await _dataService.AddTimeTableAsync(newRecord);
+                var response = await _dataService.AddTimeTableAsync(newRecord);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro ao criar horário:\n{errorMessage}", "Conflito de Horário", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 LoadTimeTable();
                 ClearInputs();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar o horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -87,6 +95,7 @@ namespace Escola.WPF
             try
             {
                 if (!ValidateInputs()) return;
+
                 selected.ClassId = (int)txtClassId.SelectedValue;
                 selected.SubjectId = (int)txtSubjectId.SelectedValue;
                 selected.TeacherId = (int)txtTeacherId.SelectedValue;
@@ -94,13 +103,21 @@ namespace Escola.WPF
                 selected.StartTime = TimeSpan.Parse(txtStartTime.Text);
                 selected.EndTime = TimeSpan.Parse(txtEndTime.Text);
 
-                await _dataService.UpdateTimeTableAsync(selected);
+                var response = await _dataService.UpdateTimeTableAsync(selected);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro ao editar horário:\n{errorMessage}", "Conflito de Horário", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 LoadTimeTable();
                 ClearInputs();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao editar o horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

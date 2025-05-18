@@ -120,12 +120,10 @@ namespace SchoolAPI.Controllers
             if (subject == null)
                 return NotFound();
 
-            bool hasTeachers = db.TeacherSubjects.Any(ts => ts.SubjectId == id);
-            if (hasTeachers)
-                return BadRequest("Cannot delete subject associated with teachers.");
-
+            // ⚠️ Remove a verificação se está associado a professor
             db.Subjects.DeleteOnSubmit(subject);
             db.SubmitChanges();
+
             return Ok("Subject deleted successfully.");
         }
     }
