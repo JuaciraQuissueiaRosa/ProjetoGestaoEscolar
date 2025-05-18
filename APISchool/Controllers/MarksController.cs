@@ -27,7 +27,9 @@ namespace SchoolAPI.Controllers
                 SubjectName = m.Subject.Name,
                 m.AssessmentType,
                 m.Grade,
-                AssessmentYear = m.AssessmentDate.Year + "/" + (m.AssessmentDate.Year + 1), // aqui formata
+                AssessmentYear = m.AssessmentDate != null
+        ? m.AssessmentDate.Value.Year + "/" + (m.AssessmentDate.Value.Year + 1)
+        : "Without data.",
                 m.TeacherId
             }).ToList();
 

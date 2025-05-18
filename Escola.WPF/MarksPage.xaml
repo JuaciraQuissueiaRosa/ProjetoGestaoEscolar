@@ -85,7 +85,7 @@
                 <DataGridTextColumn Header="Student" Binding="{Binding StudentName}" Width="*"/>
                 <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="*"/>
                 <DataGridTextColumn Header="Assessment Type" Binding="{Binding AssessmentType}" Width="*"/>
-                <DataGridTextColumn Header="Assessment Date" Binding="{Binding AssessmentDate}" Width="*"/>
+                <DataGridTextColumn Header="Assessment Date" Binding="{Binding AssessmentDate, StringFormat='yyyy/yyyy'}" Width="*"/>
                 <DataGridTextColumn Header="Score" Binding="{Binding Grade}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
