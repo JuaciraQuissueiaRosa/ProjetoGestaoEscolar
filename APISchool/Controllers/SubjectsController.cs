@@ -120,11 +120,16 @@ namespace SchoolAPI.Controllers
             if (subject == null)
                 return NotFound();
 
-            // ⚠️ Remove a verificação se está associado a professor
-            db.Subjects.DeleteOnSubmit(subject);
-            db.SubmitChanges();
-
-            return Ok("Subject deleted successfully.");
+            try
+            {
+                db.Subjects.DeleteOnSubmit(subject);
+                db.SubmitChanges();
+                return Ok("Subject deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, "Cannot delete subject: it is associated with other records.");
+            }
         }
     }
 

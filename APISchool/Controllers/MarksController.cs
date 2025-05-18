@@ -14,7 +14,6 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
 
-        // GET: api/marks
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -23,12 +22,12 @@ namespace SchoolAPI.Controllers
             {
                 m.Id,
                 m.StudentId,
-                StudentName = m.Student.FullName, // JOIN automático via FK
+                StudentName = m.Student.FullName,
                 m.SubjectId,
-                SubjectName = m.Subject.Name,     // JOIN automático via FK
+                SubjectName = m.Subject.Name,
                 m.AssessmentType,
                 m.Grade,
-                m.AssessmentDate,
+                AssessmentYear = m.AssessmentDate.Year + "/" + (m.AssessmentDate.Year + 1), // aqui formata
                 m.TeacherId
             }).ToList();
 
