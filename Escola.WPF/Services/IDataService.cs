@@ -48,8 +48,8 @@ namespace Escola.WPF.Services
         // Marks
         Task<List<Mark>> GetMarksAsync();
         Task<Mark> GetMarkByIdAsync(int id);
-        Task AddMarkAsync(Mark mark);
-        Task UpdateMarkAsync(Mark mark);
+        Task<HttpResponseMessage> AddMarkAsync(Mark mark);
+        Task<HttpResponseMessage> UpdateMarkAsync(Mark mark);
         Task<HttpResponseMessage> DeleteMarkAsync(int id);
 
      

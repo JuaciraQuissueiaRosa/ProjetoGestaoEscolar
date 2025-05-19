@@ -1,4 +1,5 @@
 ﻿using APISchool;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,7 +14,6 @@ namespace SchoolAPI.Controllers
     public class MarksController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
-
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -27,9 +27,7 @@ namespace SchoolAPI.Controllers
                 SubjectName = m.Subject.Name,
                 m.AssessmentType,
                 m.Grade,
-                AssessmentYear = m.AssessmentDate != null
-        ? m.AssessmentDate.Value.Year + "/" + (m.AssessmentDate.Value.Year + 1)
-        : "Without data.",
+                m.AssessmentDate,
                 m.TeacherId
             }).ToList();
 
@@ -37,24 +35,19 @@ namespace SchoolAPI.Controllers
         }
 
         // POST: api/marks
+        // POST
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Mark data)
         {
-            if (data.StudentId == null || data.SubjectId == null)
+            if (data.StudentId == 0 || data.SubjectId == 0)
                 return BadRequest("StudentId and SubjectId are required.");
 
-            int startYear = DateTime.Now.Year;
-            int endYear = startYear + 1;
+            if (string.IsNullOrWhiteSpace(data.AssessmentDate) || !IsValidAcademicYearFormat(data.AssessmentDate))
+                return BadRequest("Invalid AssessmentDate format. Use yyyy/yyyy (e.g. 2024/2025).");
 
-            DateTime academicYearStart = new DateTime(startYear, 9, 1);
-            DateTime academicYearEnd = new DateTime(endYear, 6, 30);
-
-            if (data.AssessmentDate < academicYearStart)
-                return BadRequest($"The academic year {startYear}/{endYear} has not started. Adding marks is not allowed.");
-
-            if (data.AssessmentDate > academicYearEnd)
-                return BadRequest($"The academic year {startYear}/{endYear} has ended. Adding marks is not allowed.");
+            if (IsAcademicYearClosed(data.AssessmentDate))
+                return BadRequest("The academic year has ended. Adding marks is not allowed.");
 
             var newMark = new Mark
             {
@@ -62,19 +55,18 @@ namespace SchoolAPI.Controllers
                 SubjectId = data.SubjectId,
                 Grade = data.Grade,
                 AssessmentType = data.AssessmentType,
-                AssessmentDate = data.AssessmentDate
-                // Id não é atribuído aqui – o banco gera automaticamente
+                AssessmentDate = data.AssessmentDate,
+                TeacherId = data.TeacherId
             };
 
             db.Marks.InsertOnSubmit(newMark);
             db.SubmitChanges();
 
             UpdateAverage(newMark.StudentId.Value, newMark.SubjectId.Value);
-            return Ok(newMark); // Retorna o objeto completo com ID atribuído
+            return Ok(newMark);
         }
 
-
-        // PUT: api/marks/5
+        // PUT
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Mark data)
@@ -83,22 +75,12 @@ namespace SchoolAPI.Controllers
             if (mark == null)
                 return NotFound();
 
-            if (mark.StudentId == null || mark.SubjectId == null)
-                return BadRequest("Invalid StudentId or SubjectId.");
+            if (string.IsNullOrWhiteSpace(data.AssessmentDate) || !IsValidAcademicYearFormat(data.AssessmentDate))
+                return BadRequest("Invalid AssessmentDate format. Use yyyy/yyyy (e.g. 2024/2025).");
 
-            int startYear = DateTime.Now.Year;
-            int endYear = startYear + 1;
+            if (IsAcademicYearClosed(data.AssessmentDate))
+                return BadRequest("The academic year has ended. Updating marks is not allowed.");
 
-            DateTime academicYearStart = new DateTime(startYear, 9, 1);
-            DateTime academicYearEnd = new DateTime(endYear, 6, 30);
-
-            if (data.AssessmentDate < academicYearStart)
-                return BadRequest($"The academic year {startYear}/{endYear} has not started. Updating marks is not allowed.");
-
-            if (data.AssessmentDate > academicYearEnd)
-                return BadRequest($"The academic year {startYear}/{endYear} has ended. Updating marks is not allowed.");
-
-            // Updating the mark
             mark.Grade = data.Grade;
             mark.AssessmentType = data.AssessmentType;
             mark.AssessmentDate = data.AssessmentDate;
@@ -118,38 +100,77 @@ namespace SchoolAPI.Controllers
             if (mark == null)
                 return NotFound();
 
+            if (IsAcademicYearClosed(mark.AssessmentDate))
+                return BadRequest("The academic year has ended. Deleting marks is not allowed.");
+
             db.Marks.DeleteOnSubmit(mark);
             db.SubmitChanges();
             return Ok("Mark deleted successfully.");
         }
+        private bool IsValidAcademicYearFormat(string yearRange)
+        {
+            if (string.IsNullOrWhiteSpace(yearRange))
+                return false;
+
+            var parts = yearRange.Split('/');
+            return parts.Length == 2 &&
+                   int.TryParse(parts[0], out int startYear) &&
+                   int.TryParse(parts[1], out int endYear) &&
+                   endYear == startYear + 1;
+        }
+
+        private bool IsAcademicYearClosed(string yearRange)
+        {
+            var parts = yearRange.Split('/');
+            if (!int.TryParse(parts[1], out int endYear)) return true;
+
+            var endOfAcademicYear = new DateTime(endYear, 6, 30);
+            return DateTime.Now > endOfAcademicYear;
+        }
 
         private void UpdateAverage(int studentId, int subjectId)
         {
-            var grades = db.Marks
-                .Where(m => m.StudentId == studentId && m.SubjectId == subjectId)
-                .Select(m => m.Grade)
-                .ToList();
+            // Buscar todas as notas do aluno na disciplina
+            var marks = db.Marks.Where(m => m.StudentId == studentId && m.SubjectId == subjectId).ToList();
 
-            if (!grades.Any()) return;
+            if (marks.Count == 0)
+            {
+                // Se não existir nota, remover média caso exista
+                var existingAverage = db.FinalAverages.FirstOrDefault(fa => fa.StudentId == studentId && fa.SubjectId == subjectId);
+                if (existingAverage != null)
+                {
+                    db.FinalAverages.DeleteOnSubmit(existingAverage);
+                    db.SubmitChanges();
+                }
+                return;
+            }
 
-            float average = (float)grades.Average();
+            // Calcular média aritmética
+            float average = (float)marks.Average(m => m.Grade);
 
-            var finalAverage = db.FinalAverages.FirstOrDefault(f => f.StudentId == studentId && f.SubjectId == subjectId);
+            // Verificar se já existe média para o aluno e disciplina
+            var finalAverage = db.FinalAverages.FirstOrDefault(fa => fa.StudentId == studentId && fa.SubjectId == subjectId);
+
             if (finalAverage == null)
             {
-                db.FinalAverages.InsertOnSubmit(new FinalAverage
+                // Inserir nova média
+                finalAverage = new FinalAverage
                 {
                     StudentId = studentId,
                     SubjectId = subjectId,
                     Average = average
-                });
+                };
+                db.FinalAverages.InsertOnSubmit(finalAverage);
             }
             else
             {
+                // Atualizar média existente
                 finalAverage.Average = average;
             }
 
             db.SubmitChanges();
         }
+
+
     }
 }

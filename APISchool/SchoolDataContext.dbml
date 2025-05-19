@@ -43,20 +43,6 @@
       <Association Name="Subject_FinalAverage" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Marks" Member="Marks">
-    <Type Name="Mark">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="StudentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="SubjectId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="AssessmentType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="Grade" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="AssessmentDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="TeacherId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="Student_Mark" Member="Student" ThisKey="StudentId" OtherKey="Id" Type="Student" IsForeignKey="true" />
-      <Association Name="Subject_Mark" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
-      <Association Name="Teacher_Mark" Member="Teacher" ThisKey="TeacherId" OtherKey="Id" Type="Teacher" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Students" Member="Students">
     <Type Name="Student">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -87,10 +73,10 @@
       <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="WeeklyHours" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Subject_FinalAverage" Member="FinalAverages" ThisKey="Id" OtherKey="SubjectId" Type="FinalAverage" />
-      <Association Name="Subject_Mark" Member="Marks" ThisKey="Id" OtherKey="SubjectId" Type="Mark" />
       <Association Name="Subject_SubjectClass" Member="SubjectClasses" ThisKey="Id" OtherKey="SubjectId" Type="SubjectClass" />
       <Association Name="Subject_TeacherSubject" Member="TeacherSubjects" ThisKey="Id" OtherKey="SubjectId" Type="TeacherSubject" />
       <Association Name="Subject_Timetable" Member="Timetables" ThisKey="Id" OtherKey="SubjectId" Type="Timetable" />
+      <Association Name="Subject_Mark" Member="Marks" ThisKey="Id" OtherKey="SubjectId" Type="Mark" />
     </Type>
   </Table>
   <Table Name="dbo.TeacherClass" Member="TeacherClasses">
@@ -110,10 +96,10 @@
       <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="TeachingArea" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Association Name="Teacher_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="TeacherId" Type="EventParticipation" />
-      <Association Name="Teacher_Mark" Member="Marks" ThisKey="Id" OtherKey="TeacherId" Type="Mark" />
       <Association Name="Teacher_TeacherClass" Member="TeacherClasses" ThisKey="Id" OtherKey="TeacherId" Type="TeacherClass" />
       <Association Name="Teacher_TeacherSubject" Member="TeacherSubjects" ThisKey="Id" OtherKey="TeacherId" Type="TeacherSubject" />
       <Association Name="Teacher_Timetable" Member="Timetables" ThisKey="Id" OtherKey="TeacherId" Type="Timetable" />
+      <Association Name="Teacher_Mark" Member="Marks" ThisKey="Id" OtherKey="TeacherId" Type="Mark" />
     </Type>
   </Table>
   <Table Name="dbo.TeacherSubject" Member="TeacherSubjects">
@@ -137,6 +123,20 @@
       <Association Name="Class_Timetable" Member="Class" ThisKey="ClassId" OtherKey="Id" Type="Class" IsForeignKey="true" />
       <Association Name="Subject_Timetable" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
       <Association Name="Teacher_Timetable" Member="Teacher" ThisKey="TeacherId" OtherKey="Id" Type="Teacher" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Marks" Member="Marks">
+    <Type Name="Mark">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="StudentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SubjectId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AssessmentType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Grade" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="AssessmentDate" Type="System.String" DbType="NVarChar(9)" CanBeNull="true" />
+      <Column Name="TeacherId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Student_Mark" Member="Student" ThisKey="StudentId" OtherKey="Id" Type="Student" IsForeignKey="true" />
+      <Association Name="Subject_Mark" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
+      <Association Name="Teacher_Mark" Member="Teacher" ThisKey="TeacherId" OtherKey="Id" Type="Teacher" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

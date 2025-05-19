@@ -1,5 +1,6 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,13 +16,19 @@ namespace Escola.WPF
 
         public MarksPage()
         {
+            InitializeComponent();
+            _dataService = new ApiService();
+
+            _ = InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
             try
             {
-                InitializeComponent();
-                _dataService = new ApiService();
-                LoadMarks();  // Carrega as notas ao iniciar a página
-                LoadStudents();
-                LoadSubjects();
+                await LoadMarks();
+                await LoadStudents();
+                await LoadSubjects();
             }
             catch (Exception ex)
             {
@@ -29,69 +36,62 @@ namespace Escola.WPF
             }
         }
 
-        private async void LoadMarks()
+        private async Task LoadMarks()
         {
-            try
-            {
-                var marks = await _dataService.GetMarksAsync();  // Corrigido para chamar o serviço sem tipo genérico
-                dgMarks.ItemsSource = marks;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading marks: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            var marks = await _dataService.GetMarksAsync();
+            dgMarks.ItemsSource = marks;
         }
 
-        private async void LoadStudents()
+        private async Task LoadStudents()
         {
-            try
-            {
-                cbStudents.ItemsSource = await _dataService.GetStudentsAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
+            cbStudents.ItemsSource = await _dataService.GetStudentsAsync();
         }
-        private async void LoadSubjects()
+
+        private async Task LoadSubjects()
         {
-            try
-            {
-                cbSubjects.ItemsSource = await _dataService.GetSubjectsAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading teachers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
+            cbSubjects.ItemsSource = await _dataService.GetSubjectsAsync();
         }
+
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (!ValidateInputs()) return;
 
-                var newMark = new Mark
+                var yearParts = txtAssessmentYear.Text.Split('/');
+                if (yearParts.Length != 2 || !int.TryParse(yearParts[0], out int startYear))
+                {
+                    MessageBox.Show("Insert a valid academic year in format YYYY/YYYY.", "Invalid Format", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var mark = new Mark
                 {
                     StudentId = (int)cbStudents.SelectedValue,
                     SubjectId = (int)cbSubjects.SelectedValue,
                     AssessmentType = txtAssessmentType.Text,
                     Grade = float.Parse(txtScore.Text),
-                    AssessmentDate = dpAssessmentDate.SelectedDate ?? DateTime.Now,
-                    TeacherId = 1 // Ou selecionar via ComboBox no futuro
+                    AssessmentDate = txtAssessmentYear.Text.Trim()
                 };
 
-                await _dataService.AddMarkAsync(newMark);
-                LoadMarks();
-                LoadSubjects();
-                LoadStudents();
-                ClearInputs();
-               
+                var response = await _dataService.AddMarkAsync(mark);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    LoadMarks();
+                    LoadSubjects();
+                    LoadStudents();
+                    ClearInputs();
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro: {errorMessage}", "Erro ao adicionar nota", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error creating mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -102,61 +102,87 @@ namespace Escola.WPF
                 var selectedMark = (Mark)dgMarks.SelectedItem;
                 if (selectedMark == null)
                 {
-                    MessageBox.Show("You must have to selection one mark to update.");
+                    MessageBox.Show("You must select one mark to update.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                try
-                {
-                    if (!ValidateInputs()) return;
-                    selectedMark.StudentId = (int)cbStudents.SelectedValue;
-                    selectedMark.SubjectId = (int)cbSubjects.SelectedValue;
-                    selectedMark.AssessmentType = txtAssessmentType.Text;
-                    selectedMark.Grade = float.Parse(txtScore.Text);
-                    selectedMark.AssessmentDate = dpAssessmentDate.SelectedDate ?? DateTime.Now;
-                    selectedMark.TeacherId = 1;
+                if (!ValidateInputs()) return;
 
-                    await _dataService.UpdateMarkAsync(selectedMark);
+                var yearParts = txtAssessmentYear.Text.Split('/');
+                if (yearParts.Length != 2 || !int.TryParse(yearParts[0], out int startYear))
+                {
+                    MessageBox.Show("Insert a valid academic year in format YYYY/YYYY.", "Invalid Format", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                selectedMark.StudentId = (int)cbStudents.SelectedValue;
+                selectedMark.SubjectId = (int)cbSubjects.SelectedValue;
+                selectedMark.AssessmentType = txtAssessmentType.Text;
+                selectedMark.Grade = float.Parse(txtScore.Text);
+                selectedMark.AssessmentDate = txtAssessmentYear.Text.Trim();
+
+                var response = await _dataService.UpdateMarkAsync(selectedMark);
+
+                if (response.IsSuccessStatusCode)
+                {
                     LoadMarks();
                     LoadSubjects();
                     LoadStudents();
-                  
                     ClearInputs();
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Error to update mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro: {errorMessage}", "Erro ao atualizar nota", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error to update mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
+
+
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             var selectedMark = (Mark)dgMarks.SelectedItem;
             if (selectedMark == null)
             {
-                MessageBox.Show("Selection one mark to delete.");
+                MessageBox.Show("Select one mark to delete.");
                 return;
             }
 
             try
             {
-                await _dataService.DeleteMarkAsync(selectedMark.Id);  // Chamada ao serviço para excluir a nota
-                LoadMarks();
-                LoadSubjects();
-                LoadStudents();
-                ClearInputs();
+                var result = MessageBox.Show("Are you sure you want to delete this mark?",
+                                             "Confirm Delete",
+                                             MessageBoxButton.YesNo,
+                                             MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.Yes) return;
+
+                var response = await _dataService.DeleteMarkAsync(selectedMark.Id);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    LoadMarks();
+                    LoadSubjects();
+                    LoadStudents();
+                    ClearInputs();
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro: {errorMessage}", "Erro ao apagar nota", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error to delete mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error deleting mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void ClearInputs()
         {
@@ -166,7 +192,7 @@ namespace Escola.WPF
                 cbSubjects.SelectedIndex = -1;
                 txtAssessmentType.Clear();
                 txtScore.Clear();
-                dpAssessmentDate.SelectedDate = null;
+                txtAssessmentYear.Clear();
             }
             catch(Exception ex)
             {
@@ -203,9 +229,9 @@ namespace Escola.WPF
                     return false;
                 }
 
-                if (dpAssessmentDate.SelectedDate == null)
+                if (!Regex.IsMatch(txtAssessmentYear.Text, @"^\d{4}/\d{4}$"))
                 {
-                    HighlightError(dpAssessmentDate, "Selecione uma data de avaliação.");
+                    HighlightError(txtAssessmentYear,"Insert the academic year in the format YYYY/YYYY.");
                     return false;
                 }
 
@@ -229,13 +255,13 @@ namespace Escola.WPF
             cbSubjects.ClearValue(Border.BorderBrushProperty);
             txtAssessmentType.ClearValue(Border.BorderBrushProperty);
             txtScore.ClearValue(Border.BorderBrushProperty);
-            dpAssessmentDate.ClearValue(Border.BorderBrushProperty);
+            txtAssessmentYear.ClearValue(Border.BorderBrushProperty);
 
             cbStudents.ToolTip = null;
             cbSubjects.ToolTip = null;
             txtAssessmentType.ToolTip = null;
             txtScore.ToolTip = null;
-            dpAssessmentDate.ToolTip = null;
+            txtAssessmentYear.ToolTip = null;
         }
 
 
@@ -250,12 +276,33 @@ namespace Escola.WPF
                     cbSubjects.SelectedValue = selectedMark.SubjectId;
                     txtAssessmentType.Text = selectedMark.AssessmentType;
                     txtScore.Text = selectedMark.Grade.ToString("F2");
-                    dpAssessmentDate.SelectedDate = selectedMark.AssessmentDate;
+
+                    // Garantir o formato correto "yyyy/yyyy"
+                    if (!string.IsNullOrWhiteSpace(selectedMark.AssessmentDate))
+                    {
+                        var parts = selectedMark.AssessmentDate.Split('/');
+                        if (parts.Length == 2 &&
+                            int.TryParse(parts[0], out int startYear) &&
+                            int.TryParse(parts[1], out int endYear) &&
+                            endYear == startYear + 1)
+                        {
+                            txtAssessmentYear.Text = $"{startYear}/{endYear}";
+                        }
+                        else
+                        {
+                            // Se o formato não for válido, limpar ou definir padrão
+                            txtAssessmentYear.Text = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        txtAssessmentYear.Text = string.Empty;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error selecting mark: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao selecionar nota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

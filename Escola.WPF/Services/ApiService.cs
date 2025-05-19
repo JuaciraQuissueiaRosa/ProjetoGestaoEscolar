@@ -167,16 +167,14 @@ namespace Escola.WPF.Services
             return await response.Content.ReadFromJsonAsync<Mark>();
         }
 
-        public async Task AddMarkAsync(Mark mark)
+        public async Task<HttpResponseMessage> AddMarkAsync(Mark mark)
         {
-            var response = await _client.PostAsJsonAsync("marks", mark);
-            response.EnsureSuccessStatusCode();
+            return await _client.PostAsJsonAsync("marks", mark);
         }
 
-        public async Task UpdateMarkAsync(Mark mark)
+        public async Task<HttpResponseMessage> UpdateMarkAsync(Mark mark)
         {
-            var response = await _client.PutAsJsonAsync($"marks/{mark.Id}", mark);
-            response.EnsureSuccessStatusCode();
+            return await _client.PutAsJsonAsync($"marks/{mark.Id}", mark);
         }
 
         public async Task<HttpResponseMessage> DeleteMarkAsync(int id)

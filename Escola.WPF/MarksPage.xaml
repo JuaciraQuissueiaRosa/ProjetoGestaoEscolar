@@ -49,20 +49,9 @@
                 <TextBlock Text="Score:"/>
                 <TextBox Name="txtScore" Width="100" Margin="0,5,0,0"/>
             </StackPanel>
-
-            <!-- Data da avaliação -->
             <StackPanel Grid.Column="4" Margin="6">
-                <TextBlock Text="Assessment Date:" Width="99"/>
-                <DatePicker Name="dpAssessmentDate" Width="102" Margin="0,6,0,0" RenderTransformOrigin="0.5,0.5">
-                    <DatePicker.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-0.394"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </DatePicker.RenderTransform>
-                </DatePicker>
+                <TextBlock Text="Assessment Year:" Width="110"/>
+                <TextBox x:Name="txtAssessmentYear" Width="120" Margin="0,6,0,0" />
             </StackPanel>
         </Grid>
 
@@ -85,7 +74,7 @@
                 <DataGridTextColumn Header="Student" Binding="{Binding StudentName}" Width="*"/>
                 <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="*"/>
                 <DataGridTextColumn Header="Assessment Type" Binding="{Binding AssessmentType}" Width="*"/>
-                <DataGridTextColumn Header="Assessment Date" Binding="{Binding AssessmentDate, StringFormat='yyyy/yyyy'}" Width="*"/>
+                <DataGridTextColumn Header="Assessment Year" Binding="{Binding AssessmentDate}" Width="*"/>
                 <DataGridTextColumn Header="Score" Binding="{Binding Grade}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
