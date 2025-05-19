@@ -91,6 +91,20 @@ namespace SchoolAPI.Controllers
             return Ok("Mark updated successfully.");
         }
 
+        [HttpGet]
+        [Route("average/{studentId}/{subjectId}")]
+        public IHttpActionResult GetAverage(int studentId, int subjectId)
+        {
+            var finalAverage = db.FinalAverages
+                .FirstOrDefault(fa => fa.StudentId == studentId && fa.SubjectId == subjectId);
+
+            if (finalAverage == null)
+                return NotFound();
+
+            return Ok(finalAverage.Average);
+        }
+
+
         // DELETE: api/marks/5
         [HttpDelete]
         [Route("{id}")]

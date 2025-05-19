@@ -19,7 +19,7 @@ namespace Escola.WPF
             try
             {
                 InitializeComponent();
-                _dataService = new ApiService();  // Serviço API para Classes
+                _dataService = new ApiService();
                 LoadClasses();  // Carrega as classes ao iniciar a página
                 LoadStudents();
                 LoadTeachers();
@@ -32,7 +32,9 @@ namespace Escola.WPF
           
         }
 
-        private async void LoadClasses()
+     
+
+        private async Task LoadClasses()
         {
             try
             {
@@ -45,7 +47,7 @@ namespace Escola.WPF
             }
         }
 
-        private async void LoadStudents()
+        private async Task LoadStudents()
         {
             try
             {
@@ -58,7 +60,8 @@ namespace Escola.WPF
             }
         }
 
-        private async void LoadTeachers()
+
+        private async Task LoadTeachers()
         {
             try
             {
@@ -71,7 +74,7 @@ namespace Escola.WPF
             }
         }
 
-        private async void LoadSubjects()
+        private async Task LoadSubjects()
         {
             try
             {
@@ -83,7 +86,6 @@ namespace Escola.WPF
                 MessageBox.Show($"Error loading subjects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
@@ -103,7 +105,7 @@ namespace Escola.WPF
                 {
                     await _dataService.AddClassAsync(newClass);  // Cria uma nova classe via API
                     MessageBox.Show("Class created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadClasses();  // Atualiza a lista de classes
+                   await LoadClasses();  // Atualiza a lista de classes
                     ClearForm();  // Limpa o formulário após criar a classe
                 }
                 catch (Exception ex)
@@ -135,7 +137,7 @@ namespace Escola.WPF
                     {
                         await _dataService.UpdateClassAsync(selectedClass);  // Atualiza a classe via API
                         MessageBox.Show("Class updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadClasses();  // Atualiza a lista de classes
+                        await LoadClasses();  // Atualiza a lista de classes
                         ClearForm();
                     }
                     catch (Exception ex)
@@ -168,7 +170,7 @@ namespace Escola.WPF
                         {
                             await _dataService.DeleteClassAsync(selectedClass.Id);  // Deleta a classe via API
                             MessageBox.Show("Class deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadClasses();  // Atualiza a lista de classes
+                           await  LoadClasses();  // Atualiza a lista de classes
                         }
                         catch (Exception ex)
                         {
@@ -245,7 +247,7 @@ namespace Escola.WPF
                         messages.Add(result ? $"✓ Subject associated." : "✗ Failed to associate subject.");
                     }
 
-                    LoadClasses(); // Atualiza o DataGrid com os dados atualizados da turma
+                   await LoadClasses(); // Atualiza o DataGrid com os dados atualizados da turma
                     MessageBox.Show(string.Join("\n", messages), "Association Result", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else

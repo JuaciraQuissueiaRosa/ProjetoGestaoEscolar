@@ -24,7 +24,7 @@ namespace Escola.WPF
             LoadComboBoxes(); // <- importante!
         }
 
-        private async void LoadTimeTable()
+        private async Task LoadTimeTable()
         {
             try
             {
@@ -37,7 +37,7 @@ namespace Escola.WPF
             }
         }
 
-        private async void LoadComboBoxes()
+        private async Task LoadComboBoxes()
         {
             try
             {

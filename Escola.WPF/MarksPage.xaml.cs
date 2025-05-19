@@ -26,6 +26,7 @@ namespace Escola.WPF
         {
             try
             {
+                await LoadAssessmentTypes();
                 await LoadMarks();
                 await LoadStudents();
                 await LoadSubjects();
@@ -52,6 +53,12 @@ namespace Escola.WPF
             cbSubjects.ItemsSource = await _dataService.GetSubjectsAsync();
         }
 
+        private Task LoadAssessmentTypes()
+        {
+            var types = new List<string> { "Teste", "Trabalho", "Exame" };
+            cbAssessmentType.ItemsSource = types;
+            return Task.CompletedTask;
+        }
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -69,7 +76,7 @@ namespace Escola.WPF
                 {
                     StudentId = (int)cbStudents.SelectedValue,
                     SubjectId = (int)cbSubjects.SelectedValue,
-                    AssessmentType = txtAssessmentType.Text,
+                    AssessmentType = cbAssessmentType.SelectedItem?.ToString(),
                     Grade = float.Parse(txtScore.Text),
                     AssessmentDate = txtAssessmentYear.Text.Trim()
                 };
@@ -78,10 +85,20 @@ namespace Escola.WPF
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadMarks();
-                    LoadSubjects();
-                    LoadStudents();
-                    ClearInputs();
+                    // ✅ NOVO BLOCO: Buscar média final atualizada
+                    int studentId = mark.StudentId;
+                    int subjectId = mark.SubjectId;
+
+                    float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
+
+                    if (average != null)
+                    {
+                        MessageBox.Show($"Média final atual: {average:F2}", "Média Calculada", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Não foi possível calcular a média para este aluno nesta disciplina.", "Média Indisponível", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
                 else
                 {
@@ -117,7 +134,7 @@ namespace Escola.WPF
 
                 selectedMark.StudentId = (int)cbStudents.SelectedValue;
                 selectedMark.SubjectId = (int)cbSubjects.SelectedValue;
-                selectedMark.AssessmentType = txtAssessmentType.Text;
+                selectedMark.AssessmentType = cbAssessmentType.SelectedItem?.ToString();
                 selectedMark.Grade = float.Parse(txtScore.Text);
                 selectedMark.AssessmentDate = txtAssessmentYear.Text.Trim();
 
@@ -129,13 +146,24 @@ namespace Escola.WPF
                     LoadSubjects();
                     LoadStudents();
                     ClearInputs();
-                }
-                else
-                {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Erro: {errorMessage}", "Erro ao atualizar nota", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    // ✅ NOVO BLOCO: Buscar média final atualizada
+                    int studentId = selectedMark.StudentId;
+                    int subjectId = selectedMark.SubjectId;
+
+                    float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
+
+                    if (average != null)
+                    {
+                        MessageBox.Show($"Média final atual: {average:F2}", "Média Calculada", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Não foi possível calcular a média para este aluno nesta disciplina.", "Média Indisponível", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -190,7 +218,7 @@ namespace Escola.WPF
             {
                 cbStudents.SelectedIndex = -1;
                 cbSubjects.SelectedIndex = -1;
-                txtAssessmentType.Clear();
+                cbAssessmentType.SelectedIndex = -1;
                 txtScore.Clear();
                 txtAssessmentYear.Clear();
             }
@@ -217,9 +245,9 @@ namespace Escola.WPF
                     return false;
                 }
 
-                if (string.IsNullOrWhiteSpace(txtAssessmentType.Text))
+                if (cbAssessmentType.SelectedItem == null)
                 {
-                    HighlightError(txtAssessmentType, "Insira o tipo de avaliação.");
+                    HighlightError(cbAssessmentType, "Selecione o tipo de avaliação.");
                     return false;
                 }
 
@@ -253,13 +281,13 @@ namespace Escola.WPF
         {
             cbStudents.ClearValue(Border.BorderBrushProperty);
             cbSubjects.ClearValue(Border.BorderBrushProperty);
-            txtAssessmentType.ClearValue(Border.BorderBrushProperty);
+            cbAssessmentType.ClearValue(Border.BorderBrushProperty);
             txtScore.ClearValue(Border.BorderBrushProperty);
             txtAssessmentYear.ClearValue(Border.BorderBrushProperty);
 
             cbStudents.ToolTip = null;
             cbSubjects.ToolTip = null;
-            txtAssessmentType.ToolTip = null;
+            cbAssessmentType.ToolTip = null;
             txtScore.ToolTip = null;
             txtAssessmentYear.ToolTip = null;
         }
@@ -274,7 +302,7 @@ namespace Escola.WPF
                 {
                     cbStudents.SelectedValue = selectedMark.StudentId;
                     cbSubjects.SelectedValue = selectedMark.SubjectId;
-                    txtAssessmentType.Text = selectedMark.AssessmentType;
+                    cbAssessmentType.SelectedItem  = selectedMark.AssessmentType;
                     txtScore.Text = selectedMark.Grade.ToString("F2");
 
                     // Garantir o formato correto "yyyy/yyyy"

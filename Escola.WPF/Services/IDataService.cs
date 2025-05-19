@@ -51,8 +51,9 @@ namespace Escola.WPF.Services
         Task<HttpResponseMessage> AddMarkAsync(Mark mark);
         Task<HttpResponseMessage> UpdateMarkAsync(Mark mark);
         Task<HttpResponseMessage> DeleteMarkAsync(int id);
+        Task<float?> GetFinalAverageAsync(int studentId, int subjectId);
 
-     
+
 
         // Events
         Task<List<Event>> GetEventsAsync();

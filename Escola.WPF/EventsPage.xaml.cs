@@ -1,5 +1,6 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -30,7 +31,7 @@ namespace Escola.WPF
             }
         }
 
-        private async void LoadEvents()
+        private async Task LoadEvents()
         {
             try
             {
@@ -43,7 +44,7 @@ namespace Escola.WPF
             }
           
         }
-        private async void LoadStudents()
+        private async Task LoadStudents()
         {
             try
             {
@@ -55,7 +56,7 @@ namespace Escola.WPF
             }
            
         }
-        private async void LoadTeachers()
+        private async Task LoadTeachers()
         {
             try
             {

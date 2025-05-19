@@ -1,6 +1,7 @@
 ﻿using Escola.WPF.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -180,6 +181,18 @@ namespace Escola.WPF.Services
         public async Task<HttpResponseMessage> DeleteMarkAsync(int id)
         {
             return await _client.DeleteAsync($"marks/{id}");
+        }
+        public async Task<float?> GetFinalAverageAsync(int studentId, int subjectId)
+        {
+            var response = await _client.GetAsync($"marks/average/{studentId}/{subjectId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return float.Parse(content, CultureInfo.InvariantCulture); // usando System.Globalization
+            }
+
+            return null;
         }
 
         public async Task<List<Event>> GetEventsAsync()
