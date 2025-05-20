@@ -8,7 +8,7 @@
         public string AssessmentType { get; set; }
         public float Grade { get; set; }
         public string AssessmentDate { get; set; }
-        //public int TeacherId { get; set; }
+        public int? TeacherId { get; set; }
 
         // Para mostrar os nomes
         public string StudentName { get; set; }

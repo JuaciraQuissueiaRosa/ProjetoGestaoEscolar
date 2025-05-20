@@ -27,9 +27,9 @@ namespace Escola.WPF
             try
             {
                 await LoadAssessmentTypes();
-                await LoadMarks();
                 await LoadStudents();
                 await LoadSubjects();
+                await LoadMarks();
             }
             catch (Exception ex)
             {
@@ -85,28 +85,10 @@ namespace Escola.WPF
 
                 if (response.IsSuccessStatusCode)
                 {
-
-
                     await LoadMarks();
                     await LoadSubjects();
                     await LoadStudents();
                     ClearInputs();
-                    // ✅ NOVO BLOCO: Buscar média final atualizada
-                    int studentId = mark.StudentId;
-                    int subjectId = mark.SubjectId;
-
-                    float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
-                    // Atualizar média na label
-                
-
-                    if (average != null)
-                    {
-                        MessageBox.Show($"Média final atual: {average:F2}", "Média Calculada", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Não foi possível calcular a média para este aluno nesta disciplina.", "Média Indisponível", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
                 }
                 else
                 {
@@ -118,6 +100,7 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
@@ -156,26 +139,13 @@ namespace Escola.WPF
                     await LoadSubjects();
                     await LoadStudents();
                     ClearInputs();
-
-                    // ✅ NOVO BLOCO: Buscar média final atualizada
-                    int studentId = selectedMark.StudentId;
-                    int subjectId = selectedMark.SubjectId;
-
-                    float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
-                    // Atualizar média na label
-               
-
-                    if (average != null)
-                    {
-                        MessageBox.Show($"Média final atual: {average:F2}", "Média Calculada", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Não foi possível calcular a média para este aluno nesta disciplina.", "Média Indisponível", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro: {errorMessage}", "Erro ao atualizar nota", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);

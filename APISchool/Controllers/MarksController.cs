@@ -27,15 +27,13 @@ namespace SchoolAPI.Controllers
                 SubjectName = m.Subject.Name,
                 m.AssessmentType,
                 m.Grade,
-                m.AssessmentDate,
-                m.TeacherId
+                m.AssessmentDate
+             
             }).ToList();
 
             return Ok(marks);
         }
 
-        // POST: api/marks
-        // POST
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Mark data)
@@ -56,7 +54,7 @@ namespace SchoolAPI.Controllers
                 Grade = data.Grade,
                 AssessmentType = data.AssessmentType,
                 AssessmentDate = data.AssessmentDate,
-                TeacherId = data.TeacherId
+                
             };
 
             db.Marks.InsertOnSubmit(newMark);
@@ -91,20 +89,7 @@ namespace SchoolAPI.Controllers
             return Ok("Mark updated successfully.");
         }
 
-        [HttpGet]
-        [Route("average/{studentId}/{subjectId}")]
-        public IHttpActionResult GetAverage(int studentId, int subjectId)
-        {
-            var finalAverage = db.FinalAverages
-                .FirstOrDefault(fa => fa.StudentId == studentId && fa.SubjectId == subjectId);
-
-            if (finalAverage == null)
-                return NotFound();
-
-            return Ok(finalAverage.Average);
-        }
-
-
+  
         // DELETE: api/marks/5
         [HttpDelete]
         [Route("{id}")]

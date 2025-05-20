@@ -81,8 +81,11 @@ namespace Escola.WPF
         {
             try
             {
-                if (!ValidateEventInputs())
-                    return;
+                if (!ValidateEventInputs()) return;
+
+                var result = MessageBox.Show("Deseja realmente criar este evento?", "Confirmar Criação", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result != MessageBoxResult.Yes) return;
+
                 var newEvent = new Event
                 {
                     Name = txtName.Text,
@@ -90,33 +93,46 @@ namespace Escola.WPF
                     Location = txtLocation.Text,
                     Description = txtDescription.Text
                 };
-                await _eventService.AddEventAsync(newEvent); // Chama o método correto AddEventAsync
+
+                await _eventService.AddEventAsync(newEvent);
                 await RefreshEvents();
+                MessageBox.Show("Evento criado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao criar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (!ValidateEventInputs())
-                    return;
+                if (!ValidateEventInputs()) return;
+
                 var selectedEvent = (Event)dgEvents.SelectedItem;
+                if (selectedEvent == null)
+                {
+                    MessageBox.Show("Selecione um evento para editar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var result = MessageBox.Show("Deseja realmente editar este evento?", "Confirmar Edição", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result != MessageBoxResult.Yes) return;
+
                 selectedEvent.Name = txtName.Text;
                 selectedEvent.EventDate = DateTime.Parse(txtEventDate.Text);
                 selectedEvent.Location = txtLocation.Text;
                 selectedEvent.Description = txtDescription.Text;
-                await _eventService.UpdateEventAsync(selectedEvent); // Chama o método correto UpdateEventAsync
+
+                await _eventService.UpdateEventAsync(selectedEvent);
                 await RefreshEvents();
+                MessageBox.Show("Evento editado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao editar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -211,12 +227,22 @@ namespace Escola.WPF
             try
             {
                 var selectedEvent = (Event)dgEvents.SelectedItem;
-                await _eventService.DeleteEventAsync(selectedEvent.Id); // Chama o método correto DeleteEventAsync
+                if (selectedEvent == null)
+                {
+                    MessageBox.Show("Selecione um evento para deletar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var result = MessageBox.Show("Tem certeza que deseja excluir este evento?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result != MessageBoxResult.Yes) return;
+
+                await _eventService.DeleteEventAsync(selectedEvent.Id);
                 await RefreshEvents();
+                MessageBox.Show("Evento deletado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error by delete event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao deletar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

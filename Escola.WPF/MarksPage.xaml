@@ -28,14 +28,18 @@
 
             <!-- Aluno -->
             <StackPanel Grid.Column="0" Margin="5">
-                <TextBlock Text="Select Student:" />
-                <ComboBox Name="cbStudents" Width="180" DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+                <ComboBox x:Name="cbStudents"
+          DisplayMemberPath="FullName"
+          SelectedValuePath="Id"
+          SelectedValue="{Binding StudentId}" />
             </StackPanel>
 
             <!-- Disciplina -->
             <StackPanel Grid.Column="1" Margin="5">
-                <TextBlock Text="Select Subject:" />
-                <ComboBox Name="cbSubjects" Width="180" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                <ComboBox x:Name="cbSubjects"
+          DisplayMemberPath="Name"
+          SelectedValuePath="Id"
+          SelectedValue="{Binding SubjectId}" />
             </StackPanel>
 
             <!-- Tipo de avaliação -->
