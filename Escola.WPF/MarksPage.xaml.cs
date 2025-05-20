@@ -85,11 +85,19 @@ namespace Escola.WPF
 
                 if (response.IsSuccessStatusCode)
                 {
+
+
+                    LoadMarks();
+                    LoadSubjects();
+                    LoadStudents();
+                    ClearInputs();
                     // ✅ NOVO BLOCO: Buscar média final atualizada
                     int studentId = mark.StudentId;
                     int subjectId = mark.SubjectId;
 
                     float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
+                    // Atualizar média na label
+                    await UpdateFinalAverageLabel(mark.StudentId, mark.SubjectId);
 
                     if (average != null)
                     {
@@ -152,6 +160,8 @@ namespace Escola.WPF
                     int subjectId = selectedMark.SubjectId;
 
                     float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
+                    // Atualizar média na label
+                   await UpdateFinalAverageLabel(selectedMark.StudentId, selectedMark.SubjectId);
 
                     if (average != null)
                     {
@@ -331,6 +341,20 @@ namespace Escola.WPF
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao selecionar nota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task UpdateFinalAverageLabel(int studentId, int subjectId)
+        {
+            float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
+
+            if (average != null)
+            {
+                lblFinalAverage.Content = $"Média Final: {average:F2}";
+            }
+            else
+            {
+                lblFinalAverage.Content = "Média Final: -";
             }
         }
     }
