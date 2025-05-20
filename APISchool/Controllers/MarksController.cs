@@ -82,6 +82,8 @@ namespace SchoolAPI.Controllers
             mark.Grade = data.Grade;
             mark.AssessmentType = data.AssessmentType;
             mark.AssessmentDate = data.AssessmentDate;
+            mark.StudentId = data.StudentId;
+            mark.SubjectId = data.SubjectId;
 
             db.SubmitChanges();
 
