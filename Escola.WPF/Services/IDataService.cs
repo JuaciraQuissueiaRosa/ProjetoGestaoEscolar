@@ -16,7 +16,7 @@ namespace Escola.WPF.Services
         Task<Teacher> GetTeacherByIdAsync(int id);
         Task AddTeacherAsync(Teacher teacher);
         Task UpdateTeacherAsync(Teacher teacher);
-        Task AssociateTeacherToSubjectAsync(int subjectId, int teacherId);
+        Task<HttpResponseMessage> AssociateTeacherToSubjectAsync(int subjectId, int teacherId);
         Task<HttpResponseMessage> DeleteTeacherAsync(int id);
 
         // Students

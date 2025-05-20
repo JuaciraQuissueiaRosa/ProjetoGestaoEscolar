@@ -48,7 +48,8 @@
                 <DataGridTextColumn Header="Nome Completo" Binding="{Binding FullName}" Width="*"/>
                 <DataGridTextColumn Header="Telefone" Binding="{Binding Phone}" Width="*"/>
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
-                <DataGridTextColumn Header="Data de Nascimento" Binding="{Binding BirthDate}" Width="*"/>
+                <DataGridTextColumn Header="Data de Nascimento" Binding="{Binding BirthDate, StringFormat=dd/MM/yyyy}" Width="*"/>
+                <DataGridTextColumn Header="Endereço" Binding="{Binding Address}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 

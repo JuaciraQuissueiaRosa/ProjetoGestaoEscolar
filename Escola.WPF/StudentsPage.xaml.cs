@@ -47,7 +47,7 @@ namespace Escola.WPF
                 var newStudent = new Student
                 {
                     FullName = txtFullName.Text,
-                    BirthDate = dpBirthDate.SelectedDate ?? DateTime.Now,
+                    BirthDate = dpBirthDate.SelectedDate ?? DateTime.MinValue,
                     Phone = txtPhone.Text,
                     Address = txtAddress.Text,
                     Email = txtEmail.Text
@@ -74,7 +74,7 @@ namespace Escola.WPF
                     try
                     {
                         selectedStudent.FullName = txtFullName.Text;
-                        selectedStudent.BirthDate = dpBirthDate.SelectedDate ?? DateTime.Now;
+                        selectedStudent.BirthDate = dpBirthDate.SelectedDate ?? DateTime.MinValue;
                         selectedStudent.Phone = txtPhone.Text;
                         selectedStudent.Address = txtAddress.Text;
                         selectedStudent.Email = txtEmail.Text;

@@ -305,10 +305,9 @@ namespace Escola.WPF.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task AssociateTeacherToSubjectAsync(int subjectId, int teacherId)
+        public async Task<HttpResponseMessage> AssociateTeacherToSubjectAsync(int subjectId, int teacherId)
         {
-            var response = await _client.PostAsync($"subjects/{subjectId}/associate-teacher/{teacherId}", null);
-            response.EnsureSuccessStatusCode();
+            return await _client.PostAsync($"subjects/{subjectId}/associate-teacher/{teacherId}", null);
         }
 
         public async Task AssociateStudentToEventAsync(int eventId, int studentId)

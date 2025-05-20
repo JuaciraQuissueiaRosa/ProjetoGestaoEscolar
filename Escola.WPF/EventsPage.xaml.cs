@@ -17,33 +17,36 @@ namespace Escola.WPF
 
         public EventsPage()
         {
-            try
-            {
-                InitializeComponent();
-                _eventService = new ApiService();
-                LoadEvents();
-                LoadStudents();
-                LoadTeachers();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error initializing page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            InitializeComponent();
+            _eventService = new ApiService();
+            this.Loaded += EventsPage_Loaded;
+        }
+
+        private async void EventsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            await InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            await LoadEvents();
+            await LoadStudents();
+            await LoadTeachers();
         }
 
         private async Task LoadEvents()
         {
             try
             {
-                var events = await _eventService.GetEventsAsync(); // Chama o método correto GetEventsAsync
+                var events = await _eventService.GetEventsAsync();
                 dgEvents.ItemsSource = events;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading events: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
         }
+
         private async Task LoadStudents()
         {
             try
@@ -54,8 +57,8 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Error loading students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-           
         }
+
         private async Task LoadTeachers()
         {
             try
@@ -66,8 +69,14 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Error loading teachers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            
         }
+
+        private async Task RefreshEvents()
+        {
+            await LoadEvents();
+            ClearInputs();
+        }
+
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -82,8 +91,7 @@ namespace Escola.WPF
                     Description = txtDescription.Text
                 };
                 await _eventService.AddEventAsync(newEvent); // Chama o método correto AddEventAsync
-                await LoadEvents(); // Atualiza grid
-                dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                await RefreshEvents();
             }
             catch (Exception ex)
             {
@@ -104,8 +112,7 @@ namespace Escola.WPF
                 selectedEvent.Location = txtLocation.Text;
                 selectedEvent.Description = txtDescription.Text;
                 await _eventService.UpdateEventAsync(selectedEvent); // Chama o método correto UpdateEventAsync
-                await LoadEvents(); // Atualiza grid
-                dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                await RefreshEvents();
             }
             catch (Exception ex)
             {
@@ -124,8 +131,7 @@ namespace Escola.WPF
                     {
                         await _eventService.AssociateStudentToEventAsync(selectedEvent.Id, selectedStudent.Id);
                         MessageBox.Show("Student successfully associated.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                       await LoadEvents(); // Atualiza grid
-                        dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                        await RefreshEvents();
                     }
                     catch (Exception ex)
                     {
@@ -150,8 +156,7 @@ namespace Escola.WPF
                     {
                         await _eventService.AssociateTeacherToEventAsync(selectedEvent.Id, selectedTeacher.Id);
                         MessageBox.Show("Teacher successfully associated.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await LoadEvents(); // Atualiza grid
-                        dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                        await RefreshEvents();
                     }
                     catch (Exception ex)
                     {
@@ -173,8 +178,7 @@ namespace Escola.WPF
                 {
                     await _eventService.RemoveStudentFromEventAsync(selectedEvent.Id, selectedStudent.Id);
                     MessageBox.Show("Student removed from event.");
-                   await  LoadEvents(); // Atualiza grid
-                    dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                    await RefreshEvents();
                 }
                 catch (Exception ex)
                 {
@@ -191,8 +195,8 @@ namespace Escola.WPF
                 {
                     await _eventService.RemoveTeacherFromEventAsync(selectedEvent.Id, selectedTeacher.Id);
                     MessageBox.Show("Teacher removed from event.");
-                   await LoadEvents(); // Atualiza grid
-                    dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                  
+                    await RefreshEvents();
                 }
                 catch (Exception ex)
                 {
@@ -208,8 +212,7 @@ namespace Escola.WPF
             {
                 var selectedEvent = (Event)dgEvents.SelectedItem;
                 await _eventService.DeleteEventAsync(selectedEvent.Id); // Chama o método correto DeleteEventAsync
-                await LoadEvents();
-                dgEvents.Items.Refresh(); // <-- esse força atualização visual
+                await RefreshEvents();
             }
             catch (Exception ex)
             {
@@ -256,8 +259,18 @@ namespace Escola.WPF
             }
         }
 
-   
 
+        private void ClearInputs()
+        {
+            txtName.Clear();
+            txtEventDate.Clear();
+            txtLocation.Clear();
+            txtDescription.Clear();
+            cbStudents.SelectedIndex = -1;
+            cbTeachers.SelectedIndex = -1;
+            dgEvents.SelectedIndex = -1;
+            ClearEventFieldBorders();
+        }
         private void ClearEventFieldBorders()
         {
             txtName.ClearValue(Border.BorderBrushProperty);

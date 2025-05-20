@@ -87,9 +87,9 @@ namespace Escola.WPF
                 {
 
 
-                    LoadMarks();
-                    LoadSubjects();
-                    LoadStudents();
+                    await LoadMarks();
+                    await LoadSubjects();
+                    await LoadStudents();
                     ClearInputs();
                     // ✅ NOVO BLOCO: Buscar média final atualizada
                     int studentId = mark.StudentId;
@@ -97,7 +97,7 @@ namespace Escola.WPF
 
                     float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
                     // Atualizar média na label
-                    await UpdateFinalAverageLabel(mark.StudentId, mark.SubjectId);
+                
 
                     if (average != null)
                     {
@@ -150,9 +150,11 @@ namespace Escola.WPF
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadMarks();
-                    LoadSubjects();
-                    LoadStudents();
+                    await LoadMarks();
+                    dgMarks.ItemsSource = null; // força o refresh
+                    dgMarks.ItemsSource = await _dataService.GetMarksAsync();
+                    await LoadSubjects();
+                    await LoadStudents();
                     ClearInputs();
 
                     // ✅ NOVO BLOCO: Buscar média final atualizada
@@ -161,7 +163,7 @@ namespace Escola.WPF
 
                     float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
                     // Atualizar média na label
-                   await UpdateFinalAverageLabel(selectedMark.StudentId, selectedMark.SubjectId);
+               
 
                     if (average != null)
                     {
@@ -204,9 +206,9 @@ namespace Escola.WPF
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadMarks();
-                    LoadSubjects();
-                    LoadStudents();
+                    await LoadMarks();
+                    await LoadSubjects();
+                    await LoadStudents();
                     ClearInputs();
                 }
                 else
@@ -344,18 +346,6 @@ namespace Escola.WPF
             }
         }
 
-        private async Task UpdateFinalAverageLabel(int studentId, int subjectId)
-        {
-            float? average = await _dataService.GetFinalAverageAsync(studentId, subjectId);
-
-            if (average != null)
-            {
-                lblFinalAverage.Content = $"Média Final: {average:F2}";
-            }
-            else
-            {
-                lblFinalAverage.Content = "Média Final: -";
-            }
-        }
+     
     }
 }

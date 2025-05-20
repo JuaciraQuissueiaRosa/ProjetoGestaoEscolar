@@ -8,7 +8,7 @@
         public string Location { get; set; }         
         public string Description { get; set; }
 
-       
+       //adictionall para wpf
         public List<Student> Students { get; set; } = new();
         public List<Teacher> Teachers { get; set; } = new();
 

@@ -113,26 +113,27 @@ namespace Escola.WPF
             {
                 if (dgSubjects.SelectedItem is Subject selectedSubject && cbTeachers.SelectedItem is Teacher selectedTeacher)
                 {
-                    try
-                    {
-                        await _dataService.AssociateTeacherToSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
-                        MessageBox.Show("Teacher associated with success!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    var response = await _dataService.AssociateTeacherToSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
 
-                        await ReloadSubjectsAsync(); // <-- Atualiza a DataGrid automaticamente
-                    }
-                    catch (Exception ex)
+                    if (response.IsSuccessStatusCode)
                     {
-                        MessageBox.Show($"Error associate teacher: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Teacher associated with success!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await ReloadSubjectsAsync(); // Atualiza a DataGrid automaticamente
+                    }
+                    else
+                    {
+                        var errorMessage = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Failed to associate teacher: {errorMessage}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please, selection one subject and one teacher.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please, select one subject and one teacher.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }

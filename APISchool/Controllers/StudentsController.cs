@@ -29,6 +29,7 @@ namespace SchoolAPI.Controllers
                     s.Phone,
                     s.Address,
                     s.ClassId,
+                    s.BirthDate,
                     ClassName = s.Class != null ? s.Class.Name : null
                 }).ToList();
 
@@ -57,6 +58,7 @@ namespace SchoolAPI.Controllers
                     s.Email,
                     s.Phone,
                     s.Address,
+                    s.BirthDate,
                     s.ClassId,
                     ClassName = s.Class != null ? s.Class.Name : null
                 })
@@ -197,6 +199,7 @@ namespace SchoolAPI.Controllers
                 Email = data.Email,
                 Phone = data.Phone,
                 Address = data.Address,
+                BirthDate=data.BirthDate,
                 ClassId = data.ClassId
             };
 
@@ -217,6 +220,7 @@ namespace SchoolAPI.Controllers
             student.Email = updated.Email;
             student.Phone = updated.Phone;
             student.Address = updated.Address;
+            student.BirthDate = updated.BirthDate;
             student.ClassId = updated.ClassId;
 
             db.SubmitChanges();
