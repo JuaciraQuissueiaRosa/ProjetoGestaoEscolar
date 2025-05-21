@@ -206,6 +206,17 @@ namespace Escola.WPF
                     HighlightError(txtProfessorPhone);
                     return false;
                 }
+                else
+                {
+                    // Validação de número de telefone português (9 dígitos, começa com 2, 3 ou 9)
+                    Regex phoneRegex = new Regex(@"^(2\d{8}|3\d{8}|9\d{8})$");
+                    if (!phoneRegex.IsMatch(txtProfessorPhone.Text))
+                    {
+                        MessageBox.Show("Número de telefone do professor inválido. Deve conter 9 dígitos e começar com 2, 3 ou 9.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        HighlightError(txtProfessorPhone);
+                        return false;
+                    }
+                }
 
                 if (string.IsNullOrWhiteSpace(txtProfessorEmail.Text))
                 {

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -312,6 +313,16 @@ namespace Escola.WPF
                 {
                     ShowValidationError(txtPhone, "O telefone é obrigatório.");
                     return false;
+                }
+                else
+                {
+                    // Validação de telefone português: deve ter 9 dígitos e começar com 2, 3 ou 9
+                    Regex phoneRegex = new Regex(@"^(2\d{8}|3\d{8}|9\d{8})$");
+                    if (!phoneRegex.IsMatch(txtPhone.Text))
+                    {
+                        ShowValidationError(txtPhone, "Número de telefone inválido para Portugal. Deve conter 9 dígitos e começar com 2, 3 ou 9.");
+                        return false;
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(txtAddress.Text))
