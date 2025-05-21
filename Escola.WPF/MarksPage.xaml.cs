@@ -15,8 +15,6 @@ namespace Escola.WPF
     {
         private readonly IDataService _dataService;
 
-        private ObservableCollection<Mark> _marks = new ObservableCollection<Mark>();
-
         public MarksPage()
         {
             InitializeComponent();
@@ -41,13 +39,8 @@ namespace Escola.WPF
         }
         private async Task LoadMarks()
         {
-            var marksFromApi = await _dataService.GetMarksAsync();
 
-            _marks.Clear();
-            foreach (var mark in marksFromApi)
-                _marks.Add(mark);
-
-            dgMarks.ItemsSource = _marks;
+            dgMarks.ItemsSource = await _dataService.GetMarksAsync();
         }
         private async Task LoadStudents()
         {
@@ -78,7 +71,7 @@ namespace Escola.WPF
                 }
 
                 var yearParts = txtAssessmentYear.Text.Split('/');
-                if (yearParts.Length != 2 || !int.TryParse(yearParts[0], out int startYear))
+                if (yearParts.Length != 2 || !int.TryParse(yearParts[0], out _))
                 {
                     MessageBox.Show("Insira um ano letivo válido no formato YYYY/YYYY.", "Formato inválido", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -99,37 +92,8 @@ namespace Escola.WPF
                 {
                     MessageBox.Show("Nota adicionada com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    // Aguarda até a nota aparecer com ID do backend
-                    bool notaEncontrada = false;
-                    Mark novaNota = null;
-                    int tentativas = 0;
-
-                    while (!notaEncontrada && tentativas < 10)
-                    {
-                        var todasNotas = await _dataService.GetMarksAsync();
-
-                        novaNota = todasNotas.FirstOrDefault(m =>
-                            m.StudentId == mark.StudentId &&
-                            m.SubjectId == mark.SubjectId &&
-                            m.AssessmentType == mark.AssessmentType &&
-                            Math.Abs(m.Grade - mark.Grade) < 0.001 &&
-                            m.AssessmentDate == mark.AssessmentDate
-                        );
-
-                        if (novaNota != null)
-                            notaEncontrada = true;
-                        else
-                        {
-                            await Task.Delay(300);
-                            tentativas++;
-                        }
-                    }
-
-                    if (novaNota != null)
-                        _marks.Add(novaNota);
-                    else
-                        MessageBox.Show("Nota adicionada, mas não pôde ser carregada do servidor para exibição imediata.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-
+                    // ✅ Recarrega tudo da API para garantir exibição correta
+                    await LoadMarks();
                     ClearInputs();
                 }
                 else
