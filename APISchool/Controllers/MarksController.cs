@@ -48,7 +48,7 @@ namespace SchoolAPI.Controllers
                 return BadRequest("The academic year has ended. Adding marks is not allowed.");
 
             var newMark = new Mark
-            {
+            {   Id= data.Id,
                 StudentId = data.StudentId,
                 SubjectId = data.SubjectId,
                 Grade = data.Grade,
@@ -64,7 +64,6 @@ namespace SchoolAPI.Controllers
             return Ok(newMark);
         }
 
-        // PUT
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Mark data)
@@ -79,11 +78,12 @@ namespace SchoolAPI.Controllers
             if (IsAcademicYearClosed(data.AssessmentDate))
                 return BadRequest("The academic year has ended. Updating marks is not allowed.");
 
+            // ✅ Atualiza também o aluno e disciplina
+            mark.StudentId = data.StudentId;
+            mark.SubjectId = data.SubjectId;
             mark.Grade = data.Grade;
             mark.AssessmentType = data.AssessmentType;
             mark.AssessmentDate = data.AssessmentDate;
-            mark.StudentId = data.StudentId;
-            mark.SubjectId = data.SubjectId;
 
             db.SubmitChanges();
 
@@ -91,7 +91,8 @@ namespace SchoolAPI.Controllers
             return Ok("Mark updated successfully.");
         }
 
-  
+
+
         // DELETE: api/marks/5
         [HttpDelete]
         [Route("{id}")]

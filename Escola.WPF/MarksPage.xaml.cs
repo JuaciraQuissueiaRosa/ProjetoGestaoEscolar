@@ -1,5 +1,6 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,8 @@ namespace Escola.WPF
     public partial class MarksPage : Page
     {
         private readonly IDataService _dataService;
+
+        private ObservableCollection<Mark> _marks = new ObservableCollection<Mark>();
 
         public MarksPage()
         {
@@ -36,13 +39,16 @@ namespace Escola.WPF
                 MessageBox.Show($"Error initialize page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
         private async Task LoadMarks()
         {
-            var marks = await _dataService.GetMarksAsync();
-            dgMarks.ItemsSource = marks;
-        }
+            var marksFromApi = await _dataService.GetMarksAsync();
 
+            _marks.Clear();
+            foreach (var mark in marksFromApi)
+                _marks.Add(mark);
+
+            dgMarks.ItemsSource = _marks;
+        }
         private async Task LoadStudents()
         {
             cbStudents.ItemsSource = await _dataService.GetStudentsAsync();
@@ -65,17 +71,23 @@ namespace Escola.WPF
             {
                 if (!ValidateInputs()) return;
 
+                if (cbStudents.SelectedValue == null || cbSubjects.SelectedValue == null)
+                {
+                    MessageBox.Show("Selecione um aluno e uma disciplina.", "Campos obrigatórios", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 var yearParts = txtAssessmentYear.Text.Split('/');
                 if (yearParts.Length != 2 || !int.TryParse(yearParts[0], out int startYear))
                 {
-                    MessageBox.Show("Insert a valid academic year in format YYYY/YYYY.", "Invalid Format", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Insira um ano letivo válido no formato YYYY/YYYY.", "Formato inválido", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 var mark = new Mark
                 {
-                    StudentId = (int)cbStudents.SelectedValue,
-                    SubjectId = (int)cbSubjects.SelectedValue,
+                    StudentId = Convert.ToInt32(cbStudents.SelectedValue),
+                    SubjectId = Convert.ToInt32(cbSubjects.SelectedValue),
                     AssessmentType = cbAssessmentType.SelectedItem?.ToString(),
                     Grade = float.Parse(txtScore.Text),
                     AssessmentDate = txtAssessmentYear.Text.Trim()
@@ -85,9 +97,39 @@ namespace Escola.WPF
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await LoadMarks();
-                    await LoadSubjects();
-                    await LoadStudents();
+                    MessageBox.Show("Nota adicionada com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Aguarda até a nota aparecer com ID do backend
+                    bool notaEncontrada = false;
+                    Mark novaNota = null;
+                    int tentativas = 0;
+
+                    while (!notaEncontrada && tentativas < 10)
+                    {
+                        var todasNotas = await _dataService.GetMarksAsync();
+
+                        novaNota = todasNotas.FirstOrDefault(m =>
+                            m.StudentId == mark.StudentId &&
+                            m.SubjectId == mark.SubjectId &&
+                            m.AssessmentType == mark.AssessmentType &&
+                            Math.Abs(m.Grade - mark.Grade) < 0.001 &&
+                            m.AssessmentDate == mark.AssessmentDate
+                        );
+
+                        if (novaNota != null)
+                            notaEncontrada = true;
+                        else
+                        {
+                            await Task.Delay(300);
+                            tentativas++;
+                        }
+                    }
+
+                    if (novaNota != null)
+                        _marks.Add(novaNota);
+                    else
+                        MessageBox.Show("Nota adicionada, mas não pôde ser carregada do servidor para exibição imediata.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+
                     ClearInputs();
                 }
                 else
