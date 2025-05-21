@@ -92,6 +92,21 @@ namespace SchoolAPI.Controllers
         }
 
 
+        [HttpGet]
+        [Route("final-averages")]
+        public IHttpActionResult GetFinalAverages()
+        {
+            var finalAverages = db.FinalAverages
+                .Select(fa => new
+                {
+                    fa.StudentId,
+                    fa.SubjectId,
+                    fa.Average
+                })
+                .ToList();
+
+            return Ok(finalAverages);
+        }
 
         // DELETE: api/marks/5
         [HttpDelete]
@@ -107,6 +122,8 @@ namespace SchoolAPI.Controllers
 
             db.Marks.DeleteOnSubmit(mark);
             db.SubmitChanges();
+            // ✅ ADICIONE ESTA LINHA se ainda não estiver lá:
+            UpdateAverage(mark.StudentId.Value, mark.SubjectId.Value);
             return Ok("Mark deleted successfully.");
         }
         private bool IsValidAcademicYearFormat(string yearRange)

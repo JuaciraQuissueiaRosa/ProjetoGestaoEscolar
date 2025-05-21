@@ -10,6 +10,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Título -->
@@ -29,17 +30,17 @@
             <!-- Aluno -->
             <StackPanel Grid.Column="0" Margin="5">
                 <ComboBox x:Name="cbStudents"
-          DisplayMemberPath="FullName"
-          SelectedValuePath="Id"
-          SelectedValue="{Binding StudentId}" />
+                          DisplayMemberPath="FullName"
+                          SelectedValuePath="Id"
+                          SelectedValue="{Binding StudentId}" />
             </StackPanel>
 
             <!-- Disciplina -->
             <StackPanel Grid.Column="1" Margin="5">
                 <ComboBox x:Name="cbSubjects"
-          DisplayMemberPath="Name"
-          SelectedValuePath="Id"
-          SelectedValue="{Binding SubjectId}" />
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Id"
+                          SelectedValue="{Binding SubjectId}" />
             </StackPanel>
 
             <!-- Tipo de avaliação -->
@@ -53,6 +54,8 @@
                 <TextBlock Text="Score:"/>
                 <TextBox Name="txtScore" Width="100" Margin="0,5,0,0"/>
             </StackPanel>
+
+            <!-- Ano -->
             <StackPanel Grid.Column="4" Margin="6">
                 <TextBlock Text="Assessment Year:" Width="110"/>
                 <TextBox x:Name="txtAssessmentYear" Width="120" Margin="0,6,0,0" />
@@ -60,30 +63,60 @@
         </Grid>
 
         <!-- Botões -->
-        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Left" Margin="0,0,0,15">
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,15">
             <Button Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
             <Button Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
+            <Button Content="Recarregar Médias Finais" Click="btnReloadFinalAverages_Click" />
         </StackPanel>
 
-        <!-- Tabela de notas -->
-        <DataGrid Name="dgMarks"
-                  Grid.Row="3"
-                  AutoGenerateColumns="False"
-                  SelectionMode="Single"
-                  IsReadOnly="True"
-                  Margin="0" SelectionChanged="dgMarks_SelectionChanged">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Student" Binding="{Binding StudentName}" Width="*"/>
-                <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="*"/>
-                <DataGridTextColumn Header="Assessment Type" Binding="{Binding AssessmentType}" Width="*"/>
-                <DataGridTextColumn Header="Assessment Year" Binding="{Binding AssessmentDate}" Width="*"/>
-                <DataGridTextColumn Header="Score" Binding="{Binding Grade}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <!-- Grade com duas colunas para as DataGrids lado a lado -->
+        <Grid Grid.Row="3" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <Label x:Name="lblFinalAverage" Content="Média Final: -" FontWeight="Bold" FontSize="14" Margin="10"/>
+            <!-- Tabela de Notas -->
+            <DataGrid Name="dgMarks"
+                      Grid.Column="0"
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      IsReadOnly="True"
+                      Margin="0,0,10,0"
+                      SelectionChanged="dgMarks_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                    <DataGridTextColumn Header="Student" Binding="{Binding StudentName}" Width="*"/>
+                    <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="*"/>
+                    <DataGridTextColumn Header="Assessment Type" Binding="{Binding AssessmentType}" Width="*"/>
+                    <DataGridTextColumn Header="Assessment Year" Binding="{Binding AssessmentDate}" Width="*"/>
+                    <DataGridTextColumn Header="Score" Binding="{Binding Grade}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
+            <!-- Tabela de Médias Finais -->
+            <DataGrid x:Name="dgFinalAverages"
+                      Grid.Column="1"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Aluno" Binding="{Binding StudentId}" />
+                    <DataGridTextColumn Header="Disciplina" Binding="{Binding SubjectId}" />
+                    <DataGridTextColumn Header="Média" Binding="{Binding Average, StringFormat=F2}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- Label de Média Final -->
+        <Label x:Name="lblFinalAverage"
+               Grid.Row="4"
+               HorizontalAlignment="Left"
+               FontWeight="Bold"
+               FontSize="14"
+               Content="Média Final: -"
+               Margin="10,5,0,5"/>
     </Grid>
 </Page>

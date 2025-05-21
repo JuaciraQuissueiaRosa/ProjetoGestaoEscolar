@@ -31,6 +31,7 @@ namespace Escola.WPF
                 await LoadStudents();
                 await LoadSubjects();
                 await LoadMarks();
+                await LoadFinalAveragesAsync(); // ✅ Aqui!
             }
             catch (Exception ex)
             {
@@ -57,6 +58,19 @@ namespace Escola.WPF
             var types = new List<string> { "Teste", "Trabalho", "Exame" };
             cbAssessmentType.ItemsSource = types;
             return Task.CompletedTask;
+        }
+
+        private async Task LoadFinalAveragesAsync()
+        {
+            var response = await _dataService.GetFinalAveragesAsync(); // Preferencialmente via interface
+            if (response != null)
+            {
+                dgFinalAverages.ItemsSource = response;
+            }
+            else
+            {
+                MessageBox.Show("Erro ao carregar médias finais.", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
@@ -199,6 +213,10 @@ namespace Escola.WPF
             }
         }
 
+        private async void btnReloadFinalAverages_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadFinalAveragesAsync();
+        }
 
         private void ClearInputs()
         {

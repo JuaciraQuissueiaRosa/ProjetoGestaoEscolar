@@ -182,14 +182,15 @@ namespace Escola.WPF.Services
         {
             return await _client.DeleteAsync($"marks/{id}");
         }
-        public async Task<float?> GetFinalAverageAsync(int studentId, int subjectId)
+        public async Task<List<FinalAverage>> GetFinalAveragesAsync()
         {
-            var response = await _client.GetAsync($"marks/average/{studentId}/{subjectId}");
+            var response = await _client.GetAsync("marks/final-averages");
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return float.Parse(content, CultureInfo.InvariantCulture); // usando System.Globalization
+                var averages = JsonConvert.DeserializeObject<List<FinalAverage>>(content);
+                return averages;
             }
 
             return null;

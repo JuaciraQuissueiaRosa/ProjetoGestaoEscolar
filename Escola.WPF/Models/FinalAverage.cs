@@ -9,9 +9,9 @@ namespace Escola.WPF.Models
     public class FinalAverage
     {
         public int StudentId { get; set; }
+        public string StudentName { get; set; }
         public int SubjectId { get; set; }
-
+        public string SubjectName { get; set; }
         public float Average { get; set; }
-
     }
 }
