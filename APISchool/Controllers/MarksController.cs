@@ -97,13 +97,13 @@ namespace SchoolAPI.Controllers
         public IHttpActionResult GetFinalAverages()
         {
             var finalAverages = db.FinalAverages
-                .Select(fa => new
-                {
-                    fa.StudentId,
-                    fa.SubjectId,
-                    fa.Average
-                })
-                .ToList();
+        .Select(fa => new
+        {
+            fa.StudentId,
+            fa.SubjectId,
+            fa.Average
+        })
+        .ToList();
 
             return Ok(finalAverages);
         }

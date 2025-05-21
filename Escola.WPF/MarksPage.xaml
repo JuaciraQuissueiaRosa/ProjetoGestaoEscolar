@@ -70,7 +70,7 @@
             <Button Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
             <Button Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
-            <Button Content="Recarregar Médias Finais" Click="btnReloadFinalAverages_Click" />
+            <Button Name="btnReloadFinalAverages" Content="Recarregar Médias Finais" Width="180" Margin="5" Click="btnReloadFinalAverages_Click"/>
         </StackPanel>
 
         <!-- Grade com duas colunas para as DataGrids lado a lado -->
