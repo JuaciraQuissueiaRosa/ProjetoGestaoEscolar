@@ -108,6 +108,7 @@ namespace Escola.WPF
 
                     // ✅ Recarrega tudo da API para garantir exibição correta
                     await LoadMarks();
+                    await LoadFinalAveragesAsync(); // <- aqui é crucial
                     ClearInputs();
                 }
                 else
@@ -158,6 +159,7 @@ namespace Escola.WPF
                     dgMarks.ItemsSource = await _dataService.GetMarksAsync();
                     await LoadSubjects();
                     await LoadStudents();
+                    await LoadFinalAveragesAsync(); // <- aqui é crucial
                     ClearInputs();
                 }
                 else
@@ -199,6 +201,7 @@ namespace Escola.WPF
                     await LoadMarks();
                     await LoadSubjects();
                     await LoadStudents();
+                    await LoadFinalAveragesAsync(); // <- aqui é crucial
                     ClearInputs();
                 }
                 else
