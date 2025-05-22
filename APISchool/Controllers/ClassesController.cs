@@ -138,9 +138,24 @@ namespace SchoolAPI.Controllers
             if (cls == null)
                 return NotFound();
 
+            // Verifica se há alunos associados à turma
+            var hasStudents = db.Students.Any(s => s.ClassId == id);
+            if (hasStudents)
+            {
+                return BadRequest("Não é possível excluir esta turma porque há alunos vinculados a ela.");
+            }
+
+            // Verifica se há professores associados à turma
+            var hasTeachers = db.TeacherClasses.Any(tc => tc.ClassId == id);
+            if (hasTeachers)
+            {
+                return BadRequest("Não é possível excluir esta turma porque há professores vinculados a ela.");
+            }
+
             db.Classes.DeleteOnSubmit(cls);
             db.SubmitChanges();
-            return Ok("Class deleted successfully.");
+
+            return Ok("Turma excluída com sucesso.");
         }
     }
 }

@@ -168,26 +168,44 @@ namespace Escola.WPF
                     {
                         try
                         {
-                            await _dataService.DeleteClassAsync(selectedClass.Id);  // Deleta a classe via API
-                            MessageBox.Show("Class deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                           await  LoadClasses();  // Atualiza a lista de classes
+                            var response = await _dataService.DeleteClassAsync(selectedClass.Id);
+
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                var errorMessage = await response.Content.ReadAsStringAsync();
+
+                                // Tenta extrair mensagem clara
+                                if (!string.IsNullOrWhiteSpace(errorMessage))
+                                {
+                                    MessageBox.Show($"Não foi possível apagar a turma:\n{errorMessage}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Não foi possível apagar a turma por um erro desconhecido.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                }
+
+                                return;
+                            }
+
+                            MessageBox.Show("Turma excluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await LoadClasses();
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show($"Error deleting class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show($"Erro ao apagar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Please select a class to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Por favor, selecione uma turma para excluir.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao apagar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-           
+
         }
 
         private void ClearForm()
