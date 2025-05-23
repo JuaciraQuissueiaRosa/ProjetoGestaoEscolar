@@ -1,22 +1,29 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using OxyPlot;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for TimeTablePage.xaml
+    /// Interaction logic for TimetableWindow.xaml
     /// </summary>
-    public partial class TimeTablesPage : Page
+    public partial class TimetableWindow : Window
     {
         private readonly IDataService _dataService;
 
-        public TimeTablesPage()
+        public TimetableWindow()
         {
             InitializeComponent();
             _dataService = new ApiService();
@@ -50,7 +57,7 @@ namespace Escola.WPF
                 MessageBox.Show($"Erro ao carregar comboboxes: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-      
+
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -250,5 +257,20 @@ namespace Escola.WPF
                 MessageBox.Show($"Erro ao selecionar horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
+        }
     }
 }
+ 

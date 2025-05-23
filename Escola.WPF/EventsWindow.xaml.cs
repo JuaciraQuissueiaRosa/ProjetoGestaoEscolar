@@ -1,21 +1,29 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Xml.Linq;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for EventsPage.xaml
+    /// Interaction logic for EventsWindow.xaml
     /// </summary>
-    public partial class EventsPage : Page
+    public partial class EventsWindow : Window
     {
         private readonly IDataService _eventService;
 
-        public EventsPage()
+        public EventsWindow()
         {
             InitializeComponent();
             _eventService = new ApiService();
@@ -212,7 +220,7 @@ namespace Escola.WPF
                 {
                     await _eventService.RemoveTeacherFromEventAsync(selectedEvent.Id, selectedTeacher.Id);
                     MessageBox.Show("Teacher removed from event.");
-                  
+
                     await RefreshEvents();
                 }
                 catch (Exception ex)
@@ -351,6 +359,20 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Erro ao selecionar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
         }
     }
 }

@@ -1,21 +1,30 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
-using System.Collections.ObjectModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for MarksPage.xaml
+    /// Interaction logic for MarksWindow.xaml
     /// </summary>
-    public partial class MarksPage : Page
+    public partial class MarksWindow : Window
     {
         private readonly IDataService _dataService;
 
-        public MarksPage()
+        public MarksWindow()
         {
             InitializeComponent();
             _dataService = new ApiService();
@@ -231,7 +240,7 @@ namespace Escola.WPF
                 txtScore.Clear();
                 txtAssessmentYear.Clear();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error to clean inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -268,7 +277,7 @@ namespace Escola.WPF
 
                 if (!Regex.IsMatch(txtAssessmentYear.Text, @"^\d{4}/\d{4}$"))
                 {
-                    HighlightError(txtAssessmentYear,"Insert the academic year in the format YYYY/YYYY.");
+                    HighlightError(txtAssessmentYear, "Insert the academic year in the format YYYY/YYYY.");
                     return false;
                 }
 
@@ -311,7 +320,7 @@ namespace Escola.WPF
                 {
                     cbStudents.SelectedValue = selectedMark.StudentId;
                     cbSubjects.SelectedValue = selectedMark.SubjectId;
-                    cbAssessmentType.SelectedItem  = selectedMark.AssessmentType;
+                    cbAssessmentType.SelectedItem = selectedMark.AssessmentType;
                     txtScore.Text = selectedMark.Grade.ToString("F2");
 
                     // Garantir o formato correto "yyyy/yyyy"
@@ -343,6 +352,22 @@ namespace Escola.WPF
             }
         }
 
-     
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
+        }
+
+
     }
 }
+    
+

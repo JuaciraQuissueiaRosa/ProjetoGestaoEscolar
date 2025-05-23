@@ -1,20 +1,30 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for SubjectsPage.xaml
+    /// Interaction logic for SubjectsWindow.xaml
     /// </summary>
-    public partial class SubjectsPage : Page
+    public partial class SubjectsWindow : Window
     {
         private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
 
-        public SubjectsPage()
+        public SubjectsWindow()
         {
             InitializeComponent();
             _dataService = new ApiService();
@@ -223,11 +233,11 @@ namespace Escola.WPF
                 txtWeeklyHours.Clear();
                 cbTeachers.SelectedIndex = -1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error clean the inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
         private bool ValidateSubjectInputs()
@@ -288,6 +298,21 @@ namespace Escola.WPF
             }
 
         }
+
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
+        }
     }
 }
+    
 

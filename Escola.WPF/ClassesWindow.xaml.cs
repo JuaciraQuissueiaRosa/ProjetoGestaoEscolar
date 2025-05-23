@@ -1,20 +1,30 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for ClassesPage.xaml
+    /// Interaction logic for ClassesWindow.xaml
     /// </summary>
-    public partial class ClassesPage : Page
+    public partial class ClassesWindow : Window
     {
         private readonly IDataService _dataService;
         private List<Class> _classes;
 
-        public ClassesPage()
+        public ClassesWindow()
         {
             try
             {
@@ -29,10 +39,10 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Error initializing page: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
-     
+
 
         private async Task LoadClasses()
         {
@@ -105,7 +115,7 @@ namespace Escola.WPF
                 {
                     await _dataService.AddClassAsync(newClass);  // Cria uma nova classe via API
                     MessageBox.Show("Class created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                   await LoadClasses();  // Atualiza a lista de classes
+                    await LoadClasses();  // Atualiza a lista de classes
                     ClearForm();  // Limpa o formulário após criar a classe
                 }
                 catch (Exception ex)
@@ -117,7 +127,7 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Error creating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
@@ -154,7 +164,7 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Error updating class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
@@ -189,6 +199,7 @@ namespace Escola.WPF
 
                             MessageBox.Show("Turma excluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
                             await LoadClasses();
+                            ClearForm();
                         }
                         catch (Exception ex)
                         {
@@ -225,7 +236,7 @@ namespace Escola.WPF
                 {
                     txtClassName.Text = selectedClass.Name;
                     txtGroupName.Text = selectedClass.Course;
-                   txtAcademicYear.Text = selectedClass.AcademicYear;
+                    txtAcademicYear.Text = selectedClass.AcademicYear;
                     txtSchedule.Text = selectedClass.Shift;
                 }
             }
@@ -265,7 +276,7 @@ namespace Escola.WPF
                         messages.Add(result ? $"✓ Subject associated." : "✗ Failed to associate subject.");
                     }
 
-                   await LoadClasses(); // Atualiza o DataGrid com os dados atualizados da turma
+                    await LoadClasses(); // Atualiza o DataGrid com os dados atualizados da turma
                     MessageBox.Show(string.Join("\n", messages), "Association Result", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -387,10 +398,27 @@ namespace Escola.WPF
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao validar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-               
+
             }
-           
+
+        }
+
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
         }
 
     }
 }
+
+    
+

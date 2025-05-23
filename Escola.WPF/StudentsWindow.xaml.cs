@@ -1,25 +1,31 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Xml.Linq;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for StudentsPage.xaml
+    /// Interaction logic for StudentsWindow.xaml
     /// </summary>
-    public partial class StudentsPage : Page
+    public partial class StudentsWindow : Window
     {
         private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
 
-        public StudentsPage()
+        public StudentsWindow()
         {
             InitializeComponent();
             _dataService = new ApiService();
@@ -262,11 +268,11 @@ namespace Escola.WPF
                 txtSearch.Clear();
                 dgStudents.SelectedItem = null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error to clean the inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
         private void dgStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -377,7 +383,7 @@ namespace Escola.WPF
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-              
+
             }
 
         }
@@ -395,6 +401,18 @@ namespace Escola.WPF
             }
         }
 
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
+        }
     }
 }
-

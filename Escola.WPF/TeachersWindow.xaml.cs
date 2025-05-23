@@ -1,22 +1,32 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
     /// <summary>
-    /// Interaction logic for TeachersPage.xaml
+    /// Interaction logic for TeachersWindow.xaml
     /// </summary>
-    public partial class TeachersPage : Page
+    public partial class TeachersWindow : Window
     {
         private List<Teacher> _professors;  // Lista de professores
         private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
 
-        public TeachersPage()
+        public TeachersWindow()
         {
             try
             {
@@ -60,11 +70,11 @@ namespace Escola.WPF
                     txtProfessorTeachingArea.Text = selectedProfessor.TeachingArea;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error on selection teachers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-           
+
         }
 
         // Criar um novo professor
@@ -94,11 +104,11 @@ namespace Escola.WPF
                     MessageBox.Show($"Error creating professor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error creating professor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-         
+
         }
 
         // Editar um professor existente
@@ -132,11 +142,11 @@ namespace Escola.WPF
                     MessageBox.Show("Please select a professor to edit.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error updating professor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-          
+
         }
 
         // Excluir um professor
@@ -159,6 +169,7 @@ namespace Escola.WPF
                             {
                                 MessageBox.Show("Professor deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                                 LoadProfessors();  // Recarrega a lista de professores
+                                ClearProfessorForm();
                             }
                             else
                             {
@@ -302,6 +313,19 @@ namespace Escola.WPF
         {
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
+
+        private void BackToMenu_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is MainWindow mainWindow)
+                {
+                    mainWindow.Show();
+                    break;
+                }
+            }
+
+            this.Close();
+        }
     }
 }
-

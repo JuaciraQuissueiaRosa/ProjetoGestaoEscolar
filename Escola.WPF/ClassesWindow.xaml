@@ -1,0 +1,150 @@
+﻿<Window x:Class="Escola.WPF.ClassesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Escola.WPF"
+        mc:Ignorable="d"
+        Title="ClassesWindow" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="509*"/>
+            <ColumnDefinition Width="271*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+      
+
+        <!-- Input Form -->
+        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10" Grid.ColumnSpan="2">
+
+            <!-- Class Name -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Class Name:" VerticalAlignment="Center"/>
+                <TextBox Name="txtClassName" Grid.Column="1" Width="300" Height="30" FontSize="14"/>
+            </Grid>
+
+            <!-- Group Name -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Group Name:" VerticalAlignment="Center"/>
+                <TextBox Name="txtGroupName" Grid.Column="1" Width="300" Height="30" FontSize="14"/>
+            </Grid>
+
+            <!-- Academic Year -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Academic Year:" VerticalAlignment="Center"/>
+                <TextBox Name="txtAcademicYear" Grid.Column="1" Width="300" Height="30" FontSize="14"/>
+            </Grid>
+
+            <!-- Schedule -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Schedule:" VerticalAlignment="Center"/>
+                <TextBox Name="txtSchedule" Grid.Column="1" Width="300" Height="30" FontSize="14"/>
+            </Grid>
+
+            <!-- Student -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Select Student:" VerticalAlignment="Center"/>
+                <ComboBox Name="cbStudents" Grid.Column="1" Width="300" Height="30" FontSize="14"
+                      DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+            </Grid>
+
+            <!-- Teacher -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Select Teacher:" VerticalAlignment="Center"/>
+                <ComboBox Name="cbTeachers" Grid.Column="1" Width="300" Height="30" FontSize="14"
+                      DisplayMemberPath="FullName" SelectedValuePath="Id"/>
+            </Grid>
+
+            <!-- Subject -->
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Select Subject:" VerticalAlignment="Center"/>
+                <ComboBox Name="cbSubjects" Grid.Column="1" Width="300" Height="30" FontSize="14"
+                      DisplayMemberPath="Name" SelectedValuePath="Id"/>
+            </Grid>
+
+            <!-- Buttons -->
+            <StackPanel Orientation="Horizontal" Margin="5,10,0,0" HorizontalAlignment="Left">
+                <Button Content="Associate to Class" Width="200" Margin="0,0,10,0" Click="btnAssociate_Click"/>
+                <Button Content="Remove from class" Width="200" Click="btnRemoveFromClass_Click"/>
+            </StackPanel>
+
+            <!-- Botão Voltar -->
+            <Button Content="⬅ Come back to menu"
+                Click="BackToMenu_Click"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="10"
+                Padding="10,5"
+                FontWeight="Bold"
+                Background="#FF007ACC"
+                Foreground="White"
+                Cursor="Hand"
+                BorderThickness="0"
+                Width="140"
+                Height="40"/>
+        </StackPanel>
+
+        <!-- DataGrid -->
+        <DataGrid Name="dgClasses"
+              Grid.Row="1"
+              AutoGenerateColumns="False"
+              SelectionMode="Single"
+              IsReadOnly="True"
+              Margin="0,10,0,0"
+              Grid.ColumnSpan="2"
+              SelectionChanged="dgClasses_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="Class Name" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Group Name" Binding="{Binding Course}" Width="*"/>
+                <DataGridTextColumn Header="Schedule" Binding="{Binding Shift}" Width="*"/>
+                <DataGridTextColumn Header="Academic Year" Binding="{Binding AcademicYear}" Width="*"/>
+                <DataGridTextColumn Header="Students" Binding="{Binding StudentNames}" Width="*"/>
+                <DataGridTextColumn Header="Subjects" Binding="{Binding SubjectNames}" Width="*"/>
+                <DataGridTextColumn Header="Teachers" Binding="{Binding TeacherNames}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Ações -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Left" Margin="225,10,0,0" Grid.ColumnSpan="2">
+            <Button Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
+            <Button Name="btnEdit" Content="Update" Width="100" Margin="5" Click="btnEdit_Click"/>
+            <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
+        </StackPanel>
+    </Grid>
+
+
+</Window>
