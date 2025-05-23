@@ -16,6 +16,8 @@ namespace APISchool
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
+
             // Ignora referências circulares
             config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 

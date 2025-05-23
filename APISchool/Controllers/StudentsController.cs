@@ -13,7 +13,7 @@ namespace SchoolAPI.Controllers
     [RoutePrefix("api/students")]
     public class StudentsController : ApiController
     {
-        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
         // GET: api/students
         [HttpGet]
         [Route("")]

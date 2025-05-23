@@ -355,7 +355,7 @@ namespace Escola.WPF.Services
 
         public async Task<bool> RemoveTeacherFromSubjectAsync(int subjectId, int teacherId)
         {
-            var response = await _client.DeleteAsync($"api/subjects/{subjectId}/remove-teacher/{teacherId}");
+            var response = await _client.DeleteAsync($"subjects/{subjectId}/remove-teacher/{teacherId}");
             return response.IsSuccessStatusCode;
         }
     }

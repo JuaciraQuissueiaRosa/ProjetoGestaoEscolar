@@ -12,7 +12,7 @@ namespace SchoolAPI.Controllers
     [RoutePrefix("api/events")]
     public class EventsController : ApiController
     {
-        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString"].ConnectionString);
+        SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
 
         // GET: api/events
         [HttpGet]
