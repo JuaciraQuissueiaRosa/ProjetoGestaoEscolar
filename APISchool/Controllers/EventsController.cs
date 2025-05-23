@@ -56,6 +56,9 @@ namespace SchoolAPI.Controllers
             if (data == null)
                 return BadRequest("Invalid event data.");
 
+            if (data.EventTime == default(TimeSpan))
+                return BadRequest("EventTime inválido ou ausente.");
+
             var newEvent = new Event
             {
                 Name = data.Name,
@@ -118,10 +121,17 @@ namespace SchoolAPI.Controllers
         [Route("{id}")]
         public IHttpActionResult Put(int id, Event updatedEvent)
         {
+            if (updatedEvent == null)
+                return BadRequest("Dados inválidos.");
+
+            if (updatedEvent.EventTime == default(TimeSpan))
+                return BadRequest("Hora do evento (EventTime) é obrigatória e deve estar no formato HH:mm.");
+
             var existing = db.Events.FirstOrDefault(e => e.Id == id);
             if (existing == null)
                 return NotFound();
 
+            // Atualiza os dados
             existing.Name = updatedEvent.Name;
             existing.EventDate = updatedEvent.EventDate;
             existing.EventTime = updatedEvent.EventTime;

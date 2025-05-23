@@ -13,6 +13,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Título -->
+        <TextBlock Text="Timetable Page" FontSize="20" FontWeight="Bold" Margin="15,0,0,15" />
         <!-- Formulário -->
         <Grid Grid.Row="0" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>

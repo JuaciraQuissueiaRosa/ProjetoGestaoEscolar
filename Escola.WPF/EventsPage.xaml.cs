@@ -89,7 +89,8 @@ namespace Escola.WPF
                 var newEvent = new Event
                 {
                     Name = txtName.Text,
-                    EventDate = DateTime.Parse(dpEventDate.Text).Date + TimeSpan.Parse(txtEventTime.Text),
+                    EventDate = DateTime.Parse(dpEventDate.Text).Date, // Somente a data
+                    EventTime = TimeSpan.Parse(txtEventTime.Text),     // Somente o horário
                     Location = txtLocation.Text,
                     Description = txtDescription.Text
                 };
@@ -102,7 +103,6 @@ namespace Escola.WPF
             {
                 MessageBox.Show($"Erro ao criar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
@@ -122,7 +122,8 @@ namespace Escola.WPF
                 if (result != MessageBoxResult.Yes) return;
 
                 selectedEvent.Name = txtName.Text;
-                selectedEvent.EventDate = DateTime.Parse(dpEventDate.Text).Date + TimeSpan.Parse(txtEventTime.Text);
+                selectedEvent.EventDate = DateTime.Parse(dpEventDate.Text).Date;
+                selectedEvent.EventTime = TimeSpan.Parse(txtEventTime.Text);
                 selectedEvent.Location = txtLocation.Text;
                 selectedEvent.Description = txtDescription.Text;
 
@@ -319,6 +320,7 @@ namespace Escola.WPF
             dpEventDate.ClearValue(Border.BorderBrushProperty);
             dpEventDate.ClearValue(Border.BorderThicknessProperty);
             dpEventDate.ToolTip = null;
+            txtEventTime.ToolTip = null;
             txtName.ToolTip = null;
             txtLocation.ToolTip = null;
             txtDescription.ToolTip = null;

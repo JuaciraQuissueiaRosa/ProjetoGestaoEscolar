@@ -4,6 +4,28 @@
              xmlns:local="clr-namespace:Escola.WPF"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- ✅ Estilo global de botões -->
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Background" Value="#FF007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="12" 
+                                BorderBrush="Transparent" 
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

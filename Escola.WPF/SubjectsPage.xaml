@@ -15,15 +15,20 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Título -->
+        <TextBlock Text="Subjects Page" FontSize="20" FontWeight="Bold" Margin="15,0,0,15" />
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
             <Button Name="btnCreate" Content="Create" Width="100" Margin="5" Click="btnCreate_Click"/>
             <Button Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
             <Button Content="Associate Teacher" Width="140" Margin="2" Click="btnAssociateTeacher_Click"/>
-            <Button Content="Remover Professor da Disciplina" 
-        Click="btnRemoveTeacherFromSubject_Click" 
-        Margin="5"/>
+            <Button Content="Remove teacher from subject"
+            Click="btnRemoveTeacherFromSubject_Click"
+            Margin="5"
+            MinWidth="250"
+            Padding="10,5"
+            HorizontalAlignment="Left"/>
         </StackPanel>
 
         <!-- Input Fields (Labels and TextBoxes) -->

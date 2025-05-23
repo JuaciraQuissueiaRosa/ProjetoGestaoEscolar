@@ -8,15 +8,38 @@
         Title="MainWindow" Height="598" Width="800">
     <Grid>
       
-        <StackPanel Orientation="Vertical" Margin="10,10,10,10" Grid.RowSpan="2">
-            <Button Content="Load Students"  Click="BtnLoadStudents_Click" Margin="5"/>
-            <Button Content="Load Subjects" Click="BtnLoadSubjects_Click" Margin="5"/>
-            <Button Content="Load Teachers" Click="BtnLoadTeachers_Click" Margin="5"/>
-            <Button Content="Load Classes"  Click="BtnLoadClasses_Click" Margin="5"/>
-            <Button Content="Load Marks" Click="BtnLoadMarks_Click" Margin="5"/>
-            <Button Content="Load TimeTables" Click="BtnLoadTimeTables_Click" Margin="5"/>
-            <Button Content="Load Events" Click="BtnLoadEvents_Click" Margin="5"/>
-           
+        <StackPanel Orientation="Vertical" Margin="20,10,10,20" Grid.RowSpan="2">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Height" Value="45"/>
+                    <Setter Property="Padding" Value="10,5"/>
+                    <Setter Property="Margin" Value="10"/>
+                    <Setter Property="Background" Value="#FF007ACC"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" 
+                                        CornerRadius="12" 
+                                        BorderBrush="Transparent" 
+                                        BorderThickness="0">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Load Students"  Click="BtnLoadStudents_Click" Margin="28"/>
+            <Button Content="Load Subjects" Click="BtnLoadSubjects_Click" Margin="28"/>
+            <Button Content="Load Teachers" Click="BtnLoadTeachers_Click" Margin="28"/>
+            <Button Content="Load Classes"  Click="BtnLoadClasses_Click" Margin="28"/>
+            <Button Content="Load Marks" Click="BtnLoadMarks_Click" Margin="28"/>
+            <Button Content="Load TimeTables" Click="BtnLoadTimeTables_Click" Margin="28"/>
+            <Button Content="Load Events" Click="BtnLoadEvents_Click" Margin="28"/>
+            <Button Content="Load Credits" Click="BtnLoadCredits_Click" Margin="28"/>
         </StackPanel>
 
         <!-- Frame para carregar as páginas -->

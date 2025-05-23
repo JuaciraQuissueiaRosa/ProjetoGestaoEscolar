@@ -18,6 +18,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Título -->
+        <TextBlock Text="Classes Page" FontSize="20" FontWeight="Bold" Margin="15,0,0,15" />
+        
         <!-- Input Form for Class Details -->
         <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10" Grid.ColumnSpan="2">
             <TextBlock Text="Class Name" Margin="0,5"/>
