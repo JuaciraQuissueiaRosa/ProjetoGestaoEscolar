@@ -85,6 +85,19 @@ namespace SchoolAPI.Controllers
             return Ok("Subject successfully associated with the class.");
         }
 
+        [HttpDelete]
+        [Route("{classId}/remove-subject/{subjectId}")]
+        public IHttpActionResult RemoveSubject(int classId, int subjectId)
+        {
+            var relation = db.SubjectClasses.FirstOrDefault(sc => sc.ClassId == classId && sc.SubjectId == subjectId);
+            if (relation == null)
+                return NotFound();
+
+            db.SubjectClasses.DeleteOnSubmit(relation);
+            db.SubmitChanges();
+            return Ok("Disciplina removida da turma com sucesso.");
+        }
+
         [HttpPost]
         [Route("{classId}/associate-teacher/{teacherId}")]
         public IHttpActionResult AssociateTeacher(int classId, int teacherId)
@@ -96,6 +109,19 @@ namespace SchoolAPI.Controllers
             db.TeacherClasses.InsertOnSubmit(relation);
             db.SubmitChanges();
             return Ok("Teacher successfully associated with the class.");
+        }
+
+        [HttpDelete]
+        [Route("{classId}/remove-teacher/{teacherId}")]
+        public IHttpActionResult RemoveTeacher(int classId, int teacherId)
+        {
+            var relation = db.TeacherClasses.FirstOrDefault(tc => tc.ClassId == classId && tc.TeacherId == teacherId);
+            if (relation == null)
+                return NotFound();
+
+            db.TeacherClasses.DeleteOnSubmit(relation);
+            db.SubmitChanges();
+            return Ok("Professor removido da turma com sucesso.");
         }
 
         [HttpPost]
@@ -112,6 +138,20 @@ namespace SchoolAPI.Controllers
             db.SubmitChanges();
             return Ok("Student successfully assigned to the class.");
         }
+
+        [HttpDelete]
+        [Route("{classId}/remove-student/{studentId}")]
+        public IHttpActionResult RemoveStudent(int classId, int studentId)
+        {
+            var student = db.Students.FirstOrDefault(s => s.Id == studentId && s.ClassId == classId);
+            if (student == null)
+                return NotFound();
+
+            student.ClassId = null;
+            db.SubmitChanges();
+            return Ok("Aluno removido da turma com sucesso.");
+        }
+
 
         [HttpPut]
         [Route("{id}")]

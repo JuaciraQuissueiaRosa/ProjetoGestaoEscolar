@@ -89,7 +89,7 @@ namespace Escola.WPF
                 var newEvent = new Event
                 {
                     Name = txtName.Text,
-                    EventDate = DateTime.Parse(txtEventDate.Text),
+                    EventDate = DateTime.Parse(dpEventDate.Text).Date + TimeSpan.Parse(txtEventTime.Text),
                     Location = txtLocation.Text,
                     Description = txtDescription.Text
                 };
@@ -122,7 +122,7 @@ namespace Escola.WPF
                 if (result != MessageBoxResult.Yes) return;
 
                 selectedEvent.Name = txtName.Text;
-                selectedEvent.EventDate = DateTime.Parse(txtEventDate.Text);
+                selectedEvent.EventDate = DateTime.Parse(dpEventDate.Text).Date + TimeSpan.Parse(txtEventTime.Text);
                 selectedEvent.Location = txtLocation.Text;
                 selectedEvent.Description = txtDescription.Text;
 
@@ -236,7 +236,15 @@ namespace Escola.WPF
                 var result = MessageBox.Show("Tem certeza que deseja excluir este evento?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes) return;
 
-                await _eventService.DeleteEventAsync(selectedEvent.Id);
+                var response = await _eventService.DeleteEventAsync(selectedEvent.Id);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Erro ao excluir evento:\n{error}", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 await RefreshEvents();
                 MessageBox.Show("Evento deletado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -258,12 +266,17 @@ namespace Escola.WPF
                     return false;
                 }
 
-                if (string.IsNullOrWhiteSpace(txtEventDate.Text) || !DateTime.TryParse(txtEventDate.Text, out _))
+                if (string.IsNullOrWhiteSpace(dpEventDate.Text) || !DateTime.TryParse(dpEventDate.Text, out _))
                 {
-                    ShowValidationError(txtEventDate, "Data do evento inválida ou vazia.");
+                    ShowValidationError(dpEventDate, "Data do evento inválida ou vazia.");
                     return false;
                 }
 
+                if (string.IsNullOrWhiteSpace(txtEventTime.Text) || !TimeSpan.TryParse(txtEventTime.Text, out _))
+                {
+                    ShowValidationError(txtEventTime, "Hora do evento inválida ou vazia.");
+                    return false;
+                }
                 if (string.IsNullOrWhiteSpace(txtLocation.Text))
                 {
                     ShowValidationError(txtLocation, "A localização é obrigatória.");
@@ -289,7 +302,8 @@ namespace Escola.WPF
         private void ClearInputs()
         {
             txtName.Clear();
-            txtEventDate.Clear();
+            dpEventDate.Clear();
+            txtEventTime.Clear();
             txtLocation.Clear();
             txtDescription.Clear();
             cbStudents.SelectedIndex = -1;
@@ -300,12 +314,12 @@ namespace Escola.WPF
         private void ClearEventFieldBorders()
         {
             txtName.ClearValue(Border.BorderBrushProperty);
-            txtEventDate.ClearValue(Border.BorderBrushProperty);
             txtLocation.ClearValue(Border.BorderBrushProperty);
             txtDescription.ClearValue(Border.BorderBrushProperty);
-
+            dpEventDate.ClearValue(Border.BorderBrushProperty);
+            dpEventDate.ClearValue(Border.BorderThicknessProperty);
+            dpEventDate.ToolTip = null;
             txtName.ToolTip = null;
-            txtEventDate.ToolTip = null;
             txtLocation.ToolTip = null;
             txtDescription.ToolTip = null;
         }
@@ -325,7 +339,8 @@ namespace Escola.WPF
                 if (selectedEvent != null)
                 {
                     txtName.Text = selectedEvent.Name;
-                    txtEventDate.Text = selectedEvent.EventDate.ToString("yyyy-MM-dd");
+                    dpEventDate.Text = selectedEvent.EventDate.ToString("yyyy-MM-dd"); // TextBox agora
+                    txtEventTime.Text = selectedEvent.EventDate.ToString("HH:mm");     // Hora vem do EventDate
                     txtLocation.Text = selectedEvent.Location;
                     txtDescription.Text = selectedEvent.Description;
                 }

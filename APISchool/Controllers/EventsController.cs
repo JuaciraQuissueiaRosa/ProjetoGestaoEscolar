@@ -25,6 +25,7 @@ namespace SchoolAPI.Controllers
                 e.Name,
                 e.Description,
                 e.EventDate,
+                e.EventTime,
                 e.Location,
                 Students = e.EventParticipations
                              .Where(p => p.StudentId != null)
@@ -59,6 +60,7 @@ namespace SchoolAPI.Controllers
             {
                 Name = data.Name,
                 EventDate = data.EventDate,
+                EventTime=data.EventTime,
                 Location = data.Location,
                 Description = data.Description
                 // Não precisa atribuir ID manualmente (assume que o banco gera automaticamente)
@@ -122,6 +124,7 @@ namespace SchoolAPI.Controllers
 
             existing.Name = updatedEvent.Name;
             existing.EventDate = updatedEvent.EventDate;
+            existing.EventTime = updatedEvent.EventTime;
             existing.Location = updatedEvent.Location;
             existing.Description = updatedEvent.Description;
 
@@ -171,9 +174,16 @@ namespace SchoolAPI.Controllers
             if (ev == null)
                 return NotFound();
 
+            // Verifica se há participantes vinculados (aluno ou professor)
+            var hasParticipants = db.EventParticipations.Any(p => p.EventId == id);
+            if (hasParticipants)
+            {
+                return BadRequest("Não é possível excluir este evento porque ainda há participantes vinculados a ele.");
+            }
+
             db.Events.DeleteOnSubmit(ev);
             db.SubmitChanges();
-            return Ok("Event deleted with success.");
+            return Ok("Evento deletado com sucesso.");
         }
     }
 }

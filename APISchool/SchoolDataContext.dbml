@@ -12,27 +12,6 @@
       <Association Name="Class_Timetable" Member="Timetables" ThisKey="Id" OtherKey="ClassId" Type="Timetable" />
     </Type>
   </Table>
-  <Table Name="dbo.EventParticipation" Member="EventParticipations">
-    <Type Name="EventParticipation">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="EventId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="StudentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="TeacherId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="Event_EventParticipation" Member="Event" ThisKey="EventId" OtherKey="Id" Type="Event" IsForeignKey="true" />
-      <Association Name="Student_EventParticipation" Member="Student" ThisKey="StudentId" OtherKey="Id" Type="Student" IsForeignKey="true" />
-      <Association Name="Teacher_EventParticipation" Member="Teacher" ThisKey="TeacherId" OtherKey="Id" Type="Teacher" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Events" Member="Events">
-    <Type Name="Event">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="EventDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="Location" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Association Name="Event_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="EventId" Type="EventParticipation" />
-    </Type>
-  </Table>
   <Table Name="dbo.FinalAverages" Member="FinalAverages">
     <Type Name="FinalAverage">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -52,9 +31,9 @@
       <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="ClassId" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Association Name="Student_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="StudentId" Type="EventParticipation" />
       <Association Name="Student_FinalAverage" Member="FinalAverages" ThisKey="Id" OtherKey="StudentId" Type="FinalAverage" />
       <Association Name="Student_Mark" Member="Marks" ThisKey="Id" OtherKey="StudentId" Type="Mark" />
+      <Association Name="Student_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="StudentId" Type="EventParticipation" />
       <Association Name="Class_Student" Member="Class" ThisKey="ClassId" OtherKey="Id" Type="Class" IsForeignKey="true" />
     </Type>
   </Table>
@@ -95,11 +74,11 @@
       <Column Name="Phone" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="TeachingArea" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Association Name="Teacher_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="TeacherId" Type="EventParticipation" />
       <Association Name="Teacher_TeacherClass" Member="TeacherClasses" ThisKey="Id" OtherKey="TeacherId" Type="TeacherClass" />
       <Association Name="Teacher_TeacherSubject" Member="TeacherSubjects" ThisKey="Id" OtherKey="TeacherId" Type="TeacherSubject" />
       <Association Name="Teacher_Timetable" Member="Timetables" ThisKey="Id" OtherKey="TeacherId" Type="Timetable" />
       <Association Name="Teacher_Mark" Member="Marks" ThisKey="Id" OtherKey="TeacherId" Type="Mark" />
+      <Association Name="Teacher_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="TeacherId" Type="EventParticipation" />
     </Type>
   </Table>
   <Table Name="dbo.TeacherSubject" Member="TeacherSubjects">
@@ -137,6 +116,28 @@
       <Association Name="Student_Mark" Member="Student" ThisKey="StudentId" OtherKey="Id" Type="Student" IsForeignKey="true" />
       <Association Name="Subject_Mark" Member="Subject" ThisKey="SubjectId" OtherKey="Id" Type="Subject" IsForeignKey="true" />
       <Association Name="Teacher_Mark" Member="Teacher" ThisKey="TeacherId" OtherKey="Id" Type="Teacher" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.EventParticipation" Member="EventParticipations">
+    <Type Name="EventParticipation">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EventId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StudentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="TeacherId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Student_EventParticipation" Member="Student" ThisKey="StudentId" OtherKey="Id" Type="Student" IsForeignKey="true" />
+      <Association Name="Teacher_EventParticipation" Member="Teacher" ThisKey="TeacherId" OtherKey="Id" Type="Teacher" IsForeignKey="true" />
+      <Association Name="Event_EventParticipation" Member="Event" ThisKey="EventId" OtherKey="Id" Type="Event" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Events" Member="Events">
+    <Type Name="Event">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="EventDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Location" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="EventTime" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Association Name="Event_EventParticipation" Member="EventParticipations" ThisKey="Id" OtherKey="EventId" Type="EventParticipation" />
     </Type>
   </Table>
 </Database>

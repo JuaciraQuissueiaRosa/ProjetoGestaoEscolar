@@ -44,6 +44,9 @@
             <ComboBox Name="cbSubjects" Width="200" DisplayMemberPath="Name" SelectedValuePath="Id"/>
 
             <Button Content="Associate to Class" Width="200" Margin="0,10,0,0" Click="btnAssociate_Click"/>
+
+            <Button Content="Remover da Turma" Click="btnRemoveFromClass_Click" Width="200" Margin="5"/>
+
         </StackPanel>
 
         <!-- Classes DataGrid -->

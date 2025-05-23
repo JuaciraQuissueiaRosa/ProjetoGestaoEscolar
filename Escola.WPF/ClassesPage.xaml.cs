@@ -280,6 +280,54 @@ namespace Escola.WPF
 
         }
 
+        private async void btnRemoveFromClass_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (dgClasses.SelectedItem is not Class selectedClass)
+                {
+                    MessageBox.Show("Selecione uma turma.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var classId = selectedClass.Id;
+                var messages = new List<string>();
+
+                // Remover aluno
+                if (cbStudents.SelectedValue is int studentId)
+                {
+                    bool result = await _dataService.RemoveStudentFromClassAsync(classId, studentId);
+                    messages.Add(result ? "✓ Aluno removido." : "✗ Falha ao remover aluno.");
+                }
+
+                // Remover professor
+                if (cbTeachers.SelectedValue is int teacherId)
+                {
+                    bool result = await _dataService.RemoveTeacherFromClassAsync(classId, teacherId);
+                    messages.Add(result ? "✓ Professor removido." : "✗ Falha ao remover professor.");
+                }
+
+                // Remover disciplina
+                if (cbSubjects.SelectedValue is int subjectId)
+                {
+                    bool result = await _dataService.RemoveSubjectFromClassAsync(classId, subjectId);
+                    messages.Add(result ? "✓ Disciplina removida." : "✗ Falha ao remover disciplina.");
+                }
+
+                if (messages.Count == 0)
+                {
+                    MessageBox.Show("Nenhum item selecionado para remover.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                await LoadClasses(); // Atualiza a interface
+                MessageBox.Show(string.Join("\n", messages), "Resultado", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         private bool ValidateClassInputs()
         {

@@ -33,6 +33,7 @@ namespace Escola.WPF.Services
         Task<Subject> GetSubjectByIdAsync(int id);
         Task AddSubjectAsync(Subject subject);
         Task UpdateSubjectAsync(Subject subject);
+        Task<bool> RemoveTeacherFromSubjectAsync(int subjectId, int teacherId);
         Task DeleteSubjectAsync(int id);
 
         // Classes
@@ -43,6 +44,9 @@ namespace Escola.WPF.Services
         Task<bool> AssociateTeacherToClassAsync(int classId, int teacherId);
         Task<bool> AssociateSubjectToClassAsync(int classId, int subjectId);
         Task<bool> AssociateStudentToClassAsync(int classId, int studentId);
+        Task<bool> RemoveStudentFromClassAsync(int classId, int studentId);
+        Task<bool> RemoveTeacherFromClassAsync(int classId, int teacherId);
+        Task<bool> RemoveSubjectFromClassAsync(int classId, int subjectId);
         Task<HttpResponseMessage> DeleteClassAsync(int id);
 
         // Marks

@@ -33,12 +33,6 @@ namespace APISchool
     partial void InsertClass(Class instance);
     partial void UpdateClass(Class instance);
     partial void DeleteClass(Class instance);
-    partial void InsertEventParticipation(EventParticipation instance);
-    partial void UpdateEventParticipation(EventParticipation instance);
-    partial void DeleteEventParticipation(EventParticipation instance);
-    partial void InsertEvent(Event instance);
-    partial void UpdateEvent(Event instance);
-    partial void DeleteEvent(Event instance);
     partial void InsertFinalAverage(FinalAverage instance);
     partial void UpdateFinalAverage(FinalAverage instance);
     partial void DeleteFinalAverage(FinalAverage instance);
@@ -66,6 +60,12 @@ namespace APISchool
     partial void InsertMark(Mark instance);
     partial void UpdateMark(Mark instance);
     partial void DeleteMark(Mark instance);
+    partial void InsertEventParticipation(EventParticipation instance);
+    partial void UpdateEventParticipation(EventParticipation instance);
+    partial void DeleteEventParticipation(EventParticipation instance);
+    partial void InsertEvent(Event instance);
+    partial void UpdateEvent(Event instance);
+    partial void DeleteEvent(Event instance);
     #endregion
 		
 		public SchoolDataContext(string connection) : 
@@ -97,22 +97,6 @@ namespace APISchool
 			get
 			{
 				return this.GetTable<Class>();
-			}
-		}
-		
-		public System.Data.Linq.Table<EventParticipation> EventParticipations
-		{
-			get
-			{
-				return this.GetTable<EventParticipation>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Event> Events
-		{
-			get
-			{
-				return this.GetTable<Event>();
 			}
 		}
 		
@@ -185,6 +169,22 @@ namespace APISchool
 			get
 			{
 				return this.GetTable<Mark>();
+			}
+		}
+		
+		public System.Data.Linq.Table<EventParticipation> EventParticipations
+		{
+			get
+			{
+				return this.GetTable<EventParticipation>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Event> Events
+		{
+			get
+			{
+				return this.GetTable<Event>();
 			}
 		}
 	}
@@ -459,449 +459,6 @@ namespace APISchool
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.EventParticipation")]
-	public partial class EventParticipation : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private System.Nullable<int> _EventId;
-		
-		private System.Nullable<int> _StudentId;
-		
-		private System.Nullable<int> _TeacherId;
-		
-		private EntityRef<Event> _Event;
-		
-		private EntityRef<Student> _Student;
-		
-		private EntityRef<Teacher> _Teacher;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnEventIdChanging(System.Nullable<int> value);
-    partial void OnEventIdChanged();
-    partial void OnStudentIdChanging(System.Nullable<int> value);
-    partial void OnStudentIdChanged();
-    partial void OnTeacherIdChanging(System.Nullable<int> value);
-    partial void OnTeacherIdChanged();
-    #endregion
-		
-		public EventParticipation()
-		{
-			this._Event = default(EntityRef<Event>);
-			this._Student = default(EntityRef<Student>);
-			this._Teacher = default(EntityRef<Teacher>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EventId", DbType="Int")]
-		public System.Nullable<int> EventId
-		{
-			get
-			{
-				return this._EventId;
-			}
-			set
-			{
-				if ((this._EventId != value))
-				{
-					if (this._Event.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnEventIdChanging(value);
-					this.SendPropertyChanging();
-					this._EventId = value;
-					this.SendPropertyChanged("EventId");
-					this.OnEventIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StudentId", DbType="Int")]
-		public System.Nullable<int> StudentId
-		{
-			get
-			{
-				return this._StudentId;
-			}
-			set
-			{
-				if ((this._StudentId != value))
-				{
-					if (this._Student.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStudentIdChanging(value);
-					this.SendPropertyChanging();
-					this._StudentId = value;
-					this.SendPropertyChanged("StudentId");
-					this.OnStudentIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TeacherId", DbType="Int")]
-		public System.Nullable<int> TeacherId
-		{
-			get
-			{
-				return this._TeacherId;
-			}
-			set
-			{
-				if ((this._TeacherId != value))
-				{
-					if (this._Teacher.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnTeacherIdChanging(value);
-					this.SendPropertyChanging();
-					this._TeacherId = value;
-					this.SendPropertyChanged("TeacherId");
-					this.OnTeacherIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Event_EventParticipation", Storage="_Event", ThisKey="EventId", OtherKey="Id", IsForeignKey=true)]
-		public Event Event
-		{
-			get
-			{
-				return this._Event.Entity;
-			}
-			set
-			{
-				Event previousValue = this._Event.Entity;
-				if (((previousValue != value) 
-							|| (this._Event.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Event.Entity = null;
-						previousValue.EventParticipations.Remove(this);
-					}
-					this._Event.Entity = value;
-					if ((value != null))
-					{
-						value.EventParticipations.Add(this);
-						this._EventId = value.Id;
-					}
-					else
-					{
-						this._EventId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Event");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_EventParticipation", Storage="_Student", ThisKey="StudentId", OtherKey="Id", IsForeignKey=true)]
-		public Student Student
-		{
-			get
-			{
-				return this._Student.Entity;
-			}
-			set
-			{
-				Student previousValue = this._Student.Entity;
-				if (((previousValue != value) 
-							|| (this._Student.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Student.Entity = null;
-						previousValue.EventParticipations.Remove(this);
-					}
-					this._Student.Entity = value;
-					if ((value != null))
-					{
-						value.EventParticipations.Add(this);
-						this._StudentId = value.Id;
-					}
-					else
-					{
-						this._StudentId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Student");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Teacher_EventParticipation", Storage="_Teacher", ThisKey="TeacherId", OtherKey="Id", IsForeignKey=true)]
-		public Teacher Teacher
-		{
-			get
-			{
-				return this._Teacher.Entity;
-			}
-			set
-			{
-				Teacher previousValue = this._Teacher.Entity;
-				if (((previousValue != value) 
-							|| (this._Teacher.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Teacher.Entity = null;
-						previousValue.EventParticipations.Remove(this);
-					}
-					this._Teacher.Entity = value;
-					if ((value != null))
-					{
-						value.EventParticipations.Add(this);
-						this._TeacherId = value.Id;
-					}
-					else
-					{
-						this._TeacherId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Teacher");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Events")]
-	public partial class Event : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private System.Nullable<System.DateTime> _EventDate;
-		
-		private string _Location;
-		
-		private string _Description;
-		
-		private EntitySet<EventParticipation> _EventParticipations;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnEventDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnEventDateChanged();
-    partial void OnLocationChanging(string value);
-    partial void OnLocationChanged();
-    partial void OnDescriptionChanging(string value);
-    partial void OnDescriptionChanged();
-    #endregion
-		
-		public Event()
-		{
-			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EventDate", DbType="Date")]
-		public System.Nullable<System.DateTime> EventDate
-		{
-			get
-			{
-				return this._EventDate;
-			}
-			set
-			{
-				if ((this._EventDate != value))
-				{
-					this.OnEventDateChanging(value);
-					this.SendPropertyChanging();
-					this._EventDate = value;
-					this.SendPropertyChanged("EventDate");
-					this.OnEventDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location", DbType="NVarChar(100)")]
-		public string Location
-		{
-			get
-			{
-				return this._Location;
-			}
-			set
-			{
-				if ((this._Location != value))
-				{
-					this.OnLocationChanging(value);
-					this.SendPropertyChanging();
-					this._Location = value;
-					this.SendPropertyChanged("Location");
-					this.OnLocationChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(255)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-			set
-			{
-				if ((this._Description != value))
-				{
-					this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Event_EventParticipation", Storage="_EventParticipations", ThisKey="Id", OtherKey="EventId")]
-		public EntitySet<EventParticipation> EventParticipations
-		{
-			get
-			{
-				return this._EventParticipations;
-			}
-			set
-			{
-				this._EventParticipations.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_EventParticipations(EventParticipation entity)
-		{
-			this.SendPropertyChanging();
-			entity.Event = this;
-		}
-		
-		private void detach_EventParticipations(EventParticipation entity)
-		{
-			this.SendPropertyChanging();
-			entity.Event = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.FinalAverages")]
 	public partial class FinalAverage : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1138,11 +695,11 @@ namespace APISchool
 		
 		private System.Nullable<int> _ClassId;
 		
-		private EntitySet<EventParticipation> _EventParticipations;
-		
 		private EntitySet<FinalAverage> _FinalAverages;
 		
 		private EntitySet<Mark> _Marks;
+		
+		private EntitySet<EventParticipation> _EventParticipations;
 		
 		private EntityRef<Class> _Class;
 		
@@ -1168,9 +725,9 @@ namespace APISchool
 		
 		public Student()
 		{
-			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
 			this._FinalAverages = new EntitySet<FinalAverage>(new Action<FinalAverage>(this.attach_FinalAverages), new Action<FinalAverage>(this.detach_FinalAverages));
 			this._Marks = new EntitySet<Mark>(new Action<Mark>(this.attach_Marks), new Action<Mark>(this.detach_Marks));
+			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
 			this._Class = default(EntityRef<Class>);
 			OnCreated();
 		}
@@ -1319,19 +876,6 @@ namespace APISchool
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_EventParticipation", Storage="_EventParticipations", ThisKey="Id", OtherKey="StudentId")]
-		public EntitySet<EventParticipation> EventParticipations
-		{
-			get
-			{
-				return this._EventParticipations;
-			}
-			set
-			{
-				this._EventParticipations.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_FinalAverage", Storage="_FinalAverages", ThisKey="Id", OtherKey="StudentId")]
 		public EntitySet<FinalAverage> FinalAverages
 		{
@@ -1355,6 +899,19 @@ namespace APISchool
 			set
 			{
 				this._Marks.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_EventParticipation", Storage="_EventParticipations", ThisKey="Id", OtherKey="StudentId")]
+		public EntitySet<EventParticipation> EventParticipations
+		{
+			get
+			{
+				return this._EventParticipations;
+			}
+			set
+			{
+				this._EventParticipations.Assign(value);
 			}
 		}
 		
@@ -1412,18 +969,6 @@ namespace APISchool
 			}
 		}
 		
-		private void attach_EventParticipations(EventParticipation entity)
-		{
-			this.SendPropertyChanging();
-			entity.Student = this;
-		}
-		
-		private void detach_EventParticipations(EventParticipation entity)
-		{
-			this.SendPropertyChanging();
-			entity.Student = null;
-		}
-		
 		private void attach_FinalAverages(FinalAverage entity)
 		{
 			this.SendPropertyChanging();
@@ -1443,6 +988,18 @@ namespace APISchool
 		}
 		
 		private void detach_Marks(Mark entity)
+		{
+			this.SendPropertyChanging();
+			entity.Student = null;
+		}
+		
+		private void attach_EventParticipations(EventParticipation entity)
+		{
+			this.SendPropertyChanging();
+			entity.Student = this;
+		}
+		
+		private void detach_EventParticipations(EventParticipation entity)
 		{
 			this.SendPropertyChanging();
 			entity.Student = null;
@@ -2099,8 +1656,6 @@ namespace APISchool
 		
 		private string _TeachingArea;
 		
-		private EntitySet<EventParticipation> _EventParticipations;
-		
 		private EntitySet<TeacherClass> _TeacherClasses;
 		
 		private EntitySet<TeacherSubject> _TeacherSubjects;
@@ -2108,6 +1663,8 @@ namespace APISchool
 		private EntitySet<Timetable> _Timetables;
 		
 		private EntitySet<Mark> _Marks;
+		
+		private EntitySet<EventParticipation> _EventParticipations;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -2127,11 +1684,11 @@ namespace APISchool
 		
 		public Teacher()
 		{
-			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
 			this._TeacherClasses = new EntitySet<TeacherClass>(new Action<TeacherClass>(this.attach_TeacherClasses), new Action<TeacherClass>(this.detach_TeacherClasses));
 			this._TeacherSubjects = new EntitySet<TeacherSubject>(new Action<TeacherSubject>(this.attach_TeacherSubjects), new Action<TeacherSubject>(this.detach_TeacherSubjects));
 			this._Timetables = new EntitySet<Timetable>(new Action<Timetable>(this.attach_Timetables), new Action<Timetable>(this.detach_Timetables));
 			this._Marks = new EntitySet<Mark>(new Action<Mark>(this.attach_Marks), new Action<Mark>(this.detach_Marks));
+			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
 			OnCreated();
 		}
 		
@@ -2235,19 +1792,6 @@ namespace APISchool
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Teacher_EventParticipation", Storage="_EventParticipations", ThisKey="Id", OtherKey="TeacherId")]
-		public EntitySet<EventParticipation> EventParticipations
-		{
-			get
-			{
-				return this._EventParticipations;
-			}
-			set
-			{
-				this._EventParticipations.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Teacher_TeacherClass", Storage="_TeacherClasses", ThisKey="Id", OtherKey="TeacherId")]
 		public EntitySet<TeacherClass> TeacherClasses
 		{
@@ -2300,6 +1844,19 @@ namespace APISchool
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Teacher_EventParticipation", Storage="_EventParticipations", ThisKey="Id", OtherKey="TeacherId")]
+		public EntitySet<EventParticipation> EventParticipations
+		{
+			get
+			{
+				return this._EventParticipations;
+			}
+			set
+			{
+				this._EventParticipations.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2318,18 +1875,6 @@ namespace APISchool
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_EventParticipations(EventParticipation entity)
-		{
-			this.SendPropertyChanging();
-			entity.Teacher = this;
-		}
-		
-		private void detach_EventParticipations(EventParticipation entity)
-		{
-			this.SendPropertyChanging();
-			entity.Teacher = null;
 		}
 		
 		private void attach_TeacherClasses(TeacherClass entity)
@@ -2375,6 +1920,18 @@ namespace APISchool
 		}
 		
 		private void detach_Marks(Mark entity)
+		{
+			this.SendPropertyChanging();
+			entity.Teacher = null;
+		}
+		
+		private void attach_EventParticipations(EventParticipation entity)
+		{
+			this.SendPropertyChanging();
+			entity.Teacher = this;
+		}
+		
+		private void detach_EventParticipations(EventParticipation entity)
 		{
 			this.SendPropertyChanging();
 			entity.Teacher = null;
@@ -3228,6 +2785,473 @@ namespace APISchool
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.EventParticipation")]
+	public partial class EventParticipation : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private System.Nullable<int> _EventId;
+		
+		private System.Nullable<int> _StudentId;
+		
+		private System.Nullable<int> _TeacherId;
+		
+		private EntityRef<Student> _Student;
+		
+		private EntityRef<Teacher> _Teacher;
+		
+		private EntityRef<Event> _Event;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnEventIdChanging(System.Nullable<int> value);
+    partial void OnEventIdChanged();
+    partial void OnStudentIdChanging(System.Nullable<int> value);
+    partial void OnStudentIdChanged();
+    partial void OnTeacherIdChanging(System.Nullable<int> value);
+    partial void OnTeacherIdChanged();
+    #endregion
+		
+		public EventParticipation()
+		{
+			this._Student = default(EntityRef<Student>);
+			this._Teacher = default(EntityRef<Teacher>);
+			this._Event = default(EntityRef<Event>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EventId", DbType="Int")]
+		public System.Nullable<int> EventId
+		{
+			get
+			{
+				return this._EventId;
+			}
+			set
+			{
+				if ((this._EventId != value))
+				{
+					if (this._Event.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnEventIdChanging(value);
+					this.SendPropertyChanging();
+					this._EventId = value;
+					this.SendPropertyChanged("EventId");
+					this.OnEventIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StudentId", DbType="Int")]
+		public System.Nullable<int> StudentId
+		{
+			get
+			{
+				return this._StudentId;
+			}
+			set
+			{
+				if ((this._StudentId != value))
+				{
+					if (this._Student.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStudentIdChanging(value);
+					this.SendPropertyChanging();
+					this._StudentId = value;
+					this.SendPropertyChanged("StudentId");
+					this.OnStudentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TeacherId", DbType="Int")]
+		public System.Nullable<int> TeacherId
+		{
+			get
+			{
+				return this._TeacherId;
+			}
+			set
+			{
+				if ((this._TeacherId != value))
+				{
+					if (this._Teacher.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnTeacherIdChanging(value);
+					this.SendPropertyChanging();
+					this._TeacherId = value;
+					this.SendPropertyChanged("TeacherId");
+					this.OnTeacherIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Student_EventParticipation", Storage="_Student", ThisKey="StudentId", OtherKey="Id", IsForeignKey=true)]
+		public Student Student
+		{
+			get
+			{
+				return this._Student.Entity;
+			}
+			set
+			{
+				Student previousValue = this._Student.Entity;
+				if (((previousValue != value) 
+							|| (this._Student.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Student.Entity = null;
+						previousValue.EventParticipations.Remove(this);
+					}
+					this._Student.Entity = value;
+					if ((value != null))
+					{
+						value.EventParticipations.Add(this);
+						this._StudentId = value.Id;
+					}
+					else
+					{
+						this._StudentId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Student");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Teacher_EventParticipation", Storage="_Teacher", ThisKey="TeacherId", OtherKey="Id", IsForeignKey=true)]
+		public Teacher Teacher
+		{
+			get
+			{
+				return this._Teacher.Entity;
+			}
+			set
+			{
+				Teacher previousValue = this._Teacher.Entity;
+				if (((previousValue != value) 
+							|| (this._Teacher.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Teacher.Entity = null;
+						previousValue.EventParticipations.Remove(this);
+					}
+					this._Teacher.Entity = value;
+					if ((value != null))
+					{
+						value.EventParticipations.Add(this);
+						this._TeacherId = value.Id;
+					}
+					else
+					{
+						this._TeacherId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Teacher");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Event_EventParticipation", Storage="_Event", ThisKey="EventId", OtherKey="Id", IsForeignKey=true)]
+		public Event Event
+		{
+			get
+			{
+				return this._Event.Entity;
+			}
+			set
+			{
+				Event previousValue = this._Event.Entity;
+				if (((previousValue != value) 
+							|| (this._Event.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Event.Entity = null;
+						previousValue.EventParticipations.Remove(this);
+					}
+					this._Event.Entity = value;
+					if ((value != null))
+					{
+						value.EventParticipations.Add(this);
+						this._EventId = value.Id;
+					}
+					else
+					{
+						this._EventId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Event");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Events")]
+	public partial class Event : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _Name;
+		
+		private System.Nullable<System.DateTime> _EventDate;
+		
+		private string _Location;
+		
+		private string _Description;
+		
+		private System.Nullable<System.TimeSpan> _EventTime;
+		
+		private EntitySet<EventParticipation> _EventParticipations;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnEventDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnEventDateChanged();
+    partial void OnLocationChanging(string value);
+    partial void OnLocationChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnEventTimeChanging(System.Nullable<System.TimeSpan> value);
+    partial void OnEventTimeChanged();
+    #endregion
+		
+		public Event()
+		{
+			this._EventParticipations = new EntitySet<EventParticipation>(new Action<EventParticipation>(this.attach_EventParticipations), new Action<EventParticipation>(this.detach_EventParticipations));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(100)")]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EventDate", DbType="Date")]
+		public System.Nullable<System.DateTime> EventDate
+		{
+			get
+			{
+				return this._EventDate;
+			}
+			set
+			{
+				if ((this._EventDate != value))
+				{
+					this.OnEventDateChanging(value);
+					this.SendPropertyChanging();
+					this._EventDate = value;
+					this.SendPropertyChanged("EventDate");
+					this.OnEventDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location", DbType="NVarChar(100)")]
+		public string Location
+		{
+			get
+			{
+				return this._Location;
+			}
+			set
+			{
+				if ((this._Location != value))
+				{
+					this.OnLocationChanging(value);
+					this.SendPropertyChanging();
+					this._Location = value;
+					this.SendPropertyChanged("Location");
+					this.OnLocationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(255)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EventTime", DbType="Time")]
+		public System.Nullable<System.TimeSpan> EventTime
+		{
+			get
+			{
+				return this._EventTime;
+			}
+			set
+			{
+				if ((this._EventTime != value))
+				{
+					this.OnEventTimeChanging(value);
+					this.SendPropertyChanging();
+					this._EventTime = value;
+					this.SendPropertyChanged("EventTime");
+					this.OnEventTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Event_EventParticipation", Storage="_EventParticipations", ThisKey="Id", OtherKey="EventId")]
+		public EntitySet<EventParticipation> EventParticipations
+		{
+			get
+			{
+				return this._EventParticipations;
+			}
+			set
+			{
+				this._EventParticipations.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_EventParticipations(EventParticipation entity)
+		{
+			this.SendPropertyChanging();
+			entity.Event = this;
+		}
+		
+		private void detach_EventParticipations(EventParticipation entity)
+		{
+			this.SendPropertyChanging();
+			entity.Event = null;
 		}
 	}
 }

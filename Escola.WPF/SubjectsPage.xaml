@@ -21,6 +21,9 @@
             <Button Name="btnEdit" Content="Edit" Width="100" Margin="5" Click="btnEdit_Click"/>
             <Button Name="btnDelete" Content="Delete" Width="100" Margin="5" Click="btnDelete_Click"/>
             <Button Content="Associate Teacher" Width="140" Margin="2" Click="btnAssociateTeacher_Click"/>
+            <Button Content="Remover Professor da Disciplina" 
+        Click="btnRemoveTeacherFromSubject_Click" 
+        Margin="5"/>
         </StackPanel>
 
         <!-- Input Fields (Labels and TextBoxes) -->

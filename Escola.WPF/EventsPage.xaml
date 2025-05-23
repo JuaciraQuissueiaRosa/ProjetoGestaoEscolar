@@ -35,8 +35,11 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Margin="5">
-                <TextBlock Text="Event Date:"/>
-                <TextBox Name="txtEventDate" Width="150" Margin="0,5,0,0"/>
+                <TextBlock Text="Data do Evento:"/>
+                <TextBox Name="dpEventDate" Width="150" Margin="0,5,0,0"/>
+
+                <TextBlock Text="Hora do Evento:" Margin="0,10,0,0"/>
+                <TextBox Name="txtEventTime" Width="150" Margin="0,5,0,0" />
             </StackPanel>
 
             <StackPanel Grid.Column="2" Margin="5">
@@ -73,6 +76,7 @@
             <Button Content="Remove Teacher" Width="120" Margin="5" Click="btnRemoveTeacher_Click"/>
         </StackPanel>
 
+        
         <!-- DataGrid -->
         <DataGrid Name="dgEvents" Grid.Row="3" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True" SelectionChanged="dgEvents_SelectionChanged">
             <DataGrid.Columns>
@@ -80,6 +84,7 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="Event Date" Binding="{Binding EventDate}" Width="*"/>
+                <DataGridTextColumn Header="Event Hour" Binding="{Binding EventTime}" Width="*"/>
                 <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="*"/>
                 <DataGridTextColumn Header="Students" Binding="{Binding StudentNames}" Width="*"/>
                 <DataGridTextColumn Header="Teachers" Binding="{Binding TeacherNames}" Width="*"/>

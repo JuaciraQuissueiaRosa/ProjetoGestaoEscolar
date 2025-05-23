@@ -97,6 +97,19 @@ namespace SchoolAPI.Controllers
             return Ok("Teacher associated with subject successfully.");
         }
 
+        [HttpDelete]
+        [Route("{subjectId}/remove-teacher/{teacherId}")]
+        public IHttpActionResult RemoveTeacher(int subjectId, int teacherId)
+        {
+            var teacherSubject = db.TeacherSubjects.FirstOrDefault(ts => ts.SubjectId == subjectId && ts.TeacherId == teacherId);
+            if (teacherSubject == null)
+                return NotFound();
+
+            db.TeacherSubjects.DeleteOnSubmit(teacherSubject);
+            db.SubmitChanges();
+            return Ok("Professor removido da disciplina com sucesso.");
+        }
+
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Subject data)

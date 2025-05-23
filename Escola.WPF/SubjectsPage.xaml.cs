@@ -138,6 +138,43 @@ namespace Escola.WPF
 
         }
 
+        private async void btnRemoveTeacherFromSubject_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (dgSubjects.SelectedItem is Subject selectedSubject &&
+                    cbTeachers.SelectedItem is Teacher selectedTeacher)
+                {
+                    var confirm = MessageBox.Show(
+                        $"Deseja remover o professor '{selectedTeacher.FullName}' da disciplina '{selectedSubject.Name}'?",
+                        "Confirmar Remoção", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (confirm != MessageBoxResult.Yes) return;
+
+                    bool success = await _dataService.RemoveTeacherFromSubjectAsync(selectedSubject.Id, selectedTeacher.Id);
+
+                    if (success)
+                    {
+                        MessageBox.Show("Professor removido da disciplina com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await ReloadSubjectsAsync();// Atualiza a lista, se você tiver esse método
+                    }
+                    else
+                    {
+                        MessageBox.Show("Falha ao remover o professor da disciplina.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Selecione uma disciplina e um professor.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao remover professor: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
 
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
