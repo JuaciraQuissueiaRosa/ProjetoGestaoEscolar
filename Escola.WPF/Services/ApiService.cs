@@ -20,8 +20,8 @@ namespace Escola.WPF.Services
             {
                 BaseAddress = new Uri(baseUrl)
             };
-            // Define o timeout para 30 segundos
-            _client.Timeout = TimeSpan.FromSeconds(600);  // Timeout de 30 segundos
+            //  timeout defined to 600 seconds
+            _client.Timeout = TimeSpan.FromSeconds(600); 
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
@@ -260,16 +260,16 @@ namespace Escola.WPF.Services
 
             if (response.IsSuccessStatusCode)
             {
-                // Lê o conteúdo como string
+                //read the response content as a string
                 var jsonString = await response.Content.ReadAsStringAsync();
 
-                // Desserializa a string JSON para uma lista de estudantes
+              
                 var students = JsonConvert.DeserializeObject<List<Student>>(jsonString);
 
                 return students;
             }
 
-            return new List<Student>();  // Retorna uma lista vazia caso não encontre nada
+            return new List<Student>();  // Return empty list if the request fails
         }
 
         public async Task<JObject> GetStudentHistoryAsync(int studentId)
@@ -277,7 +277,7 @@ namespace Escola.WPF.Services
             var response = await _client.GetAsync($"students/{studentId}/history");
             var json = await response.Content.ReadAsStringAsync();
 
-            //MessageBox.Show(json);  // <-- isto ajuda a ver o conteúdo real
+          
 
             if (response.IsSuccessStatusCode)
             {

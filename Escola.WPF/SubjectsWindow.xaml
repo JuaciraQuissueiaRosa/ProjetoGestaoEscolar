@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Escola.WPF"
         mc:Ignorable="d"
-        Title="SubjectsWindow" Height="450" Width="800">
+        Title="SubjectsWindow" Height="450" Width="950">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -23,7 +23,7 @@
             <Button Content="Remove teacher from subject"
           Click="btnRemoveTeacherFromSubject_Click"
           Margin="5"
-          MinWidth="250"
+          MinWidth="260"
           Padding="10,5"
           HorizontalAlignment="Left"/>
             <Button Content="⬅ Come back to main menu"
@@ -37,7 +37,7 @@
     Foreground="White"
     Cursor="Hand"
     BorderThickness="0"
-    Width="140"
+    Width="180"
     Height="40"/>
         </StackPanel>
 

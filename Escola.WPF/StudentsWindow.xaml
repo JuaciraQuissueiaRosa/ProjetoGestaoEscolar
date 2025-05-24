@@ -19,22 +19,22 @@
         <!-- Formulário de Entrada de Dados -->
         <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
             <TextBlock Text="Full name" Margin="0,5"/>
-            <TextBox Name="txtFullName" Width="300" Height="30" FontSize="14" Margin="0,5"/>
+            <TextBox Name="txtFullName" Width="300" Height="28" FontSize="12" Margin="0,5"/>
 
             <TextBlock Text="Birth Date" Margin="0,5"/>
-            <DatePicker Name="dpBirthDate" Width="300" Height="30" FontSize="14" Margin="0,5"/>
+            <DatePicker Name="dpBirthDate" Width="300" Height="28" FontSize="12" Margin="0,5"/>
 
             <TextBlock Text="Phone" Margin="0,5"/>
-            <TextBox Name="txtPhone" Width="300" Height="30" FontSize="14" Margin="0,5"/>
+            <TextBox Name="txtPhone" Width="300" Height="28" FontSize="12" Margin="0,5"/>
 
             <TextBlock Text="Address" Margin="0,5"/>
-            <TextBox Name="txtAddress" Width="300" Height="30" FontSize="14" Margin="0,5"/>
+            <TextBox Name="txtAddress" Width="300" Height="28" FontSize="12" Margin="0,5"/>
 
             <TextBlock Text="Email" Margin="0,5"/>
-            <TextBox Name="txtEmail" Width="300" Height="30" FontSize="14" Margin="0,5"/>
+            <TextBox Name="txtEmail" Width="300" Height="28" FontSize="12" Margin="0,5"/>
 
             <TextBlock Text="Search" Margin="0,5"/>
-            <TextBox Name="txtSearch" Width="300" Height="30" FontSize="14" Margin="0,5"/>
+            <TextBox Name="txtSearch" Width="300" Height="28" FontSize="12" Margin="0,5"/>
         </StackPanel>
 
         <!-- Tabela de Alunos -->

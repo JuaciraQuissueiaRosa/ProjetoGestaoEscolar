@@ -53,8 +53,12 @@
                     HorizontalAlignment="Center"
                  VerticalAlignment="Stretch"/>
 
+        
+        <Canvas Name="ConfettiCanvas"
+        IsHitTestVisible="False"
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch"
+        Panel.ZIndex="1"/>
 
-        <!-- Canvas opcional para efeito (caso animado) -->
-        <Canvas Name="ConfettiCanvas" IsHitTestVisible="true"/>
     </Grid>
 </Window>

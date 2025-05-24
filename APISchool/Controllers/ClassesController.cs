@@ -15,6 +15,10 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
 
+        /// <summary>
+        /// Retrieves a list of all classes with their associated students, teachers, and subjects
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -46,6 +50,11 @@ namespace SchoolAPI.Controllers
             return Ok(classes);
         }
 
+        /// <summary>
+        /// Retrieves a class by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
@@ -56,6 +65,11 @@ namespace SchoolAPI.Controllers
             return Ok(cls);
         }
 
+        /// <summary>
+        /// Creates a new class with the provided details
+        /// </summary>
+        /// <param name="newClass"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Class newClass)
@@ -72,6 +86,12 @@ namespace SchoolAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Associates a subkect with a class by its ID
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="subjectId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{classId}/associate-subject/{subjectId}")]
         public IHttpActionResult AssociateSubject(int classId, int subjectId)
@@ -85,6 +105,12 @@ namespace SchoolAPI.Controllers
             return Ok("Subject successfully associated with the class.");
         }
 
+        /// <summary>
+        /// Removes a subject from a class by its ID
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="subjectId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{classId}/remove-subject/{subjectId}")]
         public IHttpActionResult RemoveSubject(int classId, int subjectId)
@@ -98,6 +124,12 @@ namespace SchoolAPI.Controllers
             return Ok("Disciplina removida da turma com sucesso.");
         }
 
+        /// <summary>
+        /// Associates a teacher with a class by its ID
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="teacherId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{classId}/associate-teacher/{teacherId}")]
         public IHttpActionResult AssociateTeacher(int classId, int teacherId)
@@ -111,6 +143,12 @@ namespace SchoolAPI.Controllers
             return Ok("Teacher successfully associated with the class.");
         }
 
+        /// <summary>
+        /// Removes a teacher from a class by its ID
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="teacherId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{classId}/remove-teacher/{teacherId}")]
         public IHttpActionResult RemoveTeacher(int classId, int teacherId)
@@ -124,6 +162,12 @@ namespace SchoolAPI.Controllers
             return Ok("Professor removido da turma com sucesso.");
         }
 
+        /// <summary>
+        /// Associates a student with a class by its ID
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{classId}/associate-student/{studentId}")]
         public IHttpActionResult AssociateStudent(int classId, int studentId)
@@ -139,6 +183,12 @@ namespace SchoolAPI.Controllers
             return Ok("Student successfully assigned to the class.");
         }
 
+        /// <summary>
+        /// remove a student from a class by its ID
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="studentId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{classId}/remove-student/{studentId}")]
         public IHttpActionResult RemoveStudent(int classId, int studentId)
@@ -152,6 +202,12 @@ namespace SchoolAPI.Controllers
             return Ok("Aluno removido da turma com sucesso.");
         }
 
+        /// <summary>
+        /// edits an existing class by its ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
 
         [HttpPut]
         [Route("{id}")]
@@ -170,6 +226,11 @@ namespace SchoolAPI.Controllers
             return Ok("Class updated successfully.");
         }
 
+        /// <summary>
+        /// Delete and verify if there are students or teachers associated with the class
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)

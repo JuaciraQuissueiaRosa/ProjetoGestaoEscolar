@@ -3,6 +3,9 @@ using System.Net.Http;
 
 namespace Escola.WPF.Services
 {
+    /// <summary>
+    /// not used in the current version, but can be used to check network connectivity.
+    /// </summary>
     public class NetworkService
     {
         private readonly HttpClient _client;
