@@ -2,7 +2,7 @@ using System.Web.Http;
 using WebActivatorEx;
 using APISchool;
 using Swashbuckle.Application;
-using APISchool.Models;
+
 
 //[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
