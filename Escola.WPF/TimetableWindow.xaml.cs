@@ -31,6 +31,10 @@ namespace Escola.WPF
             LoadComboBoxes(); // <- importante!
         }
 
+        /// <summary>
+        /// method to load the timetable
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadTimeTable()
         {
             try
@@ -40,10 +44,13 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar os horários: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by loading the timetable: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        /// <summary>
+        /// method to load the comboboxes with data
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadComboBoxes()
         {
             try
@@ -54,10 +61,15 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar comboboxes: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by loading the data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// method to create a new record
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -78,7 +90,7 @@ namespace Escola.WPF
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Erro ao criar horário:\n{errorMessage}", "Conflito de Horário", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Error by creating the hour:\n{errorMessage}", "Hours conflict", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -87,15 +99,20 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error unexpected: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// method to edit a record
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (dgTimeTable.SelectedItem is not TimeTable selected)
             {
-                MessageBox.Show("Selecione um horário para editar.");
+                MessageBox.Show("Choose one hour to update.");
                 return;
             }
 
@@ -115,7 +132,7 @@ namespace Escola.WPF
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Erro ao editar horário:\n{errorMessage}", "Conflito de Horário", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Error by update the hour:\n{errorMessage}", "Hours conflict", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -124,15 +141,20 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// method to delete a record
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             if (dgTimeTable.SelectedItem is not TimeTable selected)
             {
-                MessageBox.Show("Selecione um horário para excluir.");
+                MessageBox.Show("Choose one hour to delete.");
                 return;
             }
 
@@ -144,10 +166,14 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao excluir o horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by deleting the hour: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// method to validate the inputs
+        /// </summary>
+        /// <returns></returns>
         private bool ValidateInputs()
         {
             try
@@ -156,43 +182,43 @@ namespace Escola.WPF
 
                 if (txtClassId.SelectedItem == null)
                 {
-                    HighlightError(txtClassId, "Selecione uma turma.");
+                    HighlightError(txtClassId, "Choose one class.");
                     return false;
                 }
 
                 if (txtSubjectId.SelectedItem == null)
                 {
-                    HighlightError(txtSubjectId, "Selecione uma disciplina.");
+                    HighlightError(txtSubjectId, "Choose one subject.");
                     return false;
                 }
 
                 if (txtTeacherId.SelectedItem == null)
                 {
-                    HighlightError(txtTeacherId, "Selecione um professor.");
+                    HighlightError(txtTeacherId, "Choose one teacher.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtDayOfWeek.Text))
                 {
-                    HighlightError(txtDayOfWeek, "Indique o dia da semana.");
+                    HighlightError(txtDayOfWeek, "Choose the day of the week.");
                     return false;
                 }
 
                 if (!TimeSpan.TryParse(txtStartTime.Text, out var start))
                 {
-                    HighlightError(txtStartTime, "Hora de início inválida.");
+                    HighlightError(txtStartTime, "Start time invalid.");
                     return false;
                 }
 
                 if (!TimeSpan.TryParse(txtEndTime.Text, out var end))
                 {
-                    HighlightError(txtEndTime, "Hora de fim inválida.");
+                    HighlightError(txtEndTime, "End time invalid.");
                     return false;
                 }
 
                 if (end <= start)
                 {
-                    HighlightError(txtEndTime, "Hora de fim deve ser posterior à hora de início.");
+                    HighlightError(txtEndTime, "End time has to be after the start.");
                     return false;
                 }
 
@@ -200,15 +226,25 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro de validação: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Validation error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
+
+        /// <summary>
+        /// method to highlight the error
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="tooltip"></param>
         private void HighlightError(Control control, string tooltip)
         {
             control.BorderBrush = Brushes.Red;
             control.ToolTip = tooltip;
         }
+
+        /// <summary>
+        /// method to clear the field borders
+        /// </summary>
 
         private void ClearFieldBorders()
         {
@@ -227,6 +263,9 @@ namespace Escola.WPF
             txtEndTime.ToolTip = null;
         }
 
+        /// <summary>
+        /// method to clear the inputs
+        /// </summary>
         private void ClearInputs()
         {
             txtClassId.SelectedIndex = -1;
@@ -237,6 +276,11 @@ namespace Escola.WPF
             txtEndTime.Clear();
         }
 
+        /// <summary>
+        /// method to handle the selection changed event of the data grid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dgTimeTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -254,10 +298,15 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao selecionar horário: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Selection error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// method to go back to the maiin menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)

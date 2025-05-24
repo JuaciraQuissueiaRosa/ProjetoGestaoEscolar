@@ -23,6 +23,8 @@ namespace Escola.WPF
     {
         private readonly IDataService _eventService;
 
+        // Constructor: Initializes components and binds the Loaded event
+
         public EventsWindow()
         {
             InitializeComponent();
@@ -30,11 +32,13 @@ namespace Escola.WPF
             this.Loaded += EventsPage_Loaded;
         }
 
+        // Triggered when the window is loaded
         private async void EventsPage_Loaded(object sender, RoutedEventArgs e)
         {
             await InitializeAsync();
         }
 
+        // Initializes the page by loading all data
         private async Task InitializeAsync()
         {
             await LoadEvents();
@@ -42,6 +46,8 @@ namespace Escola.WPF
             await LoadTeachers();
         }
 
+
+        // Loads all events into the DataGrid
         private async Task LoadEvents()
         {
             try
@@ -55,6 +61,8 @@ namespace Escola.WPF
             }
         }
 
+
+        // Loads all students into the ComboBox
         private async Task LoadStudents()
         {
             try
@@ -67,6 +75,7 @@ namespace Escola.WPF
             }
         }
 
+        // Loads all teachers into the ComboBox
         private async Task LoadTeachers()
         {
             try
@@ -79,19 +88,21 @@ namespace Escola.WPF
             }
         }
 
+        // Refreshes event data and clears input fields
         private async Task RefreshEvents()
         {
             await LoadEvents();
             ClearInputs();
         }
 
+        // Handles creation of a new event
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (!ValidateEventInputs()) return;
 
-                var result = MessageBox.Show("Deseja realmente criar este evento?", "Confirmar Criação", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show("Do you really want to create this event?", "Confirm Creation", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result != MessageBoxResult.Yes) return;
 
                 var newEvent = new Event
@@ -105,14 +116,15 @@ namespace Escola.WPF
 
                 await _eventService.AddEventAsync(newEvent);
                 await RefreshEvents();
-                MessageBox.Show("Evento criado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Event successfully created!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error creating event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        // Handles editing an existing event
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -122,11 +134,11 @@ namespace Escola.WPF
                 var selectedEvent = (Event)dgEvents.SelectedItem;
                 if (selectedEvent == null)
                 {
-                    MessageBox.Show("Selecione um evento para editar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please select an event to edit.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                var result = MessageBox.Show("Deseja realmente editar este evento?", "Confirmar Edição", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show("Do you really want to edit this event?", "Confirm Edit", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result != MessageBoxResult.Yes) return;
 
                 selectedEvent.Name = txtName.Text;
@@ -137,15 +149,16 @@ namespace Escola.WPF
 
                 await _eventService.UpdateEventAsync(selectedEvent);
                 await RefreshEvents();
-                MessageBox.Show("Evento editado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Event successfully updated!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao editar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error editing event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
+        // Associates a student to the selected event
         private async void btnAssociateStudent_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -171,6 +184,7 @@ namespace Escola.WPF
 
         }
 
+        // Associates a teacher to the selected event
         private async void btnAssociateTeacher_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -195,6 +209,8 @@ namespace Escola.WPF
             }
 
         }
+
+        // Removes a student from the selected event
         private async void btnRemoveStudent_Click(object sender, RoutedEventArgs e)
         {
             if (dgEvents.SelectedItem is Event selectedEvent && cbStudents.SelectedItem is Student selectedStudent)
@@ -211,7 +227,7 @@ namespace Escola.WPF
                 }
             }
         }
-
+        // Removes a teacher from the selected event
         private async void btnRemoveTeacher_Click(object sender, RoutedEventArgs e)
         {
             if (dgEvents.SelectedItem is Event selectedEvent && cbTeachers.SelectedItem is Teacher selectedTeacher)
@@ -230,7 +246,7 @@ namespace Escola.WPF
             }
         }
 
-
+        // Deletes the selected event after confirmation
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -238,11 +254,11 @@ namespace Escola.WPF
                 var selectedEvent = (Event)dgEvents.SelectedItem;
                 if (selectedEvent == null)
                 {
-                    MessageBox.Show("Selecione um evento para deletar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please select an event to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                var result = MessageBox.Show("Tem certeza que deseja excluir este evento?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show("Are you sure you want to delete this event?", "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes) return;
 
                 var response = await _eventService.DeleteEventAsync(selectedEvent.Id);
@@ -250,19 +266,20 @@ namespace Escola.WPF
                 if (!response.IsSuccessStatusCode)
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Erro ao excluir evento:\n{error}", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Error deleting event:\n{error}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 await RefreshEvents();
-                MessageBox.Show("Evento deletado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Event successfully deleted!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao deletar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error deleting event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        // Validates all required event input fields
         private bool ValidateEventInputs()
         {
             try
@@ -271,30 +288,30 @@ namespace Escola.WPF
 
                 if (string.IsNullOrWhiteSpace(txtName.Text))
                 {
-                    ShowValidationError(txtName, "O nome do evento é obrigatório.");
+                    ShowValidationError(txtName, "Event name is required.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(dpEventDate.Text) || !DateTime.TryParse(dpEventDate.Text, out _))
                 {
-                    ShowValidationError(dpEventDate, "Data do evento inválida ou vazia.");
+                    ShowValidationError(dpEventDate, "Invalid or empty event date.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtEventTime.Text) || !TimeSpan.TryParse(txtEventTime.Text, out _))
                 {
-                    ShowValidationError(txtEventTime, "Hora do evento inválida ou vazia.");
+                    ShowValidationError(txtEventTime, "Invalid or empty event time.");
                     return false;
                 }
                 if (string.IsNullOrWhiteSpace(txtLocation.Text))
                 {
-                    ShowValidationError(txtLocation, "A localização é obrigatória.");
+                    ShowValidationError(txtLocation, "Location is required.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtDescription.Text))
                 {
-                    ShowValidationError(txtDescription, "A descrição é obrigatória.");
+                    ShowValidationError(txtDescription, "Description is required.");
                     return false;
                 }
 
@@ -302,12 +319,12 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao validar o evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error validating event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
 
-
+        // Clears all form input fields
         private void ClearInputs()
         {
             txtName.Clear();
@@ -320,6 +337,7 @@ namespace Escola.WPF
             dgEvents.SelectedIndex = -1;
             ClearEventFieldBorders();
         }
+        // Clears error indicators from input fields
         private void ClearEventFieldBorders()
         {
             txtName.ClearValue(Border.BorderBrushProperty);
@@ -334,13 +352,15 @@ namespace Escola.WPF
             txtDescription.ToolTip = null;
         }
 
+        // Shows an error on a specific field
         private void ShowValidationError(TextBox field, string message)
         {
-            MessageBox.Show(message, "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(message, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
             field.BorderBrush = Brushes.Red;
             field.ToolTip = message;
         }
 
+        // Updates form fields when a row is selected
         private void dgEvents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -357,10 +377,11 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao selecionar evento: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error selecting event: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        // Returns to the main menu window
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)

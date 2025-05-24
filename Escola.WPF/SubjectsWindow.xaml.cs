@@ -29,6 +29,7 @@ namespace Escola.WPF
             InitializeComponent();
             _dataService = new ApiService();
 
+            // Load data when the window is loaded
             Loaded += async (s, e) =>
             {
                 await ReloadSubjectsAsync();
@@ -36,6 +37,10 @@ namespace Escola.WPF
             };
 
         }
+
+        /// <summary>
+        /// Loads the list of subjects from the data service and updates the DataGrid.
+        /// </summary>
 
         private async Task ReloadSubjectsAsync()
         {
@@ -51,6 +56,9 @@ namespace Escola.WPF
             }
         }
 
+        /// <summary>
+        /// Loads the list of teachers into the ComboBox.
+        /// </summary>
         private async Task LoadTeachers()
         {
             try
@@ -64,6 +72,9 @@ namespace Escola.WPF
             }
         }
 
+        /// <summary>
+        /// Creates a new subject based on user input.
+        /// </summary>
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -75,8 +86,8 @@ namespace Escola.WPF
                     WeeklyHours = int.Parse(txtWeeklyHours.Text)
                 };
 
-                await _dataService.AddSubjectAsync(newSubject);  // Chamada correta para adicionar a disciplina
-                ReloadSubjectsAsync();
+                await _dataService.AddSubjectAsync(newSubject);  
+                ReloadSubjectsAsync(); // Not awaited intentionally
                 ClearInputs();
             }
             catch (Exception ex)
@@ -85,6 +96,9 @@ namespace Escola.WPF
             }
         }
 
+        /// <summary>
+        /// Edits the selected subject with updated values from input fields.
+        /// </summary>
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -101,8 +115,8 @@ namespace Escola.WPF
                 {
                     selectedSubject.Name = txtSubjectName.Text;
                     selectedSubject.WeeklyHours = int.Parse(txtWeeklyHours.Text);
-                    await _dataService.UpdateSubjectAsync(selectedSubject);  // Chamada correta para editar a disciplina
-                    ReloadSubjectsAsync();
+                    await _dataService.UpdateSubjectAsync(selectedSubject); 
+                    ReloadSubjectsAsync(); // Not awaited intentionally
                     ClearInputs();
                 }
                 catch (Exception ex)
@@ -117,6 +131,9 @@ namespace Escola.WPF
 
         }
 
+        /// <summary>
+        /// Associates the selected teacher to the selected subject.
+        /// </summary>
         private async void btnAssociateTeacher_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -128,7 +145,7 @@ namespace Escola.WPF
                     if (response.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Teacher associated with success!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await ReloadSubjectsAsync(); // Atualiza a DataGrid automaticamente
+                        await ReloadSubjectsAsync(); 
                     }
                     else
                     {
@@ -148,6 +165,9 @@ namespace Escola.WPF
 
         }
 
+        /// <summary>
+        /// Removes a teacher from the selected subject.
+        /// </summary>
         private async void btnRemoveTeacherFromSubject_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -156,8 +176,8 @@ namespace Escola.WPF
                     cbTeachers.SelectedItem is Teacher selectedTeacher)
                 {
                     var confirm = MessageBox.Show(
-                        $"Deseja remover o professor '{selectedTeacher.FullName}' da disciplina '{selectedSubject.Name}'?",
-                        "Confirmar Remoção", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        $"Do you want to remove the teacher '{selectedTeacher.FullName}' from the subject {selectedSubject.Name}'?",
+                         "Confirm Removal", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (confirm != MessageBoxResult.Yes) return;
 
@@ -165,27 +185,29 @@ namespace Escola.WPF
 
                     if (success)
                     {
-                        MessageBox.Show("Professor removido da disciplina com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Teacher successfully removed from subject!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         await ReloadSubjectsAsync();// Atualiza a lista, se você tiver esse método
                     }
                     else
                     {
-                        MessageBox.Show("Falha ao remover o professor da disciplina.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Failed to remove teacher from subject.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Selecione uma disciplina e um professor.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please select a subject and a teacher.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao remover professor: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error removing teacher: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
 
-
+        /// <summary>
+        /// Deletes the selected subject.
+        /// </summary>
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             if (dgSubjects.SelectedItem is not Subject selectedSubject)
@@ -224,7 +246,9 @@ namespace Escola.WPF
 
 
 
-
+        /// <summary>
+        /// Clears the input fields and ComboBox selection.
+        /// </summary>
         private void ClearInputs()
         {
             try
@@ -240,6 +264,9 @@ namespace Escola.WPF
 
         }
 
+        /// <summary>
+        /// Validates the input fields for creating/editing a subject.
+        /// </summary>
         private bool ValidateSubjectInputs()
         {
             try
@@ -248,13 +275,13 @@ namespace Escola.WPF
 
                 if (string.IsNullOrWhiteSpace(txtSubjectName.Text))
                 {
-                    HighlightError(txtSubjectName, "O nome da disciplina é obrigatório.");
+                    HighlightError(txtSubjectName, "Subject name is required.");
                     return false;
                 }
 
                 if (!int.TryParse(txtWeeklyHours.Text, out int hours) || hours < 1)
                 {
-                    HighlightError(txtWeeklyHours, "Carga horária semanal inválida.");
+                    HighlightError(txtWeeklyHours, "Invalid weekly hours.");
                     return false;
                 }
 
@@ -262,16 +289,24 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro de validação: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Validation error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
+
+        /// <summary>
+        /// Highlights a field with an error message.
+        /// </summary>
         private void HighlightError(Control control, string tooltip)
         {
             control.BorderBrush = Brushes.Red;
             control.ToolTip = tooltip;
         }
 
+
+        /// <summary>
+        /// Clears visual error indicators from input fields.
+        /// </summary>
         private void ClearFieldBorders()
         {
             txtSubjectName.ClearValue(Border.BorderBrushProperty);
@@ -281,6 +316,10 @@ namespace Escola.WPF
             txtWeeklyHours.ToolTip = null;
         }
 
+
+        /// <summary>
+        /// Updates input fields when a subject is selected from the DataGrid.
+        /// </summary>
         private void dgSubjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -294,11 +333,14 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao selecionar disciplina: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error selecting subject: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
+        /// <summary>
+        /// Returns to the main menu and closes the current window.
+        /// </summary>
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)

@@ -42,7 +42,10 @@ namespace Escola.WPF
 
         }
 
-
+        /// <summary>
+        /// method to load classes into the datagrid
+        /// </summary>
+        /// <returns></returns>
 
         private async Task LoadClasses()
         {
@@ -57,6 +60,11 @@ namespace Escola.WPF
             }
         }
 
+
+        /// <summary>
+        /// method to load students into the combobox
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadStudents()
         {
             try
@@ -71,6 +79,10 @@ namespace Escola.WPF
         }
 
 
+        /// <summary>
+        /// method to load teachers into the combobox
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadTeachers()
         {
             try
@@ -84,6 +96,10 @@ namespace Escola.WPF
             }
         }
 
+        /// <summary>
+        /// method to load subjects into the combobox
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadSubjects()
         {
             try
@@ -97,6 +113,11 @@ namespace Escola.WPF
             }
         }
 
+        /// <summary>
+        /// method to create a new class
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -130,6 +151,11 @@ namespace Escola.WPF
 
         }
 
+        /// <summary>
+        /// method to edit a class
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -167,6 +193,11 @@ namespace Escola.WPF
 
         }
 
+        /// <summary>
+        /// method to delete a class
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -187,38 +218,41 @@ namespace Escola.WPF
                                 // Tenta extrair mensagem clara
                                 if (!string.IsNullOrWhiteSpace(errorMessage))
                                 {
-                                    MessageBox.Show($"Não foi possível apagar a turma:\n{errorMessage}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    MessageBox.Show($"Was not possible to delete the class:\n{errorMessage}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Não foi possível apagar a turma por um erro desconhecido.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    MessageBox.Show("Was not possible to delete the class due to a unknown error.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 }
 
                                 return;
                             }
 
-                            MessageBox.Show("Turma excluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Class deleted with success!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                             await LoadClasses();
                             ClearForm();
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show($"Erro ao apagar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show($"Error by delete the class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Por favor, selecione uma turma para excluir.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please, choose one class to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao apagar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by delete the class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
+        /// <summary>
+        /// method to clear the form fields
+        /// </summary>
         private void ClearForm()
         {
             txtClassName.Clear();
@@ -227,6 +261,12 @@ namespace Escola.WPF
             txtAcademicYear.Clear();
         }
 
+
+        /// <summary>
+        /// method to handle the selection change in the datagrid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dgClasses_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -242,10 +282,15 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao selecionar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by selecting the class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// method to associate a student, teacher or subject to a class
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnAssociate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -291,55 +336,63 @@ namespace Escola.WPF
 
         }
 
+        /// <summary>
+        /// method to remove a student, subject or teacher from a class
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnRemoveFromClass_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (dgClasses.SelectedItem is not Class selectedClass)
                 {
-                    MessageBox.Show("Selecione uma turma.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Choose one class.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 var classId = selectedClass.Id;
                 var messages = new List<string>();
 
-                // Remover aluno
+              
                 if (cbStudents.SelectedValue is int studentId)
                 {
                     bool result = await _dataService.RemoveStudentFromClassAsync(classId, studentId);
-                    messages.Add(result ? "✓ Aluno removido." : "✗ Falha ao remover aluno.");
+                    messages.Add(result ? "✓ Student removed." : "✗ Error by removing the student.");
                 }
 
-                // Remover professor
+              
                 if (cbTeachers.SelectedValue is int teacherId)
                 {
                     bool result = await _dataService.RemoveTeacherFromClassAsync(classId, teacherId);
-                    messages.Add(result ? "✓ Professor removido." : "✗ Falha ao remover professor.");
+                    messages.Add(result ? "✓ Teacher remover." : "✗ Error by removing the teacher.");
                 }
 
-                // Remover disciplina
+              
                 if (cbSubjects.SelectedValue is int subjectId)
                 {
                     bool result = await _dataService.RemoveSubjectFromClassAsync(classId, subjectId);
-                    messages.Add(result ? "✓ Disciplina removida." : "✗ Falha ao remover disciplina.");
+                    messages.Add(result ? "✓ Subject removed." : "✗ Error by removing the subject.");
                 }
 
                 if (messages.Count == 0)
                 {
-                    MessageBox.Show("Nenhum item selecionado para remover.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Any selected item to remove.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 await LoadClasses(); // Atualiza a interface
-                MessageBox.Show(string.Join("\n", messages), "Resultado", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(string.Join("\n", messages), "Result", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        /// <summary>
+        /// method to validate the inputs of the class
+        /// </summary>
+        /// <returns></returns>
         private bool ValidateClassInputs()
         {
             try
@@ -348,24 +401,24 @@ namespace Escola.WPF
 
                 if (string.IsNullOrWhiteSpace(txtClassName.Text))
                 {
-                    HighlightError(txtClassName, "O nome da turma é obrigatório.");
+                    HighlightError(txtClassName, "The class name is mandatory.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtGroupName.Text))
                 {
-                    HighlightError(txtGroupName, "O curso é obrigatório.");
+                    HighlightError(txtGroupName, "The Group Name is mandatory.");
                     return false;
                 }
                 if (string.IsNullOrWhiteSpace(txtAcademicYear.Text))
                 {
-                    HighlightError(txtAcademicYear, "O ano letivo é obrigatório.");
+                    HighlightError(txtAcademicYear, "The Academic Year is mandatory.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtSchedule.Text))
                 {
-                    HighlightError(txtSchedule, "O turno é obrigatório.");
+                    HighlightError(txtSchedule, "The schedule is mandatory.");
                     return false;
                 }
 
@@ -373,16 +426,25 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao validar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error by validating the class: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
+
+        /// <summary>
+        /// method to highlight the error in the class fields
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="tooltip"></param>
         private void HighlightError(Control control, string tooltip)
         {
             control.BorderBrush = Brushes.Red;
             control.ToolTip = tooltip;
         }
 
+        /// <summary>
+        /// Method to clear the borders of the class fields
+        /// </summary>
         private void ClearClassFieldBorders()
         {
             try
@@ -397,12 +459,17 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao validar turma: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
             }
 
         }
 
+        /// <summary>
+        /// Button to come back to the main menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)

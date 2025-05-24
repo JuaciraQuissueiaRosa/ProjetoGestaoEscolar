@@ -20,7 +20,9 @@ namespace Escola.WPF
 {
     /// <summary>
     /// Interaction logic for StudentsWindow.xaml
-    /// </summary>
+    /// </summary>º
+    /// 
+
     public partial class StudentsWindow : Window
     {
         private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
@@ -29,14 +31,17 @@ namespace Escola.WPF
         {
             InitializeComponent();
             _dataService = new ApiService();
-            LoadStudents();  // Carrega os alunos ao iniciar a página
+            LoadStudents();  // Load students when the window is initialized
         }
 
+        /// <summary>
+        /// Loads the list of students and populates the DataGrid.
+        /// </summary>
         private async void LoadStudents()
         {
             try
             {
-                var students = await _dataService.GetStudentsAsync();  // Método correto para pegar os alunos
+                var students = await _dataService.GetStudentsAsync();  
                 dgStudents.ItemsSource = students;
             }
             catch (Exception ex)
@@ -45,6 +50,11 @@ namespace Escola.WPF
             }
         }
 
+
+
+        /// <summary>
+        /// Creates a new student using input data.
+        /// </summary>
         private async void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -60,16 +70,19 @@ namespace Escola.WPF
                     Email = txtEmail.Text
                 };
 
-                await _dataService.AddStudentAsync(newStudent);  // Chamada correta para adicionar um aluno
+                await _dataService.AddStudentAsync(newStudent); 
                 LoadStudents();
                 ClearForm();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error create the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error creating the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// Updates the selected student's information.
+        /// </summary>
         private async void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -86,27 +99,26 @@ namespace Escola.WPF
                         selectedStudent.Address = txtAddress.Text;
                         selectedStudent.Email = txtEmail.Text;
 
-                        await _dataService.UpdateStudentAsync(selectedStudent);  // Chamada correta para editar um aluno
+                        await _dataService.UpdateStudentAsync(selectedStudent); 
                         LoadStudents();
                         ClearForm();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error update the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Please select a student to update.", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Choose one student to update", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error update the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error updating the student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
+        /// <summary>
+        /// Deletes the selected student after confirmation.
+        /// </summary>
         private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -121,43 +133,46 @@ namespace Escola.WPF
                         if (!response.IsSuccessStatusCode)
                         {
                             var errorMessage = await response.Content.ReadAsStringAsync();
-                            MessageBox.Show($"Não foi possível apagar o aluno:\n{errorMessage}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show($"Failed to delete student:\n{errorMessage}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
 
-                        LoadStudents();  // Recarrega os dados
-                        ClearForm();     // Limpa o formulário
-                        MessageBox.Show("Aluno apagado com sucesso.", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadStudents();  
+                        ClearForm();   
+                        MessageBox.Show("Student successfully deleted.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Selecione um aluno para apagar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please select a student to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao apagar aluno: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error deleting student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
 
         }
 
+        /// <summary>
+        /// Searches for students by name or other criteria.
+        /// </summary>
         private async void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string searchTerm = txtSearch.Text.Trim();  // Pega o texto do campo de pesquisa
+                string searchTerm = txtSearch.Text.Trim();  
                 if (string.IsNullOrEmpty(searchTerm))
                 {
                     MessageBox.Show("Please enter a search term.");
                     return;
                 }
 
-                // Chama o serviço para buscar os alunos
+              
                 var students = await _dataService.SearchStudentsAsync(searchTerm);
 
-                // Exibe os resultados na DataGrid ou de acordo com a sua UI
+              
                 if (students.Any())
                 {
                     dgStudents.ItemsSource = students;
@@ -169,10 +184,14 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error by search the students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error searching students: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+
+        /// <summary>
+        /// Displays the academic history of the selected student.
+        /// </summary>
         private async void btnHistory_Click(object sender, RoutedEventArgs e)
         {
             try
