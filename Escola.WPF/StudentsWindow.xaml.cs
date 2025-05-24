@@ -21,7 +21,7 @@ namespace Escola.WPF
     /// <summary>
     /// Interaction logic for StudentsWindow.xaml
     /// </summary>º
-    /// 
+    
 
     public partial class StudentsWindow : Window
     {
@@ -213,15 +213,15 @@ namespace Escola.WPF
                         JArray marks = (JArray)(historyData["marks"] ?? new JArray());
 
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("📘 Histórico do Aluno");
+                        sb.AppendLine("📘 Student History");
                         sb.AppendLine("_______________________________\n");
-                        sb.AppendLine("👤 Nome: " + studentName);
-                        sb.AppendLine("🏫 Turma: " + className);
+                        sb.AppendLine("👤 Name: " + studentName);
+                        sb.AppendLine("🏫 Class: " + className);
 
-                        sb.AppendLine("\n🗂️ Médias Finais:");
+                        sb.AppendLine("\n🗂️ Final Averages:");
                         if (averages.Count == 0)
                         {
-                            sb.AppendLine("• Nenhuma média disponível.");
+                            sb.AppendLine("• No average available.");
                         }
                         else
                         {
@@ -233,10 +233,10 @@ namespace Escola.WPF
                             }
                         }
 
-                        sb.AppendLine("\n📝 Avaliações Realizadas:");
+                        sb.AppendLine("\n📝 Assessments:");
                         if (marks.Count == 0)
                         {
-                            sb.AppendLine("• Nenhuma avaliação registrada.");
+                            sb.AppendLine("•  No assessments recorded.");
                         }
                         else
                         {
@@ -248,33 +248,33 @@ namespace Escola.WPF
                                 string date = DateTime.TryParse(mark["assessmentDate"]?.ToString(), out DateTime d)
                                     ? d.ToString("dd/MM/yyyy")
                                     : "N/A";
-                                string teacher = mark["teacherName"]?.ToString() ?? "N/A";
-
                                 sb.AppendLine($"• {subject} - {type}");
-                                sb.AppendLine($"  Grade: {grade}   Date: {date}   Teacher: {teacher}");
+                                sb.AppendLine($"  Grade: {grade}   Date: {date}");
                             }
                         }
 
-                        MessageBox.Show(sb.ToString(), "History of student", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(sb.ToString(), "Student History", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error to see the history: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Please select a student.", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Selection one student.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Please select a student.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error to see the history: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error retrieving history: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
-
+        /// <summary>
+        /// Clears all form input fields and deselects the DataGrid.
+        /// </summary>
         private void ClearForm()
         {
             try
@@ -289,11 +289,14 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error to clean the inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error clearing inputs: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
+        /// <summary>
+        /// Fills form fields with the selected student data from the DataGrid.
+        /// </summary>
         private void dgStudents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -310,11 +313,14 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error to selection student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error selecting student: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
+        /// <summary>
+        /// Validates the form fields before saving or updating a student.
+        /// </summary>
         private bool ValidateStudentInputs()
         {
             try
@@ -323,47 +329,47 @@ namespace Escola.WPF
 
                 if (string.IsNullOrWhiteSpace(txtFullName.Text))
                 {
-                    ShowValidationError(txtFullName, "O nome completo é obrigatório.");
+                    ShowValidationError(txtFullName, "Full name is required.");
                     return false;
                 }
 
                 if (dpBirthDate.SelectedDate == null)
                 {
-                    MessageBox.Show("A data de nascimento é obrigatória.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Birth date is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     dpBirthDate.BorderBrush = Brushes.Red;
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtPhone.Text))
                 {
-                    ShowValidationError(txtPhone, "O telefone é obrigatório.");
+                    ShowValidationError(txtPhone, "Phone number is required.");
                     return false;
                 }
                 else
                 {
-                    // Validação de telefone português: deve ter 9 dígitos e começar com 2, 3 ou 9
+                    
                     Regex phoneRegex = new Regex(@"^(2\d{8}|3\d{8}|9\d{8})$");
                     if (!phoneRegex.IsMatch(txtPhone.Text))
                     {
-                        ShowValidationError(txtPhone, "Número de telefone inválido para Portugal. Deve conter 9 dígitos e começar com 2, 3 ou 9.");
+                        ShowValidationError(txtPhone, "Invalid phone number. Must be 9 digits and start with 2, 3, or 9.");
                         return false;
                     }
                 }
 
                 if (string.IsNullOrWhiteSpace(txtAddress.Text))
                 {
-                    ShowValidationError(txtAddress, "O endereço é obrigatório.");
+                    ShowValidationError(txtAddress, "Address is required.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtEmail.Text))
                 {
-                    ShowValidationError(txtEmail, "O email é obrigatório.");
+                    ShowValidationError(txtEmail, "Email is required.");
                     return false;
                 }
                 else if (!IsValidEmail(txtEmail.Text))
                 {
-                    ShowValidationError(txtEmail, "Formato de email inválido.");
+                    ShowValidationError(txtEmail, "Invalid email format.");
                     return false;
                 }
 
@@ -371,18 +377,25 @@ namespace Escola.WPF
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao validar campos: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error validating fields: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Highlights a TextBox in red and shows a tooltip with the validation message.
+        /// </summary>
+
         private void ShowValidationError(TextBox field, string message)
         {
-            MessageBox.Show(message, "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(message, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
             field.BorderBrush = Brushes.Red;
             field.ToolTip = message;
         }
 
+        /// <summary>
+        /// Resets all input field borders and tooltips.
+        /// </summary>
         private void ClearStudentFieldBorders()
         {
             try
@@ -407,6 +420,11 @@ namespace Escola.WPF
 
         }
 
+
+
+        /// <summary>
+        /// Validates if the email address is correctly formatted.
+        /// </summary>
         private bool IsValidEmail(string email)
         {
             try
@@ -420,6 +438,10 @@ namespace Escola.WPF
             }
         }
 
+
+        /// <summary>
+        /// Navigates back to the main menu window.
+        /// </summary>
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)
