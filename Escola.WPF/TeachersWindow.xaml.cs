@@ -1,20 +1,10 @@
 ﻿using Escola.WPF.Models;
 using Escola.WPF.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Escola.WPF
 {
@@ -23,8 +13,8 @@ namespace Escola.WPF
     /// </summary>
     public partial class TeachersWindow : Window
     {
-        private List<Teacher> _professors;  // Lista de professores
-        private readonly IDataService _dataService;  // Serviço para dados (API + SQLite local)
+        private List<Teacher> _professors; 
+        private readonly IDataService _dataService;  
 
         public TeachersWindow()
         {
@@ -32,7 +22,7 @@ namespace Escola.WPF
             {
                 InitializeComponent();
                 _dataService = new ApiService();
-                LoadProfessors();  // Carrega os professores ao iniciar a página
+                LoadProfessors();  // Load the list of teachers on window initialization
 
             }
             catch (Exception ex)
@@ -42,28 +32,28 @@ namespace Escola.WPF
 
         }
 
-        // Carrega a lista de professores (da API ou SQLite)
+        // Loads the list of teachers 
         private async void LoadProfessors()
         {
             try
             {
-                _professors = await _dataService.GetTeachersAsync();  // Obtém os professores, primeiro da API, depois SQLite se necessário
+                _professors = await _dataService.GetTeachersAsync(); 
                 dgProfessors.ItemsSource = _professors;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading professors: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading Teachers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        // Evento de seleção de professor no DataGrid
+        // Event triggered when a teacher is selected in the DataGrid
         private void dgProfessors_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             try
             {
                 if (dgProfessors.SelectedItem is Teacher selectedProfessor)
                 {
-                    // Preenche os campos do formulário com os dados do professor selecionado
+                    // Populate the form fields with the selected teacher's data
                     txtProfessorName.Text = selectedProfessor.FullName;
                     txtProfessorPhone.Text = selectedProfessor.Phone;
                     txtProfessorEmail.Text = selectedProfessor.Email;
@@ -77,7 +67,7 @@ namespace Escola.WPF
 
         }
 
-        // Criar um novo professor
+        // Create a new teacher
         private async void btnCreateProfessor_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -93,11 +83,11 @@ namespace Escola.WPF
 
                 try
                 {
-                    // Adiciona professor na API e localmente
+                   
                     await _dataService.AddTeacherAsync(newProfessor);
                     MessageBox.Show("Professor created successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadProfessors();  // Recarrega a lista de professores
-                    ClearProfessorForm();  // Limpa o formulário
+                    LoadProfessors();  
+                    ClearProfessorForm();  
                 }
                 catch (Exception ex)
                 {
@@ -111,7 +101,7 @@ namespace Escola.WPF
 
         }
 
-        // Editar um professor existente
+        // Edit an existing teacher
         private async void btnEditProfessor_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -126,11 +116,11 @@ namespace Escola.WPF
 
                     try
                     {
-                        // Atualiza professor na API e localmente
+                     
                         await _dataService.UpdateTeacherAsync(selectedProfessor);
                         MessageBox.Show("Professor updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadProfessors();  // Recarrega a lista de professores
-                        ClearProfessorForm();  // Limpa o formulário
+                        LoadProfessors(); 
+                        ClearProfessorForm();  
                     }
                     catch (Exception ex)
                     {
@@ -149,7 +139,7 @@ namespace Escola.WPF
 
         }
 
-        // Excluir um professor
+        // Delete a teacher
         private async void btnDeleteProfessor_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -162,13 +152,13 @@ namespace Escola.WPF
                     {
                         try
                         {
-                            // Exclui professor da API e localmente
+                          
                             HttpResponseMessage response = await _dataService.DeleteTeacherAsync(selectedProfessor.Id);
 
                             if (response.IsSuccessStatusCode)
                             {
                                 MessageBox.Show("Professor deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                                LoadProfessors();  // Recarrega a lista de professores
+                                LoadProfessors(); 
                                 ClearProfessorForm();
                             }
                             else
@@ -198,6 +188,8 @@ namespace Escola.WPF
             }
 
         }
+
+        // Validate teacher form inputs
         private bool ValidateTeachersInputs()
         {
             try
@@ -206,24 +198,24 @@ namespace Escola.WPF
                 ClearFieldBorders();
                 if (string.IsNullOrWhiteSpace(txtProfessorName.Text))
                 {
-                    MessageBox.Show("O nome do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Teacher name is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     HighlightError(txtProfessorName);
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtProfessorPhone.Text))
                 {
-                    MessageBox.Show("O telefone do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Teacher phone number is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     HighlightError(txtProfessorPhone);
                     return false;
                 }
                 else
                 {
-                    // Validação de número de telefone português (9 dígitos, começa com 2, 3 ou 9)
+                    // Portuguese phone number validation (9 digits, starting with 2, 3 or 9)
                     Regex phoneRegex = new Regex(@"^(2\d{8}|3\d{8}|9\d{8})$");
                     if (!phoneRegex.IsMatch(txtProfessorPhone.Text))
                     {
-                        MessageBox.Show("Número de telefone do professor inválido. Deve conter 9 dígitos e começar com 2, 3 ou 9.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Invalid phone number. Must be 9 digits and start with 2, 3, or 9.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                         HighlightError(txtProfessorPhone);
                         return false;
                     }
@@ -231,20 +223,20 @@ namespace Escola.WPF
 
                 if (string.IsNullOrWhiteSpace(txtProfessorEmail.Text))
                 {
-                    MessageBox.Show("O email do professor é obrigatório.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Teacher email is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     HighlightError(txtProfessorEmail);
                     return false;
                 }
                 else if (!IsValidEmail(txtProfessorEmail.Text))
                 {
-                    MessageBox.Show("Formato de email inválido.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Invalid email format.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     HighlightError(txtProfessorEmail);
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(txtProfessorTeachingArea.Text))
                 {
-                    MessageBox.Show("A área de ensino é obrigatória.", "Validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Teaching area is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     HighlightError(txtProfessorTeachingArea);
                     return false;
                 }
@@ -262,8 +254,7 @@ namespace Escola.WPF
 
         }
 
-
-        // Limpar o formulário de input
+        // Clear the input form
         private void ClearProfessorForm()
         {
             try
@@ -280,6 +271,7 @@ namespace Escola.WPF
 
         }
 
+        // Highlight input with validation error
         private void HighlightError(Control control)
         {
             try
@@ -293,6 +285,7 @@ namespace Escola.WPF
             }
         }
 
+        // Reset field borders to default
         private void ClearFieldBorders()
         {
             try
@@ -309,11 +302,14 @@ namespace Escola.WPF
 
         }
 
+        // Email format validation
+
         private bool IsValidEmail(string email)
         {
             return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         }
 
+        // Navigate back to main menu
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)
