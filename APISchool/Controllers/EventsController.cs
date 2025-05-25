@@ -14,6 +14,11 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
 
+
+        /// <summary>
+        /// Retrieves a list of all events, including associated students and teachers.
+        /// </summary>
+        /// <returns>List of events with participants.</returns>
         // GET: api/events
         [HttpGet]
         [Route("")]
@@ -39,6 +44,11 @@ namespace SchoolAPI.Controllers
         }
 
         // GET: api/events/5
+        /// <summary>
+        /// Retrieves an event by its ID.
+        /// </summary>
+        /// <param name="id">Event ID</param>
+        /// <returns>The specified event</returns>
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
@@ -49,6 +59,11 @@ namespace SchoolAPI.Controllers
             return Ok(ev);
         }
 
+        /// <summary>
+        /// Creates a new event with the provided data.
+        /// </summary>
+        /// <param name="data">Event object</param>
+        /// <returns>Created event</returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Event data)
@@ -57,7 +72,7 @@ namespace SchoolAPI.Controllers
                 return BadRequest("Invalid event data.");
 
             if (data.EventTime == default(TimeSpan))
-                return BadRequest("EventTime inválido ou ausente.");
+                return BadRequest("Invalid or missing EventTime.");
 
             var newEvent = new Event
             {
@@ -66,15 +81,22 @@ namespace SchoolAPI.Controllers
                 EventTime=data.EventTime,
                 Location = data.Location,
                 Description = data.Description
-                // Não precisa atribuir ID manualmente (assume que o banco gera automaticamente)
+              
             };
 
             db.Events.InsertOnSubmit(newEvent);
             db.SubmitChanges();
 
-            return Ok(newEvent); // Retorna o evento já com o ID atribuído
+            return Ok(newEvent); 
         }
 
+
+        /// <summary>
+        /// Associates a student with a specific event.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="studentId">Student ID</param>
+        /// <returns>Status message</returns>
         [HttpPost]
         [Route("{eventId}/associate-student/{studentId}")]
         public IHttpActionResult AssociateStudent(int eventId, int studentId)
@@ -95,6 +117,13 @@ namespace SchoolAPI.Controllers
             return Ok("Student associated with event successfully.");
         }
 
+
+        /// <summary>
+        /// Associates a teacher with a specific event.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="teacherId">Teacher ID</param>
+        /// <returns>Status message</returns>
         [HttpPost]
         [Route("{eventId}/associate-teacher/{teacherId}")]
         public IHttpActionResult AssociateTeacher(int eventId, int teacherId)
@@ -117,15 +146,21 @@ namespace SchoolAPI.Controllers
 
 
         // PUT: api/events/5
+        /// <summary>
+        /// Updates an existing event.
+        /// </summary>
+        /// <param name="id">Event ID</param>
+        /// <param name="updatedEvent">Updated event data</param>
+        /// <returns>Updated event</returns>
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, Event updatedEvent)
         {
             if (updatedEvent == null)
-                return BadRequest("Dados inválidos.");
+                return BadRequest("Invalid data.");
 
             if (updatedEvent.EventTime == default(TimeSpan))
-                return BadRequest("Hora do evento (EventTime) é obrigatória e deve estar no formato HH:mm.");
+                return BadRequest("Event time is required and must be in HH:mm format.");
 
             var existing = db.Events.FirstOrDefault(e => e.Id == id);
             if (existing == null)
@@ -142,6 +177,12 @@ namespace SchoolAPI.Controllers
             return Ok(existing);
         }
 
+        /// <summary>
+        /// Removes a student from a specific event.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="studentId">Student ID</param>
+        /// <returns>Status message</returns>
         [HttpDelete]
         [Route("{eventId}/remove-student/{studentId}")]
         public IHttpActionResult RemoveStudentFromEvent(int eventId, int studentId)
@@ -158,6 +199,13 @@ namespace SchoolAPI.Controllers
             return Ok("Student removed from event.");
         }
 
+
+        /// <summary>
+        /// Removes a teacher from a specific event.
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="teacherId">Teacher ID</param>
+        /// <returns>Status message</returns>
         [HttpDelete]
         [Route("{eventId}/remove-teacher/{teacherId}")]
         public IHttpActionResult RemoveTeacherFromEvent(int eventId, int teacherId)
@@ -176,6 +224,11 @@ namespace SchoolAPI.Controllers
 
 
         // DELETE: api/events/5
+        /// <summary>
+        /// Deletes an event if no participants are associated.
+        /// </summary>
+        /// <param name="id">Event ID</param>
+        /// <returns>Status message</returns>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
@@ -188,12 +241,12 @@ namespace SchoolAPI.Controllers
             var hasParticipants = db.EventParticipations.Any(p => p.EventId == id);
             if (hasParticipants)
             {
-                return BadRequest("Não é possível excluir este evento porque ainda há participantes vinculados a ele.");
+                return BadRequest("Cannot delete this event because there are participants still associated with it.");
             }
 
             db.Events.DeleteOnSubmit(ev);
             db.SubmitChanges();
-            return Ok("Evento deletado com sucesso.");
+            return Ok("Event deleted successfully.");
         }
     }
 }
