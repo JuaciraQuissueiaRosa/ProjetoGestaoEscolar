@@ -10,8 +10,9 @@
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
 
-        // additional properties
 
+
+        // additional properties
 
         public string TeacherName { get; set; }
 

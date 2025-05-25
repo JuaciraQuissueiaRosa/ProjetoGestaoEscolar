@@ -7,6 +7,8 @@
         public int WeeklyHours { get; set; }       
 
         public List<Teacher> TeacherNamesList { get; set; } = new();
+
+
       
         //join to show teachers names of subjects in wpf client side
 

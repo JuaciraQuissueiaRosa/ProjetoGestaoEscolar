@@ -10,7 +10,7 @@
         public string AssessmentDate { get; set; }
         public int? TeacherId { get; set; }
 
-        // Para mostrar os nomes
+        // additional properties for display purposes
         public string StudentName { get; set; }
         public string SubjectName { get; set; }
 
