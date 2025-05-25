@@ -34,13 +34,13 @@ namespace APISchool
                         // additional fields by chaining methods off SingleApiVersion.
                         //
                         c.SingleApiVersion("v1", "APISchool");
-                      
+
 
 
                         //string xmlPath = XmlCommentsFromUrl.DownloadAndGetPath();
                         //if (!string.IsNullOrEmpty(xmlPath))
                         //{
-                        //    c.IncludeXmlComments(xmlPath); 
+                        //    c.IncludeXmlComments(xmlPath);
                         //}
 
 

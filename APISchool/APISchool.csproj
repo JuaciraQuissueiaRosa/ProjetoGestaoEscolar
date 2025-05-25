@@ -30,7 +30,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>wwwroot\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -278,6 +278,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Data\SchoolDataContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchoolDataContext.dbml</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -322,6 +327,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\RemoteXmlDocumentationProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchoolDataContext.designer.cs">
       <AutoGen>True</AutoGen>
@@ -330,6 +336,147 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Areas\HelpPage\HelpPage.css" />
+    <Content Include="App_Data\bin\Antlr3.Runtime.dll" />
+    <Content Include="App_Data\bin\Antlr3.Runtime.pdb" />
+    <Content Include="App_Data\bin\APISchool.dll" />
+    <Content Include="App_Data\bin\APISchool.pdb" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Authentication.Core.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Authorization.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Authorization.Policy.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Hosting.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Http.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Http.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Http.Extensions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Http.Features.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Mvc.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Mvc.ApiExplorer.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Mvc.Core.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Mvc.DataAnnotations.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Routing.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.Routing.dll" />
+    <Content Include="App_Data\bin\Microsoft.AspNetCore.WebUtilities.dll" />
+    <Content Include="App_Data\bin\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <Content Include="App_Data\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
+    <Content Include="App_Data\bin\Microsoft.DotNet.PlatformAbstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Configuration.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.DependencyInjection.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.DependencyModel.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Hosting.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Localization.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Localization.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.ObjectPool.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Options.dll" />
+    <Content Include="App_Data\bin\Microsoft.Extensions.Primitives.dll" />
+    <Content Include="App_Data\bin\Microsoft.Net.Http.Headers.dll" />
+    <Content Include="App_Data\bin\Microsoft.OpenApi.dll" />
+    <Content Include="App_Data\bin\Microsoft.OpenApi.pdb" />
+    <Content Include="App_Data\bin\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="App_Data\bin\Newtonsoft.Json.dll" />
+    <Content Include="App_Data\bin\roslyn\csc.exe" />
+    <Content Include="App_Data\bin\roslyn\csi.exe" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.CodeAnalysis.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.Win32.Primitives.dll" />
+    <Content Include="App_Data\bin\roslyn\System.AppContext.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Collections.Immutable.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Console.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Diagnostics.DiagnosticSource.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Diagnostics.FileVersionInfo.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Diagnostics.StackTrace.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Globalization.Calendars.dll" />
+    <Content Include="App_Data\bin\roslyn\System.IO.Compression.dll" />
+    <Content Include="App_Data\bin\roslyn\System.IO.Compression.ZipFile.dll" />
+    <Content Include="App_Data\bin\roslyn\System.IO.FileSystem.dll" />
+    <Content Include="App_Data\bin\roslyn\System.IO.FileSystem.Primitives.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Net.Http.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Net.Sockets.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Reflection.Metadata.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Runtime.InteropServices.RuntimeInformation.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Security.Cryptography.Algorithms.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Security.Cryptography.Encoding.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Security.Cryptography.Primitives.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Security.Cryptography.X509Certificates.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Text.Encoding.CodePages.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Threading.Tasks.Extensions.dll" />
+    <Content Include="App_Data\bin\roslyn\System.ValueTuple.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Xml.ReaderWriter.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Xml.XmlDocument.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Xml.XPath.dll" />
+    <Content Include="App_Data\bin\roslyn\System.Xml.XPath.XDocument.dll" />
+    <Content Include="App_Data\bin\roslyn\vbc.exe" />
+    <Content Include="App_Data\bin\roslyn\VBCSCompiler.exe" />
+    <Content Include="App_Data\bin\Swashbuckle.AspNetCore.Swagger.dll" />
+    <Content Include="App_Data\bin\Swashbuckle.AspNetCore.Swagger.pdb" />
+    <Content Include="App_Data\bin\Swashbuckle.AspNetCore.SwaggerGen.dll" />
+    <Content Include="App_Data\bin\Swashbuckle.AspNetCore.SwaggerGen.pdb" />
+    <Content Include="App_Data\bin\Swashbuckle.Core.dll" />
+    <Content Include="App_Data\bin\System.Buffers.dll" />
+    <Content Include="App_Data\bin\System.ComponentModel.Annotations.dll" />
+    <Content Include="App_Data\bin\System.Diagnostics.DiagnosticSource.dll" />
+    <Content Include="App_Data\bin\System.Memory.dll" />
+    <Content Include="App_Data\bin\System.Net.Http.Formatting.dll" />
+    <Content Include="App_Data\bin\System.Numerics.Vectors.dll" />
+    <Content Include="App_Data\bin\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="App_Data\bin\System.Text.Encodings.Web.dll" />
+    <Content Include="App_Data\bin\System.Text.Json.dll" />
+    <Content Include="App_Data\bin\System.Threading.Tasks.Extensions.dll" />
+    <Content Include="App_Data\bin\System.ValueTuple.dll" />
+    <Content Include="App_Data\bin\System.Web.Helpers.dll" />
+    <Content Include="App_Data\bin\System.Web.Http.dll" />
+    <Content Include="App_Data\bin\System.Web.Http.WebHost.dll" />
+    <Content Include="App_Data\bin\System.Web.Mvc.dll" />
+    <Content Include="App_Data\bin\System.Web.Optimization.dll" />
+    <Content Include="App_Data\bin\System.Web.Razor.dll" />
+    <Content Include="App_Data\bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="App_Data\bin\System.Web.WebPages.dll" />
+    <Content Include="App_Data\bin\System.Web.WebPages.Razor.dll" />
+    <Content Include="App_Data\bin\WebActivatorEx.dll" />
+    <Content Include="App_Data\bin\WebGrease.dll" />
+    <Content Include="App_Data\Content\bootstrap-grid.css" />
+    <Content Include="App_Data\Content\bootstrap-grid.min.css" />
+    <Content Include="App_Data\Content\bootstrap-grid.rtl.css" />
+    <Content Include="App_Data\Content\bootstrap-grid.rtl.min.css" />
+    <Content Include="App_Data\Content\bootstrap-reboot.css" />
+    <Content Include="App_Data\Content\bootstrap-reboot.min.css" />
+    <Content Include="App_Data\Content\bootstrap-reboot.rtl.css" />
+    <Content Include="App_Data\Content\bootstrap-reboot.rtl.min.css" />
+    <Content Include="App_Data\Content\bootstrap-utilities.css" />
+    <Content Include="App_Data\Content\bootstrap-utilities.min.css" />
+    <Content Include="App_Data\Content\bootstrap-utilities.rtl.css" />
+    <Content Include="App_Data\Content\bootstrap-utilities.rtl.min.css" />
+    <Content Include="App_Data\Content\bootstrap.css" />
+    <Content Include="App_Data\Content\bootstrap.min.css" />
+    <Content Include="App_Data\Content\bootstrap.rtl.css" />
+    <Content Include="App_Data\Content\bootstrap.rtl.min.css" />
+    <Content Include="App_Data\Content\Site.css" />
+    <Content Include="App_Data\Documentation.xml" />
+    <Content Include="App_Data\Global.asax" />
+    <Content Include="App_Data\Scripts\bootstrap.bundle.js" />
+    <Content Include="App_Data\Scripts\bootstrap.bundle.min.js" />
+    <Content Include="App_Data\Scripts\bootstrap.esm.js" />
+    <Content Include="App_Data\Scripts\bootstrap.esm.min.js" />
+    <Content Include="App_Data\Scripts\bootstrap.js" />
+    <Content Include="App_Data\Scripts\bootstrap.min.js" />
+    <Content Include="App_Data\Scripts\jquery-3.7.0.js" />
+    <Content Include="App_Data\Scripts\jquery-3.7.0.min.js" />
+    <Content Include="App_Data\Scripts\jquery-3.7.0.slim.js" />
+    <Content Include="App_Data\Scripts\jquery-3.7.0.slim.min.js" />
+    <Content Include="App_Data\Scripts\modernizr-2.8.3.js" />
+    <Content Include="App_Data\wwwroot\App_Data\favicon.ico" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -347,6 +494,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="wwwroot\App_Data\Documentation.xml" />
     <Content Include="wwwroot\App_Data\favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -379,6 +527,71 @@
       <LastGenOutput>SchoolDataContext.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\ComplexTypeModelDescription.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\DictionaryModelDescription.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\EnumTypeModelDescription.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\HelpPageApiModel.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\ImageSample.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\InvalidSample.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\KeyValuePairModelDescription.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\ModelDescriptionLink.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\Parameters.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\Samples.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\SimpleTypeModelDescription.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\DisplayTemplates\TextSample.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\Index.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Help\ResourceModel.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Shared\_Layout.cshtml" />
+    <Content Include="App_Data\Areas\HelpPage\Views\Web.config" />
+    <Content Include="App_Data\Areas\HelpPage\Views\_ViewStart.cshtml" />
+    <Content Include="App_Data\bin\roslyn\csc.exe.config" />
+    <Content Include="App_Data\bin\roslyn\csc.rsp" />
+    <Content Include="App_Data\bin\roslyn\csi.exe.config" />
+    <Content Include="App_Data\bin\roslyn\csi.rsp" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.CSharp.Core.targets" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.Managed.Core.targets" />
+    <Content Include="App_Data\bin\roslyn\Microsoft.VisualBasic.Core.targets" />
+    <Content Include="App_Data\bin\roslyn\vbc.exe.config" />
+    <Content Include="App_Data\bin\roslyn\vbc.rsp" />
+    <Content Include="App_Data\bin\roslyn\VBCSCompiler.exe.config" />
+    <Content Include="App_Data\Content\bootstrap-grid.css.map" />
+    <Content Include="App_Data\Content\bootstrap-grid.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap-grid.rtl.css.map" />
+    <Content Include="App_Data\Content\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap-reboot.css.map" />
+    <Content Include="App_Data\Content\bootstrap-reboot.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap-reboot.rtl.css.map" />
+    <Content Include="App_Data\Content\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap-utilities.css.map" />
+    <Content Include="App_Data\Content\bootstrap-utilities.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap-utilities.rtl.css.map" />
+    <Content Include="App_Data\Content\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap.css.map" />
+    <Content Include="App_Data\Content\bootstrap.min.css.map" />
+    <Content Include="App_Data\Content\bootstrap.rtl.css.map" />
+    <Content Include="App_Data\Content\bootstrap.rtl.min.css.map" />
+    <Content Include="App_Data\SchoolDataContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>SchoolDataContext.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_Data\Scripts\bootstrap.bundle.js.map" />
+    <Content Include="App_Data\Scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="App_Data\Scripts\bootstrap.esm.js.map" />
+    <Content Include="App_Data\Scripts\bootstrap.esm.min.js.map" />
+    <Content Include="App_Data\Scripts\bootstrap.js.map" />
+    <Content Include="App_Data\Scripts\bootstrap.min.js.map" />
+    <Content Include="App_Data\Scripts\jquery-3.7.0.min.map" />
+    <Content Include="App_Data\Scripts\jquery-3.7.0.slim.min.map" />
+    <Content Include="App_Data\Views\Home\Index.cshtml" />
+    <Content Include="App_Data\Views\Shared\Error.cshtml" />
+    <Content Include="App_Data\Views\Shared\_Layout.cshtml" />
+    <Content Include="App_Data\Views\Web.config" />
+    <Content Include="App_Data\Views\_ViewStart.cshtml" />
+    <Content Include="App_Data\Web.config" />
     <None Include="Properties\PublishProfiles\APISchool - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\SchoolAPI - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
@@ -402,7 +615,11 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App_Data\SchoolDataContext.dbml.layout">
+      <DependentUpon>SchoolDataContext.dbml</DependentUpon>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\bootstrap.min.js.map" />
   </ItemGroup>

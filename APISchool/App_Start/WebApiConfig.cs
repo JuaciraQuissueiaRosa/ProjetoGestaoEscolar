@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using APISchool.Areas.HelpPage;
+using APISchool.Models;
 
 namespace APISchool
 {
@@ -18,7 +20,11 @@ namespace APISchool
 
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
 
-          
+
+            // Use o XML do Blob Storage
+            string xmlUrl = "https://apischooldocs.blob.core.windows.net/doc/Documentation.xml";
+            config.SetDocumentationProvider(new RemoteXmlDocumentationProvider(xmlUrl));
+
             config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
          
