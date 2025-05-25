@@ -239,14 +239,14 @@ namespace SchoolAPI.Controllers
             if (cls == null)
                 return NotFound();
 
-            // Verifica se há alunos associados à turma
+          
             var hasStudents = db.Students.Any(s => s.ClassId == id);
             if (hasStudents)
             {
                 return BadRequest("Cannot delete this class because there are students assigned to it.");
             }
 
-            // Verifica se há professores associados à turma
+           
             var hasTeachers = db.TeacherClasses.Any(tc => tc.ClassId == id);
             if (hasTeachers)
             {
