@@ -121,7 +121,7 @@ namespace SchoolAPI.Controllers
 
             db.SubjectClasses.DeleteOnSubmit(relation);
             db.SubmitChanges();
-            return Ok("Disciplina removida da turma com sucesso.");
+            return Ok("Subject successfully removed from the class.");
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace SchoolAPI.Controllers
 
             db.TeacherClasses.DeleteOnSubmit(relation);
             db.SubmitChanges();
-            return Ok("Professor removido da turma com sucesso.");
+            return Ok("Teacher successfully removed from the class.");
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace SchoolAPI.Controllers
 
             student.ClassId = null;
             db.SubmitChanges();
-            return Ok("Aluno removido da turma com sucesso.");
+            return Ok("Student successfully removed from the class.");
         }
 
         /// <summary>
@@ -243,20 +243,20 @@ namespace SchoolAPI.Controllers
             var hasStudents = db.Students.Any(s => s.ClassId == id);
             if (hasStudents)
             {
-                return BadRequest("Não é possível excluir esta turma porque há alunos vinculados a ela.");
+                return BadRequest("Cannot delete this class because there are students assigned to it.");
             }
 
             // Verifica se há professores associados à turma
             var hasTeachers = db.TeacherClasses.Any(tc => tc.ClassId == id);
             if (hasTeachers)
             {
-                return BadRequest("Não é possível excluir esta turma porque há professores vinculados a ela.");
+                return BadRequest("Cannot delete this class because there are teachers assigned to it.");
             }
 
             db.Classes.DeleteOnSubmit(cls);
             db.SubmitChanges();
 
-            return Ok("Turma excluída com sucesso.");
+            return Ok("Class deleted successfully.");
         }
     }
 }
