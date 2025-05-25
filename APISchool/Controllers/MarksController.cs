@@ -14,6 +14,11 @@ namespace SchoolAPI.Controllers
     public class MarksController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
+
+        /// <summary>
+        /// Retrieves all marks.
+        /// </summary>
+
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -34,6 +39,9 @@ namespace SchoolAPI.Controllers
             return Ok(marks);
         }
 
+        /// <summary>
+        /// Adds a new mark (grade).
+        /// </summary>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Mark data)
@@ -64,6 +72,10 @@ namespace SchoolAPI.Controllers
             return Ok(newMark);
         }
 
+
+        /// <summary>
+        /// Updates an existing mark by ID.
+        /// </summary>
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Mark data)
@@ -91,7 +103,9 @@ namespace SchoolAPI.Controllers
             return Ok("Mark updated successfully.");
         }
 
-
+        /// <summary>
+        /// Retrieves the final averages per student and subject.
+        /// </summary>
         [HttpGet]
         [Route("final-averages")]
         public IHttpActionResult GetFinalAverages()
@@ -109,6 +123,10 @@ namespace SchoolAPI.Controllers
         }
 
         // DELETE: api/marks/5
+
+        /// <summary>
+        /// Deletes a mark by ID.
+        /// </summary>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
@@ -122,10 +140,15 @@ namespace SchoolAPI.Controllers
 
             db.Marks.DeleteOnSubmit(mark);
             db.SubmitChanges();
-            // ✅ ADICIONE ESTA LINHA se ainda não estiver lá:
+
+            // Recalculate average after deletion
             UpdateAverage(mark.StudentId.Value, mark.SubjectId.Value);
             return Ok("Mark deleted successfully.");
         }
+
+        /// <summary>
+        /// Validates if the academic year is in the correct format: yyyy/yyyy.
+        /// </summary>
         private bool IsValidAcademicYearFormat(string yearRange)
         {
             if (string.IsNullOrWhiteSpace(yearRange))
@@ -138,6 +161,9 @@ namespace SchoolAPI.Controllers
                    endYear == startYear + 1;
         }
 
+        /// <summary>
+        /// Checks if the academic year is already closed (past June 30 of the end year).
+        /// </summary>
         private bool IsAcademicYearClosed(string yearRange)
         {
             var parts = yearRange.Split('/');
@@ -147,14 +173,17 @@ namespace SchoolAPI.Controllers
             return DateTime.Now > endOfAcademicYear;
         }
 
+        /// <summary>
+        /// Updates or recalculates the final average for a student in a subject.
+        /// </summary>
         private void UpdateAverage(int studentId, int subjectId)
         {
-            // Buscar todas as notas do aluno na disciplina
+            // Fetch all marks for the student in the given subject
             var marks = db.Marks.Where(m => m.StudentId == studentId && m.SubjectId == subjectId).ToList();
 
             if (marks.Count == 0)
             {
-                // Se não existir nota, remover média caso exista
+                // If there are no marks, delete the average if it exists
                 var existingAverage = db.FinalAverages.FirstOrDefault(fa => fa.StudentId == studentId && fa.SubjectId == subjectId);
                 if (existingAverage != null)
                 {
@@ -164,15 +193,15 @@ namespace SchoolAPI.Controllers
                 return;
             }
 
-            // Calcular média aritmética
+            // Calculate the arithmetic average
             float average = (float)marks.Average(m => m.Grade);
 
-            // Verificar se já existe média para o aluno e disciplina
+            // Check if a final average already exists for the student and subject
             var finalAverage = db.FinalAverages.FirstOrDefault(fa => fa.StudentId == studentId && fa.SubjectId == subjectId);
 
             if (finalAverage == null)
             {
-                // Inserir nova média
+                // Insert a new final average
                 finalAverage = new FinalAverage
                 {
                     StudentId = studentId,
@@ -183,7 +212,7 @@ namespace SchoolAPI.Controllers
             }
             else
             {
-                // Atualizar média existente
+                // Update the existing average
                 finalAverage.Average = average;
             }
 
