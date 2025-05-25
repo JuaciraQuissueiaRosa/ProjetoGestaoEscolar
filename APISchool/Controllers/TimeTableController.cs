@@ -13,7 +13,13 @@ namespace SchoolAPI.Controllers
     public class TimeTableController : ApiController
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
+
+
         // GET:  api/timetable
+        /// <summary>
+        /// Retrieves all timetable entries.
+        /// </summary>
+        /// <returns>A list of timetable records with class, subject, and teacher information.</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -38,7 +44,11 @@ namespace SchoolAPI.Controllers
             return Ok(timetables);
         }
 
-
+        /// <summary>
+        /// Creates a new timetable entry.
+        /// </summary>
+        /// <param name="data">The timetable data to insert.</param>
+        /// <returns>A success message or a conflict warning if the schedule overlaps.</returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Timetable data)
@@ -46,7 +56,7 @@ namespace SchoolAPI.Controllers
             if (data == null)
                 return BadRequest("Invalid timetable data.");
 
-            // Verificar conflitos de horário
+           
             var conflict = db.Timetables.Any(t =>
                 t.ClassId == data.ClassId &&
                 t.DayOfWeek == data.DayOfWeek &&
@@ -61,6 +71,13 @@ namespace SchoolAPI.Controllers
             return Ok("Timetable entry created.");
         }
 
+
+        /// <summary>
+        /// Updates an existing timetable entry by ID.
+        /// </summary>
+        /// <param name="id">The ID of the timetable entry to update.</param>
+        /// <param name="updated">The updated timetable data.</param>
+        /// <returns>A success message or a conflict warning if the updated schedule overlaps.</returns>
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Timetable updated)
@@ -69,7 +86,7 @@ namespace SchoolAPI.Controllers
             if (timetable == null)
                 return NotFound();
 
-            // Verificar conflitos, ignorando o próprio horário
+           
             var conflict = db.Timetables.Any(t =>
                 t.Id != id &&
                 t.ClassId == updated.ClassId &&
@@ -91,6 +108,12 @@ namespace SchoolAPI.Controllers
             return Ok("Timetable entry updated.");
         }
 
+
+        /// <summary>
+        /// Deletes a timetable entry by ID.
+        /// </summary>
+        /// <param name="id">The ID of the timetable entry to delete.</param>
+        /// <returns>A success message if the entry was deleted.</returns>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)

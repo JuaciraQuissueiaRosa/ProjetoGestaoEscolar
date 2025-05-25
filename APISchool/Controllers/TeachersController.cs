@@ -15,6 +15,11 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
 
+
+        /// <summary>
+        /// Retrieves a list of all teachers.
+        /// </summary>
+        /// <returns>A list of teacher records.</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -34,6 +39,11 @@ namespace SchoolAPI.Controllers
             return Ok(teachers);
         }
 
+        /// <summary>
+        /// Retrieves a specific teacher by their ID.
+        /// </summary>
+        /// <param name="id">The teacher ID.</param>
+        /// <returns>The teacher's details if found.</returns>
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
@@ -58,6 +68,11 @@ namespace SchoolAPI.Controllers
 
 
         // POST: api/teachers
+        /// <summary>
+        /// Creates a new teacher record.
+        /// </summary>
+        /// <param name="data">The teacher data to be created.</param>
+        /// <returns>The created teacher record with generated ID.</returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Teacher data)
@@ -79,6 +94,13 @@ namespace SchoolAPI.Controllers
             return Ok(newTeacher); 
         }
 
+
+        /// <summary>
+        /// Updates an existing teacher record.
+        /// </summary>
+        /// <param name="id">The teacher ID to update.</param>
+        /// <param name="data">The updated teacher data.</param>
+        /// <returns>A success message if the update is successful.</returns>
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Teacher data)
@@ -96,31 +118,36 @@ namespace SchoolAPI.Controllers
             return Ok("Teacher updated successfully.");
         }
 
+        /// <summary>
+        /// Deletes a teacher by ID if they are not assigned to any subject.
+        /// </summary>
+        /// <param name="id">The teacher ID.</param>
+        /// <returns>A success message if the teacher was deleted, or an error if they are assigned to subjects.</returns>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)
         {
-            // Tenta encontrar o professor
+        
             var teacher = db.Teachers.FirstOrDefault(t => t.Id == id);
             if (teacher == null)
             {
-                // Retorna 404 se o professor não for encontrado
+               
                 return NotFound();
             }
 
-            // Verifica se o professor tem disciplinas associadas
+            
             bool hasSubjects = db.TeacherSubjects.Any(ts => ts.TeacherId == id);
             if (hasSubjects)
             {
-                // Se o professor tem disciplinas, não pode ser excluído
+              
                 return BadRequest("Cannot delete teacher with assigned subjects.");
             }
 
-            // Se não há disciplinas associadas, exclui o professor
+           
             db.Teachers.DeleteOnSubmit(teacher);
             db.SubmitChanges();
 
-            // Retorna sucesso
+           
             return Ok("Teacher deleted successfully.");
         }
     }
