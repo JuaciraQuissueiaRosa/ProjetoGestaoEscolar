@@ -15,6 +15,11 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
 
+
+        /// <summary>
+        /// Retrieves a list of all subjects along with their weekly hours and associated teachers.
+        /// </summary>
+        /// <returns>A list of subjects with teacher information.</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -37,7 +42,11 @@ namespace SchoolAPI.Controllers
             return Ok(subjects);
         }
 
-
+        /// <summary>
+        /// Retrieves detailed information about a specific subject by ID.
+        /// </summary>
+        /// <param name="id">The subject ID.</param>
+        /// <returns>The subject details, including associated teachers.</returns>
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
@@ -61,6 +70,12 @@ namespace SchoolAPI.Controllers
 
 
         // POST: api/subjects
+
+        /// <summary>
+        /// Creates a new subject.
+        /// </summary>
+        /// <param name="data">The subject data to create.</param>
+        /// <returns>The newly created subject.</returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Subject data)
@@ -77,9 +92,17 @@ namespace SchoolAPI.Controllers
             db.Subjects.InsertOnSubmit(newSubject);
             db.SubmitChanges();
 
-            return Ok(newSubject); // Retorna com o Id gerado
+            return Ok(newSubject); 
         }
 
+
+
+        /// <summary>
+        /// Associates a teacher with a subject.
+        /// </summary>
+        /// <param name="subjectId">The subject ID.</param>
+        /// <param name="teacherId">The teacher ID.</param>
+        /// <returns>A confirmation message if association was successful.</returns>
         [HttpPost]
         [Route("{subjectId}/associate-teacher/{teacherId}")]
         public IHttpActionResult AssociateTeacher(int subjectId, int teacherId)
@@ -97,6 +120,12 @@ namespace SchoolAPI.Controllers
             return Ok("Teacher associated with subject successfully.");
         }
 
+        /// <summary>
+        /// Removes a teacher from a subject.
+        /// </summary>
+        /// <param name="subjectId">The subject ID.</param>
+        /// <param name="teacherId">The teacher ID.</param>
+        /// <returns>A confirmation message if removal was successful.</returns>
         [HttpDelete]
         [Route("{subjectId}/remove-teacher/{teacherId}")]
         public IHttpActionResult RemoveTeacher(int subjectId, int teacherId)
@@ -110,6 +139,14 @@ namespace SchoolAPI.Controllers
             return Ok("Professor removido da disciplina com sucesso.");
         }
 
+
+
+        /// <summary>
+        /// Updates an existing subject.
+        /// </summary>
+        /// <param name="id">The subject ID.</param>
+        /// <param name="data">The updated subject data.</param>
+        /// <returns>A confirmation message if the update was successful.</returns>
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Subject data)
@@ -125,6 +162,12 @@ namespace SchoolAPI.Controllers
             return Ok("Subject updated successfully.");
         }
 
+
+        /// <summary>
+        /// Deletes a subject by ID.
+        /// </summary>
+        /// <param name="id">The subject ID.</param>
+        /// <returns>A confirmation message if deletion was successful, or an error if it is associated with other records.</returns>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)

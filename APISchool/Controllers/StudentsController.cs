@@ -15,6 +15,11 @@ namespace SchoolAPI.Controllers
     {
         SchoolDataContext db = new SchoolDataContext(ConfigurationManager.ConnectionStrings["GestaoEscolarRGConnectionString2"].ConnectionString);
         // GET: api/students
+
+        /// <summary>
+        /// Retrieves all students with their basic information and class name.
+        /// </summary>
+        /// <returns>A list of students.</returns>
         [HttpGet]
         [Route("")]
         public IHttpActionResult Get()
@@ -45,6 +50,12 @@ namespace SchoolAPI.Controllers
         }
 
         // GET: api/students/{id}
+
+        /// <summary>
+        /// Retrieves a specific student by ID.
+        /// </summary>
+        /// <param name="id">The student ID.</param>
+        /// <returns>The student information if found.</returns>
         [HttpGet]
         [Route("{id}")]
         public IHttpActionResult Get(int id)
@@ -70,6 +81,11 @@ namespace SchoolAPI.Controllers
             return Ok(student);
         }
 
+        /// <summary>
+        /// Searches for students based on a search term (name, ID, or class name).
+        /// </summary>
+        /// <param name="term">The search term.</param>
+        /// <returns>A list of matching students.</returns>
         [HttpGet]
         [Route("search")]
         public IHttpActionResult SearchStudents(string term)
@@ -115,7 +131,11 @@ namespace SchoolAPI.Controllers
         }
 
 
-
+        /// <summary>
+        /// Retrieves the academic history of a student, including class, marks, and final averages.
+        /// </summary>
+        /// <param name="id">The student ID.</param>
+        /// <returns>The student’s academic history.</returns>
         [HttpGet]
         [Route("{id}/history")]
         public IHttpActionResult GetStudentHistory(int id)
@@ -186,6 +206,11 @@ namespace SchoolAPI.Controllers
 
 
         // POST: api/students
+        /// <summary>
+        /// Creates a new student record.
+        /// </summary>
+        /// <param name="data">The student data to insert.</param>
+        /// <returns>The created student with its generated ID.</returns>
         [HttpPost]
         [Route("")]
         public IHttpActionResult Post([FromBody] Student data)
@@ -208,6 +233,12 @@ namespace SchoolAPI.Controllers
             return Ok(newStudent); // Retorna com o Id gerado
         }
 
+        /// <summary>
+        /// Updates an existing student by ID.
+        /// </summary>
+        /// <param name="id">The ID of the student to update.</param>
+        /// <param name="updated">The updated student data.</param>
+        /// <returns>A confirmation message if the update was successful.</returns>
         [HttpPut]
         [Route("{id}")]
         public IHttpActionResult Put(int id, [FromBody] Student updated)
@@ -227,6 +258,12 @@ namespace SchoolAPI.Controllers
             return Ok("Student updated successfully.");
         }
 
+
+        /// <summary>
+        /// Deletes a student by ID if there are no associated marks.
+        /// </summary>
+        /// <param name="id">The ID of the student to delete.</param>
+        /// <returns>A confirmation message if deletion was successful.</returns>
         [HttpDelete]
         [Route("{id}")]
         public IHttpActionResult Delete(int id)

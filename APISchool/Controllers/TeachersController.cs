@@ -76,7 +76,7 @@ namespace SchoolAPI.Controllers
             db.Teachers.InsertOnSubmit(newTeacher);
             db.SubmitChanges();
 
-            return Ok(newTeacher); // Retorna com o Id gerado
+            return Ok(newTeacher); 
         }
 
         [HttpPut]
