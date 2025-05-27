@@ -87,7 +87,7 @@ namespace SchoolAPI.Controllers
         }
 
         /// <summary>
-        /// Associates a subkect with a class by its ID
+        /// Associates a subject with a class by its ID
         /// </summary>
         /// <param name="classId"></param>
         /// <param name="subjectId"></param>
@@ -184,7 +184,7 @@ namespace SchoolAPI.Controllers
         }
 
         /// <summary>
-        /// remove a student from a class by its ID
+        /// Remove a student from a class by its ID
         /// </summary>
         /// <param name="classId"></param>
         /// <param name="studentId"></param>
@@ -203,7 +203,7 @@ namespace SchoolAPI.Controllers
         }
 
         /// <summary>
-        /// edits an existing class by its ID
+        /// Edits an existing class by its ID
         /// </summary>
         /// <param name="id"></param>
         /// <param name="data"></param>
