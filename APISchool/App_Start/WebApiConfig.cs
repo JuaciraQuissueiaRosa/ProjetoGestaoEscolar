@@ -22,7 +22,7 @@ namespace APISchool
 
 
             // Use o XML do Blob Storage
-            string xmlUrl = "https://apischooldocs.blob.core.windows.net/doc/Documentation.xml";
+            string xmlUrl = "https://documentodocs.blob.core.windows.net/doc/Documentation.xml";
             config.SetDocumentationProvider(new RemoteXmlDocumentationProvider(xmlUrl));
 
             config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
