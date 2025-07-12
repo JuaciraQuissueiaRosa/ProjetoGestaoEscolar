@@ -56,9 +56,10 @@ git clone https://github.com/JuaciraQuissueiaRosa/ProjetoGestaoEscolar.git
 
 ⸻
 
-Video Demonstration
+## 📹 Video Demonstration
 
-Click here to watch a video demonstration of the system
+[![Watch the demo](https://drive.google.com/file/d/1GbhuXt0oX2ObPKf28s5_gNfQOcCj4Y0I/view?usp=sharing))
+
 
 ⸻
 
